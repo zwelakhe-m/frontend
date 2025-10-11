@@ -69,7 +69,7 @@
           <div>
             <p class="text-sm font-medium text-gray-600">Total Earnings</p>
             <p class="text-3xl font-bold text-green-600">
-              {{ formatCurrency(analytics()?.totalStats?.totalEarnings || 0) }}
+              R {{ analytics()?.totalStats?.totalEarnings | number : '1.2-2' }}
             </p>
             <div class="flex items-center mt-2">
               @if (getGrowthPercentage() > 0) {

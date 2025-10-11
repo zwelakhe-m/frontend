@@ -38,7 +38,7 @@ export class ReviewCardComponent {
   }
 
   get formattedDate(): string {
-    return new Date(this.review.created_at).toLocaleDateString('en-US', {
+    return new Date(this.review.created_at).toLocaleDateString('en-ZA', {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
@@ -50,7 +50,7 @@ export class ReviewCardComponent {
     const endDate = new Date(this.review.end_date);
 
     const formatDate = (date: Date) => {
-      return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      return date.toLocaleDateString('en-ZA', { month: 'short', day: 'numeric' });
     };
 
     return `${formatDate(startDate)} - ${formatDate(endDate)}`;
