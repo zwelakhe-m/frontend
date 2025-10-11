@@ -190,7 +190,7 @@ export class ActiveBookingsComponent implements OnInit {
   }
 
   protected formatDate(dateString: string): string {
-    return new Date(dateString).toLocaleDateString('en-US', {
+    return new Date(dateString).toLocaleDateString('en-ZA', {
       weekday: 'short',
       year: 'numeric',
       month: 'short',

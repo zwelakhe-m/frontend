@@ -83,6 +83,25 @@ export class DashboardComponent implements OnInit {
     return names[0][0].toUpperCase();
   }
 
+   protected getMonthlyEarnings(): number {
+    const bookings = this.recentBookings();
+    if (!bookings || bookings.length === 0) return 0;
+    const now = new Date();
+    const currentMonth = now.getMonth();
+    const currentYear = now.getFullYear();
+    // Only include bookings for this month and year, and with status APPROVED or COMPLETED
+    return bookings
+      .filter(b => {
+        const endDate = new Date(b.end_date);
+        return (
+          endDate.getMonth() === currentMonth &&
+          endDate.getFullYear() === currentYear &&
+          (b.status === BookingStatus.APPROVED || b.status === BookingStatus.COMPLETED)
+        );
+      })
+      .reduce((sum, b) => sum + (b.total_price || 0), 0);
+  }
+
   protected formatBookingDate(booking: Booking): string {
     const startDate = new Date(booking.start_date);
     const endDate = new Date(booking.end_date);

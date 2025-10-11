@@ -207,14 +207,14 @@ export class BookingRequestComponent implements OnInit {
   }
 
   formatPrice(price: number): string {
-    return new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat('en-ZA', {
       style: 'currency',
-      currency: 'USD',
+      currency: 'ZAR',
     }).format(price);
   }
 
   formatDate(date: string): string {
-    return new Date(date).toLocaleDateString('en-US', {
+    return new Date(date).toLocaleDateString('en-ZA', {
       weekday: 'short',
       year: 'numeric',
       month: 'short',

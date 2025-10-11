@@ -210,11 +210,11 @@ export class AnalyticsComponent implements OnInit {
     const timeframe = this.activeTimeframe();
 
     if (timeframe === 'week') {
-      return date.toLocaleDateString('en-US', { weekday: 'short' });
+      return date.toLocaleDateString('en-ZA', { weekday: 'short' });
     } else if (timeframe === 'month') {
-      return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      return date.toLocaleDateString('en-ZA', { month: 'short', day: 'numeric' });
     } else {
-      return date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+      return date.toLocaleDateString('en-ZA', { month: 'short', year: 'numeric' });
     }
   }
 
