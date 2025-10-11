@@ -42,7 +42,18 @@
         <div class="form-group">
           <label for="name" class="form-label">Full Name</label>
           <div class="relative">
-            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+            <input
+              id="name"
+              type="text"
+              formControlName="name"
+              autocomplete="name"
+              class="form-input pr-12"
+              placeholder="Enter your full name"
+              [class.border-red-300]="
+                registerForm.get('name')?.invalid && registerForm.get('name')?.touched
+              "
+            />
+            <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
               <svg
                 class="w-5 h-5 text-gray-400"
                 fill="none"
@@ -57,17 +68,6 @@
                 ></path>
               </svg>
             </div>
-            <input
-              id="name"
-              type="text"
-              formControlName="name"
-              autocomplete="name"
-              class="form-input pl-12"
-              placeholder="Enter your full name"
-              [class.border-red-300]="
-                registerForm.get('name')?.invalid && registerForm.get('name')?.touched
-              "
-            />
           </div>
           @if (registerForm.get('name')?.invalid && registerForm.get('name')?.touched) {
           <p class="error-message">Full name is required</p>
@@ -78,7 +78,18 @@
         <div class="form-group">
           <label for="email" class="form-label">Email Address</label>
           <div class="relative">
-            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+            <input
+              id="email"
+              type="email"
+              formControlName="email"
+              autocomplete="email"
+              class="form-input pr-12"
+              placeholder="Enter your email"
+              [class.border-red-300]="
+                registerForm.get('email')?.invalid && registerForm.get('email')?.touched
+              "
+            />
+            <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
               <svg
                 class="w-5 h-5 text-gray-400"
                 fill="none"
@@ -93,17 +104,6 @@
                 ></path>
               </svg>
             </div>
-            <input
-              id="email"
-              type="email"
-              formControlName="email"
-              autocomplete="email"
-              class="form-input pl-12"
-              placeholder="Enter your email"
-              [class.border-red-300]="
-                registerForm.get('email')?.invalid && registerForm.get('email')?.touched
-              "
-            />
           </div>
           @if (registerForm.get('email')?.invalid && registerForm.get('email')?.touched) {
           <p class="error-message">Please enter a valid email address</p>
@@ -116,7 +116,15 @@
             >Phone Number <span class="text-gray-400 text-sm">(Optional)</span></label
           >
           <div class="relative">
-            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+            <input
+              id="phone"
+              type="tel"
+              formControlName="phone"
+              autocomplete="tel"
+              class="form-input pr-12"
+              placeholder="Enter your phone number"
+            />
+            <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
               <svg
                 class="w-5 h-5 text-gray-400"
                 fill="none"
@@ -131,14 +139,6 @@
                 ></path>
               </svg>
             </div>
-            <input
-              id="phone"
-              type="tel"
-              formControlName="phone"
-              autocomplete="tel"
-              class="form-input pl-12"
-              placeholder="Enter your phone number"
-            />
           </div>
         </div>
 
@@ -148,7 +148,15 @@
             >Location <span class="text-gray-400 text-sm">(Optional)</span></label
           >
           <div class="relative">
-            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+            <input
+              id="location"
+              type="text"
+              formControlName="location"
+              autocomplete="address-line1"
+              class="form-input pr-12"
+              placeholder="City, State or ZIP code"
+            />
+            <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
               <svg
                 class="w-5 h-5 text-gray-400"
                 fill="none"
@@ -169,14 +177,6 @@
                 ></path>
               </svg>
             </div>
-            <input
-              id="location"
-              type="text"
-              formControlName="location"
-              autocomplete="address-line1"
-              class="form-input pl-12"
-              placeholder="City, State or ZIP code"
-            />
           </div>
         </div>
 
@@ -184,27 +184,12 @@
         <div class="form-group">
           <label for="password" class="form-label">Password</label>
           <div class="relative">
-            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-              <svg
-                class="w-5 h-5 text-gray-400"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-                ></path>
-              </svg>
-            </div>
             <input
               id="password"
               [type]="showPassword() ? 'text' : 'password'"
               formControlName="password"
               autocomplete="new-password"
-              class="form-input pl-12 pr-12"
+              class="form-input pr-12"
               placeholder="Create a strong password"
               [class.border-red-300]="
                 registerForm.get('password')?.invalid && registerForm.get('password')?.touched
@@ -275,27 +260,12 @@
         <div class="form-group">
           <label for="confirmPassword" class="form-label">Confirm Password</label>
           <div class="relative">
-            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-              <svg
-                class="w-5 h-5 text-gray-400"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                ></path>
-              </svg>
-            </div>
             <input
               id="confirmPassword"
               type="password"
               formControlName="confirmPassword"
               autocomplete="new-password"
-              class="form-input pl-12"
+              class="form-input pr-12"
               placeholder="Confirm your password"
               [class.border-red-300]="(registerForm.get('confirmPassword')?.invalid || registerForm.errors?.['passwordMismatch']) && registerForm.get('confirmPassword')?.touched"
             />
