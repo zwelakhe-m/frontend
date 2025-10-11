@@ -1,0 +1,75 @@
+// Glass effects and utilities
+.glass {
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+}
+
+.glass-card {
+  backdrop-filter: blur(16px);
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
+  transition: all 0.3s ease;
+}
+
+.glass-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(31, 38, 135, 0.25);
+}
+
+// Text gradients
+.text-gradient {
+  background: linear-gradient(135deg, #8b5cf6 0%, #10b981 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+// Button styles
+.btn-primary {
+  background: linear-gradient(to right, #7c3aed, #10b981);
+  color: white;
+  border-radius: 0.75rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  transform: scale(1);
+
+  &:hover {
+    background: linear-gradient(to right, #6d28d9, #059669);
+    transform: scale(1.02);
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px #7c3aed, 0 0 0 4px rgba(124, 58, 237, 0.2);
+  }
+}
+
+.btn-outline {
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgb(209, 213, 219);
+  color: rgb(55, 65, 81);
+  border-radius: 0.75rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.8);
+    border-color: rgb(107, 114, 128);
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgb(107, 114, 128), 0 0 0 4px rgba(107, 114, 128, 0.2);
+  }
+}
+
+.status-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}

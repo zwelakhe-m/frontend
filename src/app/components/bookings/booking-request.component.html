@@ -1,0 +1,139 @@
+<div class="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-emerald-900 p-4">
+  <div class="max-w-2xl mx-auto">
+    <!-- Header -->
+    <div class="glass-card p-6 mb-6">
+      <button
+        (click)="goBack()"
+        class="flex items-center text-purple-300 hover:text-white transition-colors mb-4"
+      >
+        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M15 19l-7-7 7-7"
+          />
+        </svg>
+        Back to Browse
+      </button>
+
+      <h1 class="text-3xl font-bold text-white mb-2">Request Booking</h1>
+      <p class="text-purple-200">Fill out the details for your rental request</p>
+    </div>
+
+    <!-- Item Preview -->
+    @if (item()) {
+    <div class="glass-card p-6 mb-6">
+      <h2 class="text-xl font-bold text-white mb-4">Item Details</h2>
+      <div class="flex items-start space-x-4">
+        <img
+          [src]="item()?.images?.[0] || '/placeholder-item.jpg'"
+          [alt]="item()?.title"
+          class="w-24 h-24 object-cover rounded-lg border border-white/20"
+        />
+        <div class="flex-1">
+          <h3 class="text-lg font-semibold text-white">{{ item()?.title }}</h3>
+          <p class="text-purple-200 text-sm mb-2">{{ item()?.description }}</p>
+          <p class="text-emerald-400 font-bold">${{ item()?.pricePerDay }}/day</p>
+        </div>
+      </div>
+    </div>
+    }
+
+    <!-- Booking Form -->
+    <form [formGroup]="bookingForm" (ngSubmit)="onSubmit()" class="glass-card p-6">
+      <h2 class="text-xl font-bold text-white mb-6">Booking Details</h2>
+
+      <!-- Date Selection -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+        <div>
+          <label for="startDate" class="block text-sm font-medium text-purple-200 mb-2">
+            Start Date
+          </label>
+          <input
+            id="startDate"
+            type="date"
+            formControlName="startDate"
+            [min]="today"
+            class="input-field"
+          />
+          @if (bookingForm.get('startDate')?.errors && bookingForm.get('startDate')?.touched) {
+          <p class="error-message">Start date is required</p>
+          }
+        </div>
+
+        <div>
+          <label for="endDate" class="block text-sm font-medium text-purple-200 mb-2">
+            End Date
+          </label>
+          <input
+            id="endDate"
+            type="date"
+            formControlName="endDate"
+            [min]="bookingForm.get('startDate')?.value || today"
+            class="input-field"
+          />
+          @if (bookingForm.get('endDate')?.errors && bookingForm.get('endDate')?.touched) {
+          <p class="error-message">End date is required and must be after start date</p>
+          }
+        </div>
+      </div>
+
+      <!-- Message -->
+      <div class="mb-6">
+        <label for="message" class="block text-sm font-medium text-purple-200 mb-2">
+          Message to Owner (Optional)
+        </label>
+        <textarea
+          id="message"
+          formControlName="message"
+          rows="4"
+          placeholder="Tell the owner why you need this item, when you'll pick it up, etc."
+          class="input-field resize-none"
+        ></textarea>
+      </div>
+
+      <!-- Cost Summary -->
+      @if (totalCost() > 0) {
+      <div
+        class="bg-gradient-to-r from-purple-600/20 to-emerald-600/20 rounded-lg p-4 mb-6 border border-white/10"
+      >
+        <h3 class="text-lg font-semibold text-white mb-3">Cost Summary</h3>
+        <div class="space-y-2 text-sm">
+          <div class="flex justify-between text-purple-200">
+            <span>Days: {{ rentalDays() }}</span>
+            <span>${{ item()?.pricePerDay }}/day</span>
+          </div>
+          <div class="flex justify-between text-purple-200">
+            <span>Subtotal:</span>
+            <span>${{ subtotal() }}</span>
+          </div>
+          <div class="flex justify-between text-purple-200">
+            <span>Service Fee (10%):</span>
+            <span>${{ serviceFee() }}</span>
+          </div>
+          <hr class="border-white/20" />
+          <div class="flex justify-between text-lg font-bold text-white">
+            <span>Total:</span>
+            <span class="text-emerald-400">${{ totalCost() }}</span>
+          </div>
+        </div>
+      </div>
+      }
+
+      <!-- Submit Button -->
+      <button
+        type="submit"
+        [disabled]="bookingForm.invalid || isSubmitting()"
+        class="btn-primary w-full"
+      >
+        @if (isSubmitting()) {
+        <div class="flex items-center justify-center">
+          <div class="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+          Sending Request...
+        </div>
+        } @else { Send Booking Request }
+      </button>
+    </form>
+  </div>
+</div>

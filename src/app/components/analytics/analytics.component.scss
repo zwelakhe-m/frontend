@@ -1,0 +1,150 @@
+// Analytics component specific styles
+
+.earnings-chart {
+  .chart-bar {
+    @apply transition-all duration-700 ease-out;
+
+    &:hover {
+      @apply opacity-80;
+    }
+  }
+
+  .chart-label {
+    @apply text-sm font-medium text-gray-600;
+  }
+
+  .chart-value {
+    @apply text-sm font-medium text-white;
+  }
+}
+
+.time-selector {
+  .time-button {
+    @apply px-3 py-1 text-sm font-medium rounded-md transition-all duration-200;
+
+    &.active {
+      @apply bg-white text-purple-600 shadow-sm;
+    }
+
+    &:not(.active) {
+      @apply text-gray-600 hover:text-gray-900;
+    }
+  }
+}
+
+.stat-card {
+  @apply transform hover:scale-105 transition-transform duration-200;
+
+  .stat-icon {
+    @apply w-12 h-12 rounded-xl flex items-center justify-center;
+
+    &.earnings {
+      @apply bg-green-100;
+
+      svg {
+        @apply w-6 h-6 text-green-600;
+      }
+    }
+
+    &.bookings {
+      @apply bg-blue-100;
+
+      svg {
+        @apply w-6 h-6 text-blue-600;
+      }
+    }
+
+    &.average {
+      @apply bg-purple-100;
+
+      svg {
+        @apply w-6 h-6 text-purple-600;
+      }
+    }
+
+    &.top-item {
+      @apply bg-yellow-100;
+
+      svg {
+        @apply w-6 h-6 text-yellow-600;
+      }
+    }
+  }
+}
+
+.insight-card {
+  @apply p-3 rounded-lg;
+
+  &.positive {
+    @apply bg-green-50;
+
+    .insight-title {
+      @apply font-medium text-green-800;
+    }
+
+    .insight-description {
+      @apply text-sm text-green-600;
+    }
+  }
+
+  &.info {
+    @apply bg-blue-50;
+
+    .insight-title {
+      @apply font-medium text-blue-800;
+    }
+
+    .insight-description {
+      @apply text-sm text-blue-600;
+    }
+  }
+
+  &.recommendation {
+    @apply bg-purple-50;
+
+    .insight-title {
+      @apply font-medium text-purple-800;
+    }
+
+    .insight-description {
+      @apply text-sm text-purple-600;
+    }
+  }
+}
+
+// Chart animations
+@keyframes barGrow {
+  from {
+    width: 0%;
+  }
+  to {
+    width: var(--target-width);
+  }
+}
+
+.chart-bar-animated {
+  animation: barGrow 0.8s ease-out forwards;
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .analytics-header {
+    @apply flex-col space-y-4;
+
+    .header-actions {
+      @apply w-full flex justify-center;
+    }
+  }
+
+  .stats-grid {
+    @apply grid-cols-1 sm:grid-cols-2;
+  }
+
+  .chart-container {
+    @apply px-4;
+  }
+
+  .time-selector {
+    @apply justify-center;
+  }
+}

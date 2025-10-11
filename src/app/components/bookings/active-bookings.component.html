@@ -1,0 +1,218 @@
+<div class="min-h-screen bg-gradient-to-br from-purple-50 via-white to-emerald-50">
+  <!-- Header -->
+  <div class="page-header">
+    <div class="page-header-content">
+      <button class="back-button mb-4" (click)="goBack()">
+        <span>←</span>
+        Back to Dashboard
+      </button>
+      <h1 class="page-title">Active Bookings</h1>
+      <p class="page-subtitle">Manage your ongoing and completed bookings</p>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div class="max-w-7xl mx-auto px-6 py-8">
+    @if (loading()) {
+    <div class="text-center py-12">
+      <div class="loading-spin w-8 h-8 mx-auto mb-4"></div>
+      <p class="text-gray-600">Loading your active bookings...</p>
+    </div>
+    } @else {
+    <!-- Tabs -->
+    <div class="mb-8">
+      <div class="glass rounded-xl p-2 inline-flex space-x-2">
+        <button
+          class="px-6 py-3 rounded-lg transition-all duration-300 font-medium"
+          [class]="
+            activeTab() === 'incoming'
+              ? 'bg-purple-500 text-white shadow-lg'
+              : 'text-gray-600 hover:text-purple-500 hover:bg-purple-50'
+          "
+          (click)="setActiveTab('incoming')"
+        >
+          <span>Your Items</span>
+          @if (incomingActiveCount() > 0) {
+          <span class="ml-2 px-2 py-1 bg-purple-100 text-purple-600 rounded-full text-xs">{{
+            incomingActiveCount()
+          }}</span>
+          }
+        </button>
+        <button
+          class="px-6 py-3 rounded-lg transition-all duration-300 font-medium"
+          [class]="
+            activeTab() === 'outgoing'
+              ? 'bg-purple-500 text-white shadow-lg'
+              : 'text-gray-600 hover:text-purple-500 hover:bg-purple-50'
+          "
+          (click)="setActiveTab('outgoing')"
+        >
+          <span>Your Bookings</span>
+          @if (outgoingActiveCount() > 0) {
+          <span class="ml-2 px-2 py-1 bg-purple-100 text-purple-600 rounded-full text-xs">{{
+            outgoingActiveCount()
+          }}</span>
+          }
+        </button>
+      </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="filters">
+      <div class="filter-group">
+        <label for="status-filter">Status:</label>
+        <select
+          id="status-filter"
+          class="filter-select"
+          [value]="selectedStatus()"
+          (change)="selectedStatus.set($any($event.target).value)"
+        >
+          @for (option of statusOptions; track option.value) {
+          <option [value]="option.value">{{ option.label }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label for="search-filter">Search:</label>
+        <input
+          id="search-filter"
+          type="text"
+          class="search-input"
+          placeholder="Search by item name or person..."
+          [value]="searchTerm()"
+          (input)="searchTerm.set($any($event.target).value)"
+        />
+      </div>
+    </div>
+
+    <!-- Tab Content -->
+    <div class="tab-content">
+      @if (activeTab() === 'incoming') {
+      <div class="tab-description">
+        <h2>Your Items Being Rented</h2>
+        <p>Bookings where others are renting your items</p>
+      </div>
+      } @else {
+      <div class="tab-description">
+        <h2>Items You're Renting</h2>
+        <p>Bookings where you're renting items from others</p>
+      </div>
+      }
+
+      <!-- Bookings List -->
+      <div class="bookings-list">
+        @if (getCurrentBookings().length === 0) {
+        <div class="empty-state">
+          <div class="empty-icon">📋</div>
+          <h3>No Active Bookings</h3>
+          @if (activeTab() === 'incoming') {
+          <p>You don't have any active bookings for your items.</p>
+          } @else {
+          <p>You don't have any active bookings from others.</p>
+          }
+        </div>
+        } @else { @for (booking of getCurrentBookings(); track booking.id) {
+        <div class="booking-card">
+          <!-- Status and Date Info -->
+          <div class="booking-header">
+            <div class="status-info">
+              <span class="status-badge" [style.background-color]="getStatusColor(booking.status)">
+                {{ booking.status }}
+              </span>
+              @if (isBookingActive(booking)) {
+              <span class="active-indicator">• Currently Active</span>
+              }
+            </div>
+            <div class="date-info">
+              <span class="date-range">{{ formatDateRange(booking) }}</span>
+              @if (booking.status === 'approved') { @if (calculateDaysLeft(booking) > 0) {
+              <span class="days-left">{{ calculateDaysLeft(booking) }} days left</span>
+              } @else if (calculateDaysLeft(booking) === 0) {
+              <span class="days-left today">Ends today</span>
+              } @else {
+              <span class="days-left overdue"
+                >{{ Math.abs(calculateDaysLeft(booking)) }} days overdue</span
+              >
+              } }
+            </div>
+          </div>
+
+          <!-- Main Content -->
+          <div class="booking-content">
+            <div class="booking-details">
+              <h3 class="item-title">{{ booking.item_name }}</h3>
+
+              @if (activeTab() === 'incoming') {
+              <div class="person-info">
+                <strong>Rented by:</strong> {{ booking.renter_name }}
+                @if (booking.renter_email) {
+                <span class="email">({{ booking.renter_email }})</span>
+                }
+              </div>
+              } @else {
+              <div class="person-info">
+                <strong>Owner:</strong> {{ booking.owner_name }}
+                @if (booking.owner_email) {
+                <span class="email">({{ booking.owner_email }})</span>
+                }
+              </div>
+              }
+
+              <div class="booking-meta">
+                <div class="price-info">
+                  <strong>Total Price:</strong> {{ formatPrice(booking.total_price) }}
+                </div>
+                @if (booking.message) {
+                <div class="special-requests">
+                  <strong>Message:</strong>
+                  <p>{{ booking.message }}</p>
+                </div>
+                }
+              </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="booking-actions">
+              <button
+                class="action-button secondary"
+                (click)="viewItemDetails(booking)"
+                title="View item details"
+              >
+                View Item
+              </button>
+
+              <button
+                class="action-button secondary"
+                (click)="contactUser(booking)"
+                title="Contact via email"
+              >
+                @if (activeTab() === 'incoming') { Contact Renter } @else { Contact Owner }
+              </button>
+
+              @if (canCompleteBooking(booking)) {
+              <button
+                class="action-button success"
+                (click)="completeBooking(booking.id)"
+                title="Mark as completed"
+              >
+                Mark Complete
+              </button>
+              } @if (canCancelBooking(booking)) {
+              <button
+                class="action-button danger"
+                (click)="cancelBooking(booking.id)"
+                title="Cancel booking"
+              >
+                Cancel
+              </button>
+              }
+            </div>
+          </div>
+        </div>
+        } }
+      </div>
+    </div>
+    }
+  </div>
+</div>

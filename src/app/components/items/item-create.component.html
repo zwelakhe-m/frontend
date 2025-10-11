@@ -1,0 +1,631 @@
+<div class="min-h-screen bg-gradient-to-br from-purple-50 via-white to-emerald-50">
+  <!-- Header -->
+  <div class="page-header">
+    <div class="page-header-content">
+      <!-- Back Button -->
+      <button (click)="goBack()" class="back-button mb-4" title="Go back to dashboard">
+        <span>←</span> Back to Dashboard
+      </button>
+
+      <h1 class="page-title">List Your Item</h1>
+      <p class="page-subtitle">Share your item with the community and start earning</p>
+    </div>
+  </div>
+
+  <div class="max-w-4xl mx-auto px-6 py-8">
+    <form [formGroup]="itemForm" (ngSubmit)="onSubmit()" class="space-y-8">
+      <!-- Basic Information -->
+      <div class="glass-card rounded-2xl p-6">
+        <h2 class="text-xl font-semibold text-gray-900 mb-6">Basic Information</h2>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <!-- Title -->
+          <div class="lg:col-span-2">
+            <label for="title" class="block text-sm font-medium text-gray-700 mb-2">
+              Item Title *
+            </label>
+            <input
+              id="title"
+              type="text"
+              formControlName="title"
+              placeholder="e.g., Professional DSLR Camera"
+              class="form-input w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              [class.error]="isFieldInvalid('title')"
+            />
+            @if (isFieldInvalid('title')) {
+            <p class="error-message text-red-500 text-sm mt-1">{{ getFieldError('title') }}</p>
+            }
+          </div>
+
+          <!-- Category -->
+          <div>
+            <label for="category" class="block text-sm font-medium text-gray-700 mb-2">
+              Category *
+            </label>
+            <select
+              id="category"
+              formControlName="category"
+              class="form-input w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              [class.error]="isFieldInvalid('category')"
+            >
+              <option value="">Select a category</option>
+              <option *ngFor="let category of categories" [value]="category">
+                {{ category }}
+              </option>
+            </select>
+            @if (isFieldInvalid('category')) {
+            <p class="error-message text-red-500 text-sm mt-1">{{ getFieldError('category') }}</p>
+            }
+          </div>
+
+          <!-- Price -->
+          <div>
+            <label for="price" class="block text-sm font-medium text-gray-700 mb-2">
+              Daily Rate *
+            </label>
+            <div class="relative">
+              <span class="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500"
+                >$</span
+              >
+              <input
+                id="price"
+                type="number"
+                step="0.01"
+                min="0.01"
+                formControlName="price"
+                placeholder="0.00"
+                class="form-input w-full pl-8 pr-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                [class.error]="isFieldInvalid('price')"
+              />
+            </div>
+            @if (isFieldInvalid('price')) {
+            <p class="error-message text-red-500 text-sm mt-1">{{ getFieldError('price') }}</p>
+            }
+          </div>
+        </div>
+
+        <!-- Description -->
+        <div class="mt-6">
+          <label for="description" class="block text-sm font-medium text-gray-700 mb-2">
+            Description *
+          </label>
+          <textarea
+            id="description"
+            formControlName="description"
+            rows="4"
+            placeholder="Describe your item in detail. Include features, condition, and any special instructions..."
+            class="form-input w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none"
+            [class.error]="isFieldInvalid('description')"
+          ></textarea>
+          @if (isFieldInvalid('description')) {
+          <p class="error-message text-red-500 text-sm mt-1">{{ getFieldError('description') }}</p>
+          }
+        </div>
+      </div>
+
+      <!-- Images -->
+      <div class="glass-card rounded-2xl p-6">
+        <h2 class="text-xl font-semibold text-gray-900 mb-6">Photos</h2>
+
+        <!-- Image Upload -->
+        <div class="mb-6">
+          <label class="block text-sm font-medium text-gray-700 mb-4">
+            Add Photos * (Maximum 5 images)
+          </label>
+
+          <div
+            class="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center hover:border-purple-400 transition-colors"
+          >
+            <input
+              type="file"
+              multiple
+              accept="image/*"
+              (change)="onImageSelect($event)"
+              class="hidden"
+              #fileInput
+            />
+            <button
+              type="button"
+              (click)="fileInput.click()"
+              class="btn-outline px-6 py-3 rounded-xl font-medium"
+              [disabled]="selectedImages().length >= 5"
+            >
+              <svg
+                class="w-6 h-6 inline mr-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                ></path>
+              </svg>
+              Add Photos
+            </button>
+            <p class="text-gray-500 text-sm mt-2">PNG, JPG up to 10MB each</p>
+          </div>
+        </div>
+
+        <!-- Image Previews -->
+        @if (imagePreviewUrls().length > 0) {
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+          @for (url of imagePreviewUrls(); track $index) {
+          <div class="relative group">
+            <img [src]="url" alt="Preview" class="w-full h-24 object-cover rounded-lg" />
+            <button
+              type="button"
+              (click)="removeImage($index)"
+              class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-600 transition-colors"
+            >
+              ×
+            </button>
+          </div>
+          }
+        </div>
+        }
+      </div>
+
+      <!-- Location & Availability -->
+      <div class="glass-card rounded-2xl p-6">
+        <h2 class="text-xl font-semibold text-gray-900 mb-6">Location & Availability</h2>
+
+        <!-- Location Method Selection -->
+        <div class="mb-6">
+          <label class="block text-sm font-medium text-gray-700 mb-4"
+            >Choose Location Method *</label
+          >
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <!-- Current Location Option -->
+            <div class="relative">
+              <input
+                type="radio"
+                id="current-location"
+                name="locationMethod"
+                class="sr-only"
+                [checked]="locationMethod() === 'current'"
+                (change)="useCurrentLocation()"
+              />
+              <label
+                for="current-location"
+                class="flex flex-col p-4 border-2 rounded-xl cursor-pointer transition-all hover:bg-purple-50"
+                [class.border-purple-500]="locationMethod() === 'current'"
+                [class.bg-purple-50]="locationMethod() === 'current'"
+                [class.border-gray-300]="locationMethod() !== 'current'"
+              >
+                <div class="flex items-center justify-between mb-2">
+                  <span class="font-medium text-gray-900">Use Current Location</span>
+                  <svg
+                    class="w-5 h-5 text-purple-600"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                    />
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                    />
+                  </svg>
+                </div>
+                <span class="text-sm text-gray-600">Use your device's GPS location</span>
+              </label>
+            </div>
+
+            <!-- Manual Location Option -->
+            <div class="relative">
+              <input
+                type="radio"
+                id="manual-location"
+                name="locationMethod"
+                class="sr-only"
+                [checked]="locationMethod() === 'manual'"
+                (change)="useManualLocation()"
+              />
+              <label
+                for="manual-location"
+                class="flex flex-col p-4 border-2 rounded-xl cursor-pointer transition-all hover:bg-purple-50"
+                [class.border-purple-500]="locationMethod() === 'manual'"
+                [class.bg-purple-50]="locationMethod() === 'manual'"
+                [class.border-gray-300]="locationMethod() !== 'manual'"
+              >
+                <div class="flex items-center justify-between mb-2">
+                  <span class="font-medium text-gray-900">Enter Address</span>
+                  @if (currentUser()?.isVerified) {
+                  <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full"
+                    >Verified</span
+                  >
+                  }
+                  <svg
+                    class="w-5 h-5 text-purple-600"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+                    />
+                  </svg>
+                </div>
+                <span class="text-sm text-gray-600">
+                  @if (currentUser()?.isVerified) { Type any address manually } @else { Type an
+                  address to search }
+                </span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Location Status -->
+          @if (locationMethod() === 'current') { @if (locationLoading()) {
+          <div class="flex items-center p-3 bg-blue-50 border border-blue-200 rounded-lg">
+            <svg class="animate-spin h-5 w-5 text-blue-600 mr-3" fill="none" viewBox="0 0 24 24">
+              <circle
+                class="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                stroke-width="4"
+              ></circle>
+              <path
+                class="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+              ></path>
+            </svg>
+            <span class="text-blue-800">Getting your location...</span>
+          </div>
+          } @else if (currentLocation()) {
+          <div class="flex items-center p-3 bg-green-50 border border-green-200 rounded-lg">
+            <svg
+              class="h-5 w-5 text-green-600 mr-3"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M5 13l4 4L19 7"
+              />
+            </svg>
+            <span class="text-green-800"
+              >Location acquired: {{ currentLocation()!.lat.toFixed(4) }},
+              {{ currentLocation()!.lon.toFixed(4) }}</span
+            >
+          </div>
+          } @else if (locationError()) {
+          <div class="flex items-center p-3 bg-red-50 border border-red-200 rounded-lg">
+            <svg
+              class="h-5 w-5 text-red-600 mr-3"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+            <span class="text-red-800">{{ locationError() }}</span>
+          </div>
+          } }
+
+          <!-- Manual Location Input -->
+          @if (locationMethod() === 'manual') {
+          <div>
+            <label for="manualLocation" class="block text-sm font-medium text-gray-700 mb-2">
+              Address * @if (!currentUser()?.isVerified) {
+              <span class="text-xs text-amber-600">(Will be geocoded automatically)</span>
+              }
+            </label>
+            <input
+              id="manualLocation"
+              type="text"
+              formControlName="manualLocation"
+              [placeholder]="
+                currentUser()?.isVerified
+                  ? 'Enter any address (e.g., 123 Main St, Sandton, Johannesburg)'
+                  : 'Enter address to search (e.g., Sandton City, Johannesburg)'
+              "
+              class="form-input w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              [class.error]="isFieldInvalid('manualLocation')"
+            />
+            @if (isFieldInvalid('manualLocation')) {
+            <p class="error-message text-red-500 text-sm mt-1">
+              {{ getFieldError('manualLocation') }}
+            </p>
+            } @if (!currentUser()?.isVerified) {
+            <p class="text-xs text-gray-500 mt-1">
+              <svg
+                class="inline w-4 h-4 mr-1"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+              Verify your account to enter custom addresses
+            </p>
+            }
+          </div>
+          }
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <!-- Condition -->
+          <div>
+            <label for="condition" class="block text-sm font-medium text-gray-700 mb-2">
+              Condition *
+            </label>
+            <select
+              id="condition"
+              formControlName="condition"
+              class="form-input w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+            >
+              <option *ngFor="let option of conditionOptions" [value]="option.value">
+                {{ option.label }}
+              </option>
+            </select>
+          </div>
+
+          <!-- Spacer for alignment -->
+          <div></div>
+
+          <!-- Min Rental Days -->
+          <div>
+            <label for="minRentalDays" class="block text-sm font-medium text-gray-700 mb-2">
+              Minimum Rental Days *
+            </label>
+            <input
+              id="minRentalDays"
+              type="number"
+              min="1"
+              formControlName="minRentalDays"
+              class="form-input w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+            />
+          </div>
+
+          <!-- Max Rental Days -->
+          <div>
+            <label for="maxRentalDays" class="block text-sm font-medium text-gray-700 mb-2">
+              Maximum Rental Days *
+            </label>
+            <input
+              id="maxRentalDays"
+              type="number"
+              min="1"
+              formControlName="maxRentalDays"
+              class="form-input w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Additional Options -->
+      <div class="glass-card rounded-2xl p-6">
+        <h2 class="text-xl font-semibold text-gray-900 mb-6">Additional Options</h2>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <!-- Deposit -->
+          <div>
+            <label for="deposit" class="block text-sm font-medium text-gray-700 mb-2">
+              Security Deposit (Optional)
+            </label>
+            <div class="relative">
+              <span class="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500"
+                >$</span
+              >
+              <input
+                id="deposit"
+                type="number"
+                step="0.01"
+                min="0"
+                formControlName="deposit"
+                placeholder="0.00"
+                class="form-input w-full pl-8 pr-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              />
+            </div>
+            <p class="text-gray-500 text-sm mt-1">
+              Optional security deposit to protect against damage
+            </p>
+          </div>
+
+          <!-- Delivery Fee -->
+          <div>
+            <label for="deliveryFee" class="block text-sm font-medium text-gray-700 mb-2">
+              Delivery Fee (Optional)
+            </label>
+            <div class="relative">
+              <span class="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500"
+                >$</span
+              >
+              <input
+                id="deliveryFee"
+                type="number"
+                step="0.01"
+                min="0"
+                formControlName="deliveryFee"
+                placeholder="0.00"
+                class="form-input w-full pl-8 pr-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- Checkboxes -->
+        <div class="mt-6 space-y-4">
+          <div class="flex items-center">
+            <input
+              id="deliveryAvailable"
+              type="checkbox"
+              formControlName="deliveryAvailable"
+              class="w-4 h-4 text-purple-600 border-gray-300 rounded focus:ring-purple-500"
+            />
+            <label for="deliveryAvailable" class="ml-3 text-sm text-gray-700">
+              I offer delivery for this item
+            </label>
+          </div>
+
+          <div class="flex items-center">
+            <input
+              id="availability"
+              type="checkbox"
+              formControlName="availability"
+              class="w-4 h-4 text-purple-600 border-gray-300 rounded focus:ring-purple-500"
+            />
+            <label for="availability" class="ml-3 text-sm text-gray-700">
+              Item is currently available for rent
+            </label>
+          </div>
+        </div>
+
+        <!-- Pickup Instructions -->
+        <div class="mt-6">
+          <label for="pickupInstructions" class="block text-sm font-medium text-gray-700 mb-2">
+            Pickup Instructions (Optional)
+          </label>
+          <textarea
+            id="pickupInstructions"
+            formControlName="pickupInstructions"
+            rows="3"
+            placeholder="Provide instructions for pickup location, parking, best times, etc..."
+            class="form-input w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none"
+          ></textarea>
+        </div>
+
+        <!-- Rules -->
+        <div class="mt-6">
+          <label for="rules" class="block text-sm font-medium text-gray-700 mb-2">
+            Rental Rules (Optional)
+          </label>
+          <textarea
+            id="rules"
+            formControlName="rules"
+            rows="3"
+            placeholder="Any specific rules or requirements for renting this item..."
+            class="form-input w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none"
+          ></textarea>
+        </div>
+      </div>
+
+      <!-- Form Actions -->
+      <div class="flex justify-between items-center pt-6">
+        <!-- Debug Info -->
+        <div class="text-xs text-gray-500">
+          <div>Form Valid: {{ itemForm.valid }}</div>
+          <div>Images: {{ selectedImages().length }}</div>
+          <div>Location Method: {{ locationMethod() }}</div>
+          <div>
+            Has Location:
+            {{
+              locationMethod() === 'current'
+                ? !!currentLocation()
+                : !!itemForm.get('manualLocation')?.value
+            }}
+          </div>
+
+          <!-- Show form errors -->
+          @if (!itemForm.valid) {
+          <div class="mt-2 text-red-600">
+            <div class="font-bold">Form Errors:</div>
+            @if (itemForm.get('title')?.invalid) {
+            <div>• Title: {{ getFieldError('title') }}</div>
+            } @if (itemForm.get('description')?.invalid) {
+            <div>• Description: {{ getFieldError('description') }}</div>
+            } @if (itemForm.get('category')?.invalid) {
+            <div>• Category: {{ getFieldError('category') }}</div>
+            } @if (itemForm.get('price')?.invalid) {
+            <div>• Price: {{ getFieldError('price') }}</div>
+            } @if (itemForm.get('manualLocation')?.invalid) {
+            <div>• Location: {{ getFieldError('manualLocation') }}</div>
+            } @if (itemForm.get('minRentalDays')?.invalid) {
+            <div>• Min Days: {{ getFieldError('minRentalDays') }}</div>
+            } @if (itemForm.get('maxRentalDays')?.invalid) {
+            <div>• Max Days: {{ getFieldError('maxRentalDays') }}</div>
+            } @if (itemForm.get('condition')?.invalid) {
+            <div>• Condition: {{ getFieldError('condition') }}</div>
+            }
+          </div>
+          }
+        </div>
+
+        <button
+          type="button"
+          (click)="onCancel()"
+          class="btn-outline px-8 py-3 rounded-xl font-medium"
+        >
+          Cancel
+        </button>
+
+        <button
+          type="submit"
+          (click)="onButtonClick()"
+          [disabled]="loading() || uploadingImages() || itemForm.invalid"
+          class="btn-primary px-8 py-3 rounded-xl font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          @if (uploadingImages()) {
+          <span class="flex items-center">
+            <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
+              <circle
+                class="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                stroke-width="4"
+              ></circle>
+              <path
+                class="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+              ></path>
+            </svg>
+            Uploading Images...
+          </span>
+          } @else if (loading()) {
+          <span class="flex items-center">
+            <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
+              <circle
+                class="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                stroke-width="4"
+              ></circle>
+              <path
+                class="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+              ></path>
+            </svg>
+            Creating Item...
+          </span>
+          } @else { List Item }
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

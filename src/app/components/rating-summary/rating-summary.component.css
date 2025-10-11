@@ -1,0 +1,36 @@
+/* Rating Summary Component Styles */
+
+.rating-summary {
+  background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+}
+
+/* Animated progress bars */
+.rating-bar {
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Star animation */
+.star-display {
+  animation: shimmer 2s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+/* Responsive design */
+@media (max-width: 640px) {
+  .rating-breakdown {
+    gap: 0.5rem;
+  }
+
+  .rating-level {
+    font-size: 0.875rem;
+  }
+}

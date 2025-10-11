@@ -1,0 +1,143 @@
+<div class="min-h-screen bg-gradient-to-br from-purple-50 to-emerald-50 py-8">
+  <div class="max-w-4xl mx-auto px-4">
+    <!-- Header with Back Button -->
+    <div class="mb-8">
+      <div class="flex items-center gap-4 mb-4">
+        <button
+          (click)="goBack()"
+          class="inline-flex items-center gap-2 px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M15 19l-7-7 7-7"
+            />
+          </svg>
+          Back
+        </button>
+        <div>
+          <h1 class="text-3xl font-bold text-gray-900">Messages</h1>
+          <p class="text-gray-600">Manage your conversations with item owners and renters</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading State -->
+    @if (isLoading) {
+    <div class="text-center py-12">
+      <div
+        class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"
+      ></div>
+      <p class="mt-2 text-gray-600">Loading conversations...</p>
+    </div>
+    }
+
+    <!-- No Conversations -->
+    @if (!isLoading && conversations.length === 0) {
+    <div class="text-center py-12">
+      <div class="mx-auto h-24 w-24 text-gray-300 mb-4">
+        <svg fill="currentColor" viewBox="0 0 24 24">
+          <path
+            d="M20 2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h4l4 4 4-4h4c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"
+          />
+        </svg>
+      </div>
+      <h3 class="text-lg font-medium text-gray-900 mb-2">No conversations yet</h3>
+      <p class="text-gray-600 mb-4">Start conversations by contacting item owners</p>
+      <button
+        (click)="goToExplore()"
+        class="inline-flex items-center px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+      >
+        Explore Items
+      </button>
+    </div>
+    }
+
+    <!-- Conversations List -->
+    @if (!isLoading && conversations.length > 0) {
+    <div class="space-y-4">
+      @for (conversation of conversations; track conversation.id) {
+      <div
+        (click)="openConversation(conversation)"
+        class="bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer border border-gray-100 overflow-hidden"
+      >
+        <div class="p-6">
+          <div class="flex items-center space-x-4">
+            <!-- Item Image -->
+            <div class="flex-shrink-0">
+              <img
+                [src]="getItemImage(conversation.item_image)"
+                [alt]="conversation.item_name"
+                class="h-16 w-16 rounded-lg object-cover bg-gray-100"
+              />
+            </div>
+
+            <!-- Conversation Details -->
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center justify-between mb-2">
+                <h3 class="text-lg font-semibold text-gray-900 truncate">
+                  {{ conversation.item_name }}
+                </h3>
+                <div class="flex items-center space-x-2">
+                  <!-- Unread Badge -->
+                  @if (conversation.unread_count > 0) {
+                  <span
+                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-500 text-white"
+                  >
+                    {{ conversation.unread_count }}
+                  </span>
+                  }
+                  <!-- Last Message Time -->
+                  <span class="text-sm text-gray-500">
+                    {{ formatTime(conversation.last_message_at) }}
+                  </span>
+                </div>
+              </div>
+
+              <div class="flex items-center justify-between mb-2">
+                <p class="text-sm text-gray-600">
+                  with <span class="font-medium">{{ conversation.other_user_name }}</span>
+                </p>
+                <p class="text-sm font-medium text-emerald-600">
+                  ${{ conversation.price_per_day }}/day
+                </p>
+              </div>
+
+              <!-- Last Message -->
+              <p
+                class="text-sm text-gray-700 line-clamp-2"
+                [class.font-semibold]="conversation.unread_count > 0"
+              >
+                @if (conversation.last_message_sender_id === currentUserId) {
+                <span class="text-gray-500">You: </span>
+                }
+                {{ conversation.last_message || 'No messages yet' }}
+              </p>
+            </div>
+
+            <!-- Arrow -->
+            <div class="flex-shrink-0">
+              <svg
+                class="h-5 w-5 text-gray-400"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 5l7 7-7 7"
+                />
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+      }
+    </div>
+    }
+  </div>
+</div>

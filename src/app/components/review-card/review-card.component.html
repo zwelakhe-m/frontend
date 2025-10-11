@@ -1,0 +1,105 @@
+<div class="bg-white rounded-lg border border-gray-200 p-6 hover:shadow-md transition-shadow">
+  <!-- Header: Rating, Name, Date -->
+  <div class="flex items-start justify-between mb-4">
+    <div class="flex items-center gap-3">
+      <!-- Avatar/Initial -->
+      <div
+        class="w-10 h-10 bg-gradient-to-br from-purple-500 to-blue-600 rounded-full flex items-center justify-center text-white font-semibold"
+      >
+        {{ reviewerDisplayName.charAt(0).toUpperCase() }}
+      </div>
+
+      <div>
+        <div class="flex items-center gap-2">
+          <h4 class="font-medium text-gray-900">{{ reviewerDisplayName }}</h4>
+          @if (review.reviewer_verified && !review.is_anonymous) {
+          <span
+            class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800"
+          >
+            ✓ Verified
+          </span>
+          }
+        </div>
+        <div class="flex items-center gap-2 mt-1">
+          <app-star-rating
+            [rating]="review.rating_value"
+            [readonly]="true"
+            size="sm"
+          ></app-star-rating>
+          <span class="text-sm text-gray-500">{{ formattedDate }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Rental Period -->
+    <div class="text-right">
+      <div class="text-xs text-gray-500">Rental Period</div>
+      <div class="text-sm font-medium text-gray-700">{{ rentalPeriod }}</div>
+    </div>
+  </div>
+
+  <!-- Review Title -->
+  @if (review.review_title) {
+  <h5 class="font-semibold text-gray-900 mb-2">{{ review.review_title }}</h5>
+  }
+
+  <!-- Review Text -->
+  @if (review.review_text) {
+  <div class="text-gray-700 mb-4 leading-relaxed">
+    {{ review.review_text }}
+  </div>
+  }
+
+  <!-- Pros and Cons -->
+  @if (review.pros || review.cons) {
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+    @if (review.pros) {
+    <div class="bg-green-50 rounded-lg p-3">
+      <div class="flex items-center gap-2 mb-2">
+        <span class="text-green-600">👍</span>
+        <span class="font-medium text-green-800">Pros</span>
+      </div>
+      <p class="text-sm text-green-700">{{ review.pros }}</p>
+    </div>
+    } @if (review.cons) {
+    <div class="bg-red-50 rounded-lg p-3">
+      <div class="flex items-center gap-2 mb-2">
+        <span class="text-red-600">👎</span>
+        <span class="font-medium text-red-800">Cons</span>
+      </div>
+      <p class="text-sm text-red-700">{{ review.cons }}</p>
+    </div>
+    }
+  </div>
+  }
+
+  <!-- Helpful Section -->
+  <div class="flex items-center justify-between pt-4 border-t border-gray-100">
+    <div class="flex items-center gap-2 text-sm text-gray-500">
+      @if (review.helpful_count > 0) {
+      <span
+        >{{ review.helpful_count }} {{ review.helpful_count === 1 ? 'person' : 'people' }} found
+        this helpful</span
+      >
+      } @else {
+      <span>Be the first to find this helpful</span>
+      }
+    </div>
+
+    @if (canMarkHelpful) {
+    <button
+      type="button"
+      (click)="onHelpfulClick()"
+      [class]="
+        userHasMarkedHelpful
+          ? 'text-purple-600 bg-purple-100 hover:bg-purple-200'
+          : 'text-gray-600 bg-gray-100 hover:bg-gray-200'
+      "
+      class="flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors"
+    >
+      <span>{{ userHasMarkedHelpful ? '✓' : '👍' }}</span>
+      {{ userHasMarkedHelpful ? 'Helpful' : 'Helpful?' }}
+    </button>
+    }
+  </div>
+</div>

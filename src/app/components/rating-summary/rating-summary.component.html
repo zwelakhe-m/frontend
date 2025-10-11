@@ -1,0 +1,65 @@
+<div class="bg-white rounded-lg border border-gray-200 p-6">
+  <!-- Overall Rating -->
+  <div class="text-center mb-6">
+    <div class="flex items-center justify-center gap-3 mb-2">
+      <span class="text-4xl font-bold text-gray-900">
+        {{ statistics.average_rating | number : '1.1-1' }}
+      </span>
+      <div class="text-center">
+        <app-star-rating
+          [rating]="statistics.average_rating"
+          [readonly]="true"
+          size="lg"
+        ></app-star-rating>
+        <div [class]="averageRatingColor" class="font-medium mt-1">
+          {{ averageRatingText }}
+        </div>
+      </div>
+    </div>
+    <div class="text-sm text-gray-500">
+      Based on {{ statistics.total_reviews }}
+      {{ statistics.total_reviews === 1 ? 'review' : 'reviews' }}
+    </div>
+  </div>
+
+  <!-- Rating Breakdown -->
+  @if (showBreakdown && statistics.total_reviews > 0) {
+  <div class="space-y-2">
+    <h4 class="font-medium text-gray-900 mb-3">Rating Breakdown</h4>
+    @for (level of ratingLevels; track level.level) {
+    <div class="flex items-center gap-3">
+      <!-- Star Level -->
+      <div class="flex items-center gap-1 w-16">
+        <span class="text-sm font-medium text-gray-600">{{ level.level }}</span>
+        <span class="text-yellow-400 text-sm">★</span>
+      </div>
+
+      <!-- Progress Bar -->
+      <div class="flex-1 bg-gray-200 rounded-full h-2 overflow-hidden">
+        <div
+          class="h-full bg-yellow-400 transition-all duration-500 ease-out"
+          [style.width.%]="level.percentage"
+        ></div>
+      </div>
+
+      <!-- Count and Percentage -->
+      <div class="text-sm text-gray-600 w-16 text-right">
+        {{ level.count }}
+        @if (level.percentage > 0) {
+        <span class="text-gray-400">({{ level.percentage | number : '1.0-0' }}%)</span>
+        }
+      </div>
+    </div>
+    }
+  </div>
+  }
+
+  <!-- No Reviews State -->
+  @if (statistics.total_reviews === 0) {
+  <div class="text-center py-8">
+    <div class="text-gray-400 text-5xl mb-4">⭐</div>
+    <h4 class="font-medium text-gray-900 mb-2">No reviews yet</h4>
+    <p class="text-sm text-gray-500">Be the first to leave a review!</p>
+  </div>
+  }
+</div>

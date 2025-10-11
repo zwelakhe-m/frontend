@@ -1,0 +1,447 @@
+<div class="min-h-screen bg-gradient-to-br from-purple-50 via-white to-emerald-50 pt-6 pb-12">
+  <div class="max-w-7xl mx-auto px-6">
+    <!-- Page Header -->
+    <div class="flex items-center justify-between mb-8">
+      <div>
+        <h1 class="text-3xl font-bold text-gray-900">Analytics & Earnings</h1>
+        <p class="text-gray-600 mt-1">Track your rental performance and earnings</p>
+      </div>
+      <div class="flex items-center space-x-3">
+        <button
+          (click)="exportData()"
+          class="btn-outline px-4 py-2 text-sm flex items-center space-x-2"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+            ></path>
+          </svg>
+          <span>Export Data</span>
+        </button>
+        <button
+          (click)="navigateBack()"
+          class="btn-outline px-4 py-2 text-sm flex items-center space-x-2"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M10 19l-7-7m0 0l7-7m-7 7h18"
+            ></path>
+          </svg>
+          <span>Back to Dashboard</span>
+        </button>
+      </div>
+    </div>
+
+    @if (isLoading()) {
+    <!-- Loading State -->
+    <div class="flex items-center justify-center py-12">
+      <div class="flex items-center space-x-3">
+        <svg class="animate-spin h-8 w-8 text-purple-600" fill="none" viewBox="0 0 24 24">
+          <circle
+            cx="12"
+            cy="12"
+            r="10"
+            stroke="currentColor"
+            stroke-width="4"
+            class="opacity-25"
+          ></circle>
+          <path
+            fill="currentColor"
+            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+            class="opacity-75"
+          ></path>
+        </svg>
+        <span class="text-lg text-gray-600">Loading analytics...</span>
+      </div>
+    </div>
+    } @else {
+    <!-- Summary Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <!-- Total Earnings -->
+      <div class="glass-card rounded-2xl p-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm font-medium text-gray-600">Total Earnings</p>
+            <p class="text-3xl font-bold text-green-600">
+              {{ formatCurrency(analytics()?.totalStats?.totalEarnings || 0) }}
+            </p>
+            <div class="flex items-center mt-2">
+              @if (getGrowthPercentage() > 0) {
+              <svg
+                class="w-4 h-4 text-green-500 mr-1"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
+                ></path>
+              </svg>
+              <span class="text-sm text-green-600">+{{ getGrowthPercentage() }}%</span>
+              } @else if (getGrowthPercentage() < 0) {
+              <svg
+                class="w-4 h-4 text-red-500 mr-1"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6"
+                ></path>
+              </svg>
+              <span class="text-sm text-red-600">{{ getGrowthPercentage() }}%</span>
+              } @else {
+              <span class="text-sm text-gray-500">No change</span>
+              }
+            </div>
+          </div>
+          <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
+            <svg
+              class="w-6 h-6 text-green-600"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"
+              ></path>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Total Bookings -->
+      <div class="glass-card rounded-2xl p-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm font-medium text-gray-600">Total Bookings</p>
+            <p class="text-3xl font-bold text-blue-600">
+              {{ analytics()?.totalStats?.totalBookings || 0 }}
+            </p>
+            <p class="text-sm text-gray-500 mt-2">Completed rentals</p>
+          </div>
+          <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+            <svg
+              class="w-6 h-6 text-blue-600"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+              ></path>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Average Booking Value -->
+      <div class="glass-card rounded-2xl p-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm font-medium text-gray-600">Avg. Booking Value</p>
+            <p class="text-3xl font-bold text-purple-600">
+              {{
+                formatCurrency(
+                  (analytics()?.totalStats?.totalEarnings || 0) /
+                    (analytics()?.totalStats?.totalBookings || 1)
+                )
+              }}
+            </p>
+            <p class="text-sm text-gray-500 mt-2">Per rental</p>
+          </div>
+          <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
+            <svg
+              class="w-6 h-6 text-purple-600"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+              ></path>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Top Performing Item -->
+      <div class="glass-card rounded-2xl p-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm font-medium text-gray-600">Top Item</p>
+            <p class="text-lg font-bold text-gray-900 truncate">
+              {{ analytics()?.popularItems?.[0]?.name || 'No data' }}
+            </p>
+            <p class="text-sm text-gray-500 mt-2">Best performer</p>
+          </div>
+          <div class="w-12 h-12 bg-yellow-100 rounded-xl flex items-center justify-center">
+            <svg
+              class="w-6 h-6 text-yellow-600"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"
+              ></path>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Time Period Comparison -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+      <!-- Total Items -->
+      <div class="glass-card rounded-2xl p-6">
+        <div class="text-center">
+          <h3 class="text-lg font-semibold text-gray-900 mb-2">Items Listed</h3>
+          <div class="text-3xl font-bold text-green-600 mb-2">
+            {{ analytics()?.totalStats?.totalItems || 0 }}
+          </div>
+          <div class="text-sm text-gray-500">active listings</div>
+        </div>
+      </div>
+
+      <!-- Average Rating -->
+      <div class="glass-card rounded-2xl p-6">
+        <div class="text-center">
+          <h3 class="text-lg font-semibold text-gray-900 mb-2">Rating</h3>
+          <div class="text-3xl font-bold text-yellow-600 mb-2">
+            {{ (analytics()?.totalStats?.averageRating || 0).toFixed(1) }}
+          </div>
+          <div class="text-sm text-gray-500">
+            {{ analytics()?.totalStats?.totalReviews || 0 }} reviews
+          </div>
+        </div>
+      </div>
+
+      <!-- Growth -->
+      <div class="glass-card rounded-2xl p-6">
+        <div class="text-center">
+          <h3 class="text-lg font-semibold text-gray-900 mb-2">Growth</h3>
+          <div
+            class="text-3xl font-bold mb-2"
+            [class]="getGrowthPercentage() >= 0 ? 'text-green-600' : 'text-red-600'"
+          >
+            {{ getGrowthPercentage() >= 0 ? '+' : '' }}{{ getGrowthPercentage().toFixed(1) }}%
+          </div>
+          <div class="text-sm text-gray-500">from last period</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Earnings Chart -->
+    <div class="glass-card rounded-2xl p-8">
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="text-xl font-bold text-gray-900">Earnings Overview</h3>
+
+        <!-- Time Period Selector -->
+        <div class="flex space-x-1 bg-gray-100 p-1 rounded-lg">
+          <button
+            (click)="setTimeframe('week')"
+            [class]="
+              activeTimeframe() === 'week'
+                ? 'bg-white text-purple-600 shadow-sm'
+                : 'text-gray-600 hover:text-gray-900'
+            "
+            class="px-3 py-1 text-sm font-medium rounded-md transition-all duration-200"
+          >
+            Week
+          </button>
+          <button
+            (click)="setTimeframe('month')"
+            [class]="
+              activeTimeframe() === 'month'
+                ? 'bg-white text-purple-600 shadow-sm'
+                : 'text-gray-600 hover:text-gray-900'
+            "
+            class="px-3 py-1 text-sm font-medium rounded-md transition-all duration-200"
+          >
+            Month
+          </button>
+          <button
+            (click)="setTimeframe('year')"
+            [class]="
+              activeTimeframe() === 'year'
+                ? 'bg-white text-purple-600 shadow-sm'
+                : 'text-gray-600 hover:text-gray-900'
+            "
+            class="px-3 py-1 text-sm font-medium rounded-md transition-all duration-200"
+          >
+            Year
+          </button>
+          <button
+            (click)="setTimeframe('all')"
+            [class]="
+              activeTimeframe() === 'all'
+                ? 'bg-white text-purple-600 shadow-sm'
+                : 'text-gray-600 hover:text-gray-900'
+            "
+            class="px-3 py-1 text-sm font-medium rounded-md transition-all duration-200"
+          >
+            All Time
+          </button>
+        </div>
+      </div>
+
+      <!-- Simple Bar Chart -->
+      <div class="space-y-4">
+        @for (item of getChartData(); track $index) {
+        <div class="flex items-center space-x-4">
+          <div class="w-16 text-sm font-medium text-gray-600 text-right">{{ item.period }}</div>
+          <div class="flex-1 flex items-center space-x-2">
+            <div class="flex-1 bg-gray-200 rounded-full h-8 relative overflow-hidden">
+              <div
+                class="bg-gradient-to-r from-purple-500 to-emerald-500 h-full rounded-full transition-all duration-700 ease-out flex items-center justify-end pr-3"
+                [style.width.%]="(item.earnings / getMaxEarnings()) * 100"
+              >
+                @if ((item.earnings / getMaxEarnings()) > 0.3) {
+                <span class="text-white text-sm font-medium">{{
+                  formatCurrency(item.earnings)
+                }}</span>
+                }
+              </div>
+            </div>
+            @if ((item.earnings / getMaxEarnings()) <= 0.3) {
+            <div class="text-sm font-medium text-gray-900 min-w-0">
+              {{ formatCurrency(item.earnings) }}
+            </div>
+            }
+          </div>
+          <div class="w-20 text-right">
+            <div class="text-sm font-medium text-gray-900">{{ item.bookings }}</div>
+            <div class="text-xs text-gray-500">bookings</div>
+          </div>
+        </div>
+        }
+      </div>
+
+      @if (getChartData().length === 0) {
+      <div class="text-center py-12">
+        <svg
+          class="w-16 h-16 text-gray-300 mx-auto mb-4"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+          ></path>
+        </svg>
+        <h4 class="text-lg font-medium text-gray-900 mb-2">No Data Available</h4>
+        <p class="text-gray-600">Start renting out your items to see analytics data here.</p>
+      </div>
+      }
+    </div>
+
+    <!-- Insights -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
+      <!-- Performance Insights -->
+      <div class="glass-card rounded-2xl p-6">
+        <h3 class="text-lg font-bold text-gray-900 mb-4">Performance Insights</h3>
+        <div class="space-y-3">
+          <div class="flex items-center justify-between p-3 bg-green-50 rounded-lg">
+            <div>
+              <div class="font-medium text-green-800">Strong Month</div>
+              <div class="text-sm text-green-600">
+                Earnings up {{ getAbsoluteGrowthPercentage() }}% from last period
+              </div>
+            </div>
+            <svg
+              class="w-8 h-8 text-green-500"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
+              ></path>
+            </svg>
+          </div>
+
+          <div class="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
+            <div>
+              <div class="font-medium text-blue-800">High Demand</div>
+              <div class="text-sm text-blue-600">
+                {{ analytics()?.totalStats?.totalBookings || 0 }} completed bookings
+              </div>
+            </div>
+            <svg
+              class="w-8 h-8 text-blue-500"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
+              ></path>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recommendations -->
+      <div class="glass-card rounded-2xl p-6">
+        <h3 class="text-lg font-bold text-gray-900 mb-4">Recommendations</h3>
+        <div class="space-y-3">
+          <div class="p-3 bg-purple-50 rounded-lg">
+            <div class="font-medium text-purple-800 mb-1">List More Items</div>
+            <div class="text-sm text-purple-600">
+              Consider adding more items similar to your top performer
+            </div>
+          </div>
+
+          <div class="p-3 bg-emerald-50 rounded-lg">
+            <div class="font-medium text-emerald-800 mb-1">Optimize Pricing</div>
+            <div class="text-sm text-emerald-600">
+              Review pricing for items with low booking rates
+            </div>
+          </div>
+
+          <div class="p-3 bg-yellow-50 rounded-lg">
+            <div class="font-medium text-yellow-800 mb-1">Seasonal Planning</div>
+            <div class="text-sm text-yellow-600">
+              Prepare for peak rental seasons with inventory updates
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    }
+  </div>
+</div>

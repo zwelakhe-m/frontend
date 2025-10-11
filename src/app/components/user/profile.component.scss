@@ -1,0 +1,73 @@
+// Profile component specific styles
+
+.input-field {
+  @apply border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200;
+
+  &:read-only {
+    @apply bg-gray-50 cursor-not-allowed;
+  }
+}
+
+.tab-button {
+  @apply px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200;
+
+  &.active {
+    @apply bg-white text-purple-600 shadow-sm;
+  }
+
+  &:not(.active) {
+    @apply text-gray-600 hover:text-gray-900;
+  }
+}
+
+// Animation for tab switching
+.tab-content {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Star rating styles
+.star-rating {
+  .star {
+    @apply transition-colors duration-200;
+
+    &.full {
+      @apply text-yellow-400;
+    }
+
+    &.half {
+      @apply text-yellow-400;
+    }
+
+    &.empty {
+      @apply text-gray-300;
+    }
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .profile-overview {
+    .quick-stats {
+      @apply hidden;
+    }
+
+    .user-info {
+      @apply text-center;
+    }
+  }
+
+  .tab-navigation {
+    @apply flex-col space-x-0 space-y-1;
+  }
+}

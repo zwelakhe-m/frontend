@@ -1,0 +1,172 @@
+// Glass effects
+.glass-header {
+  backdrop-filter: blur(16px);
+  background: rgba(255, 255, 255, 0.9);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 24px rgba(31, 38, 135, 0.1);
+}
+
+.glass-card {
+  backdrop-filter: blur(16px);
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
+  transition: all 0.3s ease;
+}
+
+// Text gradients
+.text-gradient {
+  background: linear-gradient(135deg, #8b5cf6 0%, #10b981 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+// Form elements
+.form-input {
+  transition: all 0.2s ease;
+  font-size: 0.875rem;
+
+  &:focus {
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+    transform: translateY(-1px);
+  }
+
+  &.error {
+    border-color: #ef4444;
+    background-color: #fef2f2;
+
+    &:focus {
+      box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+    }
+  }
+}
+
+.error-message {
+  animation: slideInUp 0.3s ease-out;
+}
+
+// Button styles
+.btn-primary {
+  background: linear-gradient(to right, #7c3aed, #10b981);
+  color: white;
+  transition: all 0.2s ease;
+  transform: scale(1);
+
+  &:hover:not(:disabled) {
+    background: linear-gradient(to right, #6d28d9, #059669);
+    transform: scale(1.02);
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px #7c3aed, 0 0 0 4px rgba(124, 58, 237, 0.2);
+  }
+}
+
+.btn-outline {
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(209, 213, 219, 0.5);
+  color: rgb(75, 85, 99);
+  transition: all 0.2s ease;
+
+  &:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.95);
+    border-color: rgb(139, 92, 246);
+    color: rgb(139, 92, 246);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+// File upload area
+.file-upload-area {
+  border: 2px dashed #d1d5db;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+
+  &:hover {
+    border-color: #8b5cf6;
+    background-color: rgba(139, 92, 246, 0.02);
+  }
+}
+
+// Image preview styles
+.image-preview {
+  position: relative;
+
+  img {
+    border-radius: 8px;
+    transition: transform 0.2s ease;
+  }
+
+  &:hover img {
+    transform: scale(1.05);
+  }
+
+  .remove-btn {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    width: 24px;
+    height: 24px;
+    background-color: #ef4444;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    transition: background-color 0.2s ease;
+    cursor: pointer;
+
+    &:hover {
+      background-color: #dc2626;
+    }
+  }
+}
+
+// Loading spinner animation
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+// Slide in animation for error messages
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Form section spacing
+.form-section {
+  & + .form-section {
+    margin-top: 2rem;
+  }
+}
+
+// Custom checkbox styles
+input[type='checkbox'] {
+  &:checked {
+    background-color: #7c3aed;
+    border-color: #7c3aed;
+  }
+
+  &:focus {
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+  }
+}

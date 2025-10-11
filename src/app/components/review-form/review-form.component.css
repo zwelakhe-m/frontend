@@ -1,0 +1,64 @@
+/* Review Form Component Styles */
+
+.review-form {
+  transition: all 0.2s ease;
+}
+
+/* Smooth transitions for form fields */
+.form-field {
+  transition: all 0.15s ease;
+}
+
+.form-field:focus-within {
+  transform: translateY(-1px);
+}
+
+/* Character count animations */
+.character-count {
+  transition: color 0.2s ease;
+}
+
+.character-count.warning {
+  color: #f59e0b;
+}
+
+.character-count.error {
+  color: #ef4444;
+}
+
+/* Collapsible animation */
+.collapsible-content {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+
+.collapsible-content.collapsed {
+  max-height: 0;
+  opacity: 0;
+}
+
+.collapsible-content.expanded {
+  max-height: 500px;
+  opacity: 1;
+}
+
+/* Loading button animation */
+.loading-spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .pros-cons-grid {
+    grid-template-columns: 1fr;
+  }
+}

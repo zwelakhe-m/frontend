@@ -1,12 +1,20 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { AuthService } from './services/auth.service';
+import { NotificationToastComponent } from './components/shared/notification-toast.component';
+import { NavigationHeaderComponent } from './components/shared/navigation-header.component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, NotificationToastComponent, NavigationHeaderComponent],
   templateUrl: './app.html',
-  styleUrl: './app.scss'
+  styleUrl: './app.scss',
 })
-export class App {
-  protected readonly title = signal('frontend');
+export class App implements OnInit {
+  private authService = inject(AuthService);
+
+  ngOnInit(): void {
+    // Initialize auth state from localStorage
+    this.authService.initializeAuthState();
+  }
 }

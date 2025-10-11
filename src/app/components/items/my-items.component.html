@@ -1,0 +1,381 @@
+<div class="min-h-screen bg-gradient-to-br from-purple-50 via-white to-emerald-50">
+  <!-- Header -->
+  <div class="page-header">
+    <div class="page-header-content">
+      <!-- Back Button -->
+      <button (click)="goBack()" class="back-button mb-4" title="Go back to dashboard">
+        <span>←</span> Back to Dashboard
+      </button>
+
+      <div class="flex justify-between items-center">
+        <div>
+          <h1 class="page-title">My Items</h1>
+          <p class="page-subtitle">Manage your rental listings</p>
+        </div>
+        <button (click)="createNewItem()" class="btn-primary px-6 py-3 rounded-xl font-semibold">
+          <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+            ></path>
+          </svg>
+          Add New Item
+        </button>
+      </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-6 py-8">
+      <!-- Filters and Controls -->
+      <div class="glass-card rounded-2xl p-6 mb-8">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <!-- Filters -->
+          <div class="flex flex-col sm:flex-row gap-4">
+            <!-- Status Filter -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
+              <select
+                [(ngModel)]="statusFilter"
+                (change)="onFilterChange()"
+                class="filter-select px-3 py-2 rounded-lg border border-gray-300 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              >
+                <option value="all">All Items</option>
+                <option value="available">Available</option>
+                <option value="rented">Currently Rented</option>
+                <option value="unavailable">Unavailable</option>
+              </select>
+            </div>
+
+            <!-- Sort By -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Sort By</label>
+              <select
+                [(ngModel)]="sortBy"
+                (change)="onSortChange()"
+                class="filter-select px-3 py-2 rounded-lg border border-gray-300 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              >
+                <option value="created">Date Created</option>
+                <option value="title">Title</option>
+                <option value="price">Price</option>
+              </select>
+            </div>
+
+            <!-- Sort Order -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Order</label>
+              <select
+                [(ngModel)]="sortOrder"
+                (change)="onSortChange()"
+                class="filter-select px-3 py-2 rounded-lg border border-gray-300 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              >
+                <option value="desc">Descending</option>
+                <option value="asc">Ascending</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Stats -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div class="text-center">
+              <p class="text-2xl font-bold text-gray-900">{{ items().length }}</p>
+              <p class="text-sm text-gray-600">Total Items</p>
+            </div>
+            <div class="text-center">
+              <p class="text-2xl font-bold text-green-600">{{ getAvailableCount() }}</p>
+              <p class="text-sm text-gray-600">Available</p>
+            </div>
+            <div class="text-center">
+              <p class="text-2xl font-bold text-red-600">{{ getUnavailableCount() }}</p>
+              <p class="text-sm text-gray-600">Unavailable</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Loading State -->
+      @if (loading()) {
+      <div class="grid grid-cols-1 gap-6">
+        @for (i of [1,2,3,4,5]; track i) {
+        <div class="glass-card rounded-2xl p-6 animate-pulse">
+          <div class="flex items-center space-x-4">
+            <div class="bg-gray-300 h-20 w-20 rounded-lg"></div>
+            <div class="flex-1">
+              <div class="bg-gray-300 h-4 rounded mb-2"></div>
+              <div class="bg-gray-300 h-3 rounded w-3/4 mb-2"></div>
+              <div class="bg-gray-300 h-3 rounded w-1/2"></div>
+            </div>
+          </div>
+        </div>
+        }
+      </div>
+      }
+
+      <!-- Items List -->
+      @if (!loading() && filteredItems().length > 0) {
+      <div class="space-y-6 mb-8">
+        @for (item of getPaginatedItems(); track item.id) {
+        <div class="glass-card rounded-2xl p-6 hover:shadow-xl transition-all duration-300">
+          <div class="flex flex-col lg:flex-row lg:items-center gap-6">
+            <!-- Item Image -->
+            <div class="flex-shrink-0">
+              <img
+                [src]="getImageUrl(item)"
+                [alt]="item.title"
+                class="w-full lg:w-24 h-48 lg:h-24 object-cover rounded-xl cursor-pointer hover:scale-105 transition-transform"
+                (click)="viewItem(item)"
+              />
+            </div>
+
+            <!-- Item Details -->
+            <div class="flex-1 min-w-0">
+              <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+                <div class="flex-1">
+                  <h3
+                    class="text-lg font-semibold text-gray-900 cursor-pointer hover:text-purple-600 transition-colors"
+                    (click)="viewItem(item)"
+                  >
+                    {{ item.title }}
+                  </h3>
+                  <p class="text-gray-600 mt-1 line-clamp-2">{{ item.description }}</p>
+
+                  <div class="flex flex-wrap items-center gap-4 mt-3">
+                    <span class="text-lg font-bold text-purple-600"
+                      >{{ formatPrice(item.pricePerDay) }}/day</span
+                    >
+
+                    <span
+                      class="status-badge px-3 py-1 rounded-full text-xs font-semibold"
+                      [class]="getStatusBadgeClass(item)"
+                    >
+                      {{ getStatusText(item) }}
+                    </span>
+
+                    <span class="px-2 py-1 bg-gray-100 rounded-lg text-xs text-gray-600">
+                      {{ item.category }}
+                    </span>
+
+                    @if (item.averageRating && item.averageRating > 0) {
+                    <div class="flex items-center">
+                      <span class="text-yellow-400 text-sm mr-1">★</span>
+                      <span class="text-sm text-gray-600">{{ item.averageRating.toFixed(1) }}</span>
+                    </div>
+                    }
+                  </div>
+
+                  <p class="text-xs text-gray-500 mt-2">Created {{ formatDate(item.createdAt) }}</p>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex flex-row sm:flex-col gap-2">
+                  <button
+                    (click)="viewItem(item)"
+                    class="btn-outline px-4 py-2 text-sm rounded-lg"
+                    title="View Details"
+                  >
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                      ></path>
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                      ></path>
+                    </svg>
+                  </button>
+
+                  <button
+                    (click)="editItem(item)"
+                    class="btn-outline px-4 py-2 text-sm rounded-lg"
+                    title="Edit Item"
+                  >
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                      ></path>
+                    </svg>
+                  </button>
+
+                  <button
+                    (click)="toggleAvailability(item)"
+                    class="btn-outline px-4 py-2 text-sm rounded-lg"
+                    [title]="item.isAvailable ? 'Mark Unavailable' : 'Mark Available'"
+                  >
+                    @if (item.isAvailable) {
+                    <svg
+                      class="w-4 h-4 text-green-600"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                      ></path>
+                    </svg>
+                    } @else {
+                    <svg
+                      class="w-4 h-4 text-red-600"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+                      ></path>
+                    </svg>
+                    }
+                  </button>
+
+                  <button
+                    (click)="confirmDeleteItem(item)"
+                    class="btn-outline px-4 py-2 text-sm rounded-lg text-red-600 hover:bg-red-50"
+                    title="Delete Item"
+                  >
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                      ></path>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        }
+      </div>
+
+      <!-- Pagination -->
+      @if (getTotalPages() > 1) {
+      <div class="flex justify-center items-center space-x-2">
+        <!-- Previous Button -->
+        <button
+          (click)="onPageChange(currentPage() - 1)"
+          [disabled]="currentPage() === 1"
+          class="pagination-btn px-3 py-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M15 19l-7-7 7-7"
+            ></path>
+          </svg>
+        </button>
+
+        <!-- Page Numbers -->
+        @for (page of getPageNumbers(); track page) {
+        <button
+          (click)="onPageChange(page)"
+          [class]="page === currentPage() ? 'pagination-btn-active' : 'pagination-btn'"
+          class="px-4 py-2 rounded-lg font-medium"
+        >
+          {{ page }}
+        </button>
+        }
+
+        <!-- Next Button -->
+        <button
+          (click)="onPageChange(currentPage() + 1)"
+          [disabled]="currentPage() === getTotalPages()"
+          class="pagination-btn px-3 py-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 5l7 7-7 7"
+            ></path>
+          </svg>
+        </button>
+      </div>
+      } }
+
+      <!-- Empty State -->
+      @if (!loading() && filteredItems().length === 0) {
+      <div class="text-center py-16">
+        <div
+          class="w-24 h-24 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-6"
+        >
+          <svg
+            class="w-12 h-12 text-gray-400"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
+            ></path>
+          </svg>
+        </div>
+        <h3 class="text-xl font-semibold text-gray-900 mb-2">No items found</h3>
+        <p class="text-gray-600 mb-6">You haven't listed any items yet</p>
+        <button (click)="createNewItem()" class="btn-primary px-6 py-3 rounded-xl font-semibold">
+          List Your First Item
+        </button>
+      </div>
+      }
+    </div>
+  </div>
+
+  <!-- Delete Confirmation Modal -->
+  @if (showDeleteConfirmation()) {
+  <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-2xl p-6 max-w-md w-full mx-4 shadow-2xl">
+      <div class="flex items-center justify-center w-12 h-12 bg-red-100 rounded-full mx-auto mb-4">
+        <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+          ></path>
+        </svg>
+      </div>
+
+      <h3 class="text-lg font-semibold text-gray-900 text-center mb-2">Delete Item</h3>
+      <p class="text-gray-600 text-center mb-6">
+        Are you sure you want to delete "<strong>{{ itemToDelete()?.title }}</strong
+        >"? This action cannot be undone.
+      </p>
+
+      <div class="flex gap-3">
+        <button
+          (click)="cancelDelete()"
+          class="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+        >
+          Cancel
+        </button>
+        <button
+          (click)="deleteItem()"
+          class="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+        >
+          Delete
+        </button>
+      </div>
+    </div>
+  </div>
+  }
+</div>

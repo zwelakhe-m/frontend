@@ -1,0 +1,145 @@
+// Contact Owner Component Styles
+.contact-owner-container {
+  padding: 1rem;
+}
+
+.login-prompt {
+  text-align: center;
+  padding: 2rem;
+
+  .login-message {
+    color: #6b7280;
+    margin-bottom: 1rem;
+  }
+
+  .login-button {
+    background-color: #7c3aed;
+    color: white;
+    padding: 0.5rem 1.5rem;
+    border-radius: 0.5rem;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+      background-color: #6d28d9;
+    }
+  }
+}
+
+.own-item-message {
+  text-align: center;
+  padding: 2rem;
+  color: #6b7280;
+}
+
+.contact-form {
+  background: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+
+  .form-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #111827;
+    margin-bottom: 1rem;
+  }
+
+  .form-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    .message-field {
+      .message-label {
+        display: block;
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: #374151;
+        margin-bottom: 0.5rem;
+      }
+
+      .message-textarea {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #d1d5db;
+        border-radius: 0.5rem;
+        resize: vertical;
+
+        &:focus {
+          outline: none;
+          box-shadow: 0 0 0 2px #7c3aed;
+          border-color: transparent;
+        }
+      }
+
+      .character-count {
+        font-size: 0.75rem;
+        color: #6b7280;
+        margin-top: 0.25rem;
+        text-align: right;
+      }
+    }
+
+    .send-button {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background-color: #7c3aed;
+      color: white;
+      border-radius: 0.5rem;
+      transition: all 0.3s ease;
+
+      &:hover:not(:disabled) {
+        background-color: #6d28d9;
+      }
+
+      &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      .loading-content {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        .spinner {
+          width: 1rem;
+          height: 1rem;
+          border: 2px solid transparent;
+          border-top: 2px solid white;
+          border-radius: 50%;
+          animation: spin 1s linear infinite;
+          margin-right: 0.5rem;
+        }
+      }
+    }
+  }
+}
+
+.existing-conversation {
+  text-align: center;
+  padding: 1rem;
+
+  .existing-message {
+    color: #6b7280;
+    margin-bottom: 1rem;
+  }
+
+  .view-conversation-button {
+    background-color: #7c3aed;
+    color: white;
+    padding: 0.5rem 1.5rem;
+    border-radius: 0.5rem;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+      background-color: #6d28d9;
+    }
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

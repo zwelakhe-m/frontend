@@ -1,0 +1,152 @@
+<div class="bg-white rounded-lg border border-gray-200 p-6">
+  <form [formGroup]="reviewForm" (ngSubmit)="onSubmit()">
+    <!-- Header -->
+    <div class="mb-6">
+      <h3 class="text-lg font-semibold text-gray-900 mb-2">Write a Review</h3>
+      @if (itemName) {
+      <p class="text-sm text-gray-600">Share your experience with "{{ itemName }}"</p>
+      }
+    </div>
+
+    <!-- Rating Selection -->
+    <div class="mb-6">
+      <label class="block text-sm font-medium text-gray-700 mb-3"> Overall Rating * </label>
+      <div class="flex items-center gap-4">
+        <app-star-rating
+          [rating]="ratingValue"
+          (ratingChange)="onRatingChange($event)"
+          size="lg"
+        ></app-star-rating>
+        <div
+          class="text-sm font-medium"
+          [class]="ratingValue > 0 ? 'text-gray-900' : 'text-gray-500'"
+        >
+          {{ ratingText }}
+        </div>
+      </div>
+      @if (reviewForm.get('rating_value')?.invalid && reviewForm.get('rating_value')?.touched) {
+      <p class="mt-1 text-sm text-red-600">Please select a rating</p>
+      }
+    </div>
+
+    <!-- Review Title -->
+    <div class="mb-4">
+      <label for="review_title" class="block text-sm font-medium text-gray-700 mb-2">
+        Review Title (Optional)
+      </label>
+      <input
+        type="text"
+        id="review_title"
+        formControlName="review_title"
+        placeholder="Summarize your experience in a few words"
+        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+      />
+    </div>
+
+    <!-- Review Text -->
+    <div class="mb-4">
+      <label for="review_text" class="block text-sm font-medium text-gray-700 mb-2">
+        Your Review (Optional)
+      </label>
+      <textarea
+        id="review_text"
+        formControlName="review_text"
+        rows="4"
+        placeholder="Tell others about your experience..."
+        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none"
+      ></textarea>
+      <div class="flex justify-between text-xs text-gray-500 mt-1">
+        <span>Help others by sharing specific details</span>
+        <span>{{ getCharacterCount('review_text') }}/{{ getCharacterLimit('review_text') }}</span>
+      </div>
+    </div>
+
+    <!-- Toggle Optional Fields -->
+    <div class="mb-4">
+      <button
+        type="button"
+        (click)="toggleOptionalFields()"
+        class="text-sm text-purple-600 hover:text-purple-800 font-medium flex items-center gap-1"
+      >
+        <span>{{ showOptionalFields ? '▼' : '▶' }}</span>
+        {{ showOptionalFields ? 'Hide' : 'Add' }} Pros & Cons
+      </button>
+    </div>
+
+    <!-- Pros and Cons (Collapsible) -->
+    @if (showOptionalFields) {
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+      <!-- Pros -->
+      <div>
+        <label for="pros" class="block text-sm font-medium text-gray-700 mb-2">
+          <span class="text-green-600">👍</span> What did you like?
+        </label>
+        <textarea
+          id="pros"
+          formControlName="pros"
+          rows="3"
+          placeholder="What worked well..."
+          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent resize-none"
+        ></textarea>
+        <div class="text-xs text-gray-500 mt-1">
+          {{ getCharacterCount('pros') }}/{{ getCharacterLimit('pros') }}
+        </div>
+      </div>
+
+      <!-- Cons -->
+      <div>
+        <label for="cons" class="block text-sm font-medium text-gray-700 mb-2">
+          <span class="text-red-600">👎</span> What could be improved?
+        </label>
+        <textarea
+          id="cons"
+          formControlName="cons"
+          rows="3"
+          placeholder="Areas for improvement..."
+          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent resize-none"
+        ></textarea>
+        <div class="text-xs text-gray-500 mt-1">
+          {{ getCharacterCount('cons') }}/{{ getCharacterLimit('cons') }}
+        </div>
+      </div>
+    </div>
+    }
+
+    <!-- Anonymous Option -->
+    <div class="mb-6">
+      <label class="flex items-center gap-2 cursor-pointer">
+        <input
+          type="checkbox"
+          formControlName="is_anonymous"
+          class="rounded border-gray-300 text-purple-600 focus:ring-purple-500"
+        />
+        <span class="text-sm text-gray-700">Post anonymously</span>
+      </label>
+      <p class="text-xs text-gray-500 mt-1 ml-6">Your review will be posted without your name</p>
+    </div>
+
+    <!-- Actions -->
+    <div class="flex gap-3 pt-4 border-t border-gray-100">
+      <button
+        type="button"
+        (click)="onCancel()"
+        [disabled]="isSubmitting"
+        class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+      >
+        Cancel
+      </button>
+      <button
+        type="submit"
+        [disabled]="!isFormValid || isSubmitting"
+        class="px-6 py-2 text-sm font-medium text-white bg-purple-600 rounded-lg hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
+      >
+        @if (isSubmitting) {
+        <div
+          class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"
+        ></div>
+        }
+        {{ isSubmitting ? 'Submitting...' : 'Submit Review' }}
+      </button>
+    </div>
+  </form>
+</div>

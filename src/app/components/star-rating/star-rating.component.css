@@ -1,0 +1,38 @@
+/* Star Rating Component Styles */
+
+.star-rating {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.star-button {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.15s ease;
+}
+
+.star-button:disabled {
+  cursor: default;
+}
+
+.star-button:focus-visible {
+  outline: 2px solid #6366f1;
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* Smooth hover animation */
+.star-button:not(:disabled):hover {
+  transform: scale(1.1);
+}
+
+/* Responsive font sizes */
+@media (max-width: 640px) {
+  .star-button.text-2xl {
+    font-size: 1.5rem;
+  }
+}
