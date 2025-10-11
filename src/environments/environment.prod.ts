@@ -1,5 +1,5 @@
 // Production environment
 export const environment = {
   production: true,
-  apiUrl: '/api', // Relative URL for production (same domain)
+  apiUrl: 'https://backend-hded.onrender.com/api', 
 };
