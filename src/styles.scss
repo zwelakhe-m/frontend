@@ -15,10 +15,57 @@
   body {
     @apply bg-gradient-to-br from-purple-50 via-white to-emerald-50 min-h-screen font-sans text-gray-900;
     background-attachment: fixed;
+    transition: background 0.3s, color 0.3s;
   }
 
   html {
     scroll-behavior: smooth;
+  }
+}
+
+/* Dark mode base styles */
+@media (prefers-color-scheme: dark) {
+  body {
+    @apply bg-gradient-to-br from-gray-900 via-gray-950 to-gray-800 text-gray-100;
+  }
+  .card, .glass-card {
+    @apply bg-gray-900/80 border-gray-800 text-gray-100;
+  }
+  .glass {
+    @apply bg-gray-900/30 border-white/10;
+  }
+  .glass-dark {
+    @apply bg-gray-950/40 border-white/10;
+  }
+  .btn-primary {
+    @apply from-purple-700 to-purple-900 text-white hover:from-purple-800 hover:to-purple-950;
+  }
+  .btn-secondary {
+    @apply from-emerald-700 to-emerald-900 text-white hover:from-emerald-800 hover:to-emerald-950;
+  }
+  .btn-outline {
+    @apply border-purple-400 text-purple-200 hover:bg-purple-900 hover:text-white;
+  }
+  .btn-ghost {
+    @apply text-gray-200 hover:bg-gray-800;
+  }
+  .input, .input-glass {
+    @apply bg-gray-900/80 border-gray-700 text-gray-100 placeholder-gray-400;
+  }
+  .nav-link {
+    @apply text-gray-200 hover:text-purple-300 hover:bg-gray-800;
+  }
+  .nav-link.active {
+    @apply text-purple-300 bg-gray-800;
+  }
+  .page-header {
+    @apply bg-gray-900/80 border-gray-800;
+  }
+  .page-title {
+    @apply text-purple-300;
+  }
+  .page-subtitle {
+    @apply text-gray-400;
   }
 }
 

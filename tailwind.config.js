@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
+  darkMode: 'media', // Enable dark mode based on user's OS preference
   content: ['./src/**/*.{html,ts}'],
   theme: {
     extend: {
