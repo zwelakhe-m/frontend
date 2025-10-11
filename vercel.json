@@ -1,0 +1,19 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "dist/frontend/server/server.mjs",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "dist/frontend/**",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "dist/frontend/server/server.mjs"
+    }
+  ]
+}
