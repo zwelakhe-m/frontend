@@ -1,5 +1,5 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, inject, signal, OnInit, Inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser, CommonModule } from '@angular/common';
 import { Router, RouterModule, NavigationEnd } from '@angular/router';
 import { AuthService, User } from '../../services/auth.service';
 import { NotificationsService } from '../../services/notifications.service';
@@ -15,6 +15,7 @@ import { filter } from 'rxjs/operators';
   styleUrls: ['./navigation-header.component.scss'],
 })
 export class NavigationHeaderComponent implements OnInit {
+  private readonly platformId = inject(PLATFORM_ID);
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
   protected readonly notificationsService = inject(NotificationsService);
@@ -30,10 +31,10 @@ export class NavigationHeaderComponent implements OnInit {
   protected unreadMessagesCount = signal(0);
 
   // Routes where navigation should be hidden
-  private hiddenNavRoutes = ['/', '/login', '/register'];
+  private readonly hiddenNavRoutes = ['/', '/login', '/register'];
 
   // Navigation items for authenticated users
-  protected navItems = [
+  protected readonly navItems = [
     { label: 'Browse', route: '/browse', icon: 'search' },
     { label: 'Dashboard', route: '/dashboard', icon: 'home', authRequired: true },
     { label: 'My Items', route: '/my-items', icon: 'grid', authRequired: true },
@@ -67,16 +68,18 @@ export class NavigationHeaderComponent implements OnInit {
         this.shouldShowNav.set(!this.hiddenNavRoutes.includes(event.url));
       });
 
-    // Close menus when clicking outside
-    document.addEventListener('click', (event) => {
-      const target = event.target as HTMLElement;
-      if (!target.closest('.user-menu-container')) {
-        this.showUserMenu.set(false);
-      }
-      if (!target.closest('.mobile-menu-container')) {
-        this.showMobileMenu.set(false);
-      }
-    });
+    // Close menus when clicking outside (browser only)
+    if (isPlatformBrowser(this.platformId)) {
+      document.addEventListener('click', (event) => {
+        const target = event.target as HTMLElement;
+        if (!target.closest('.user-menu-container')) {
+          this.showUserMenu.set(false);
+        }
+        if (!target.closest('.mobile-menu-container')) {
+          this.showMobileMenu.set(false);
+        }
+      });
+    }
   }
 
   protected getUserInitials(): string {

@@ -174,7 +174,9 @@ export class ActiveBookingsComponent implements OnInit {
     const email = isOwner ? booking.renter_email : booking.owner_email;
 
     if (email) {
-      window.location.href = `mailto:${email}?subject=Regarding booking for ${booking.item_name}`;
+      if (typeof window !== 'undefined') {
+        window.location.href = `mailto:${email}?subject=Regarding booking for ${booking.item_name}`;
+      }
     } else {
       this.toastService.warning(
         'Contact Unavailable',

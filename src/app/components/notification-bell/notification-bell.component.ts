@@ -1,4 +1,5 @@
-import { Component, inject, signal, ElementRef, ViewChild, OnDestroy } from '@angular/core';
+import { Component, inject, signal, ElementRef, ViewChild, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { NotificationsService, Notification } from '../../services/notifications.service';
@@ -291,6 +292,7 @@ import { Subscription } from 'rxjs';
   ],
 })
 export class NotificationBellComponent implements OnDestroy {
+  private platformId = inject(PLATFORM_ID);
   protected notificationsService = inject(NotificationsService);
   private router = inject(Router);
 
@@ -325,13 +327,17 @@ export class NotificationBellComponent implements OnDestroy {
       })
     );
 
-    // Close dropdown when clicking outside
-    document.addEventListener('click', this.handleOutsideClick.bind(this));
+    // Close dropdown when clicking outside (browser only)
+    if (isPlatformBrowser(this.platformId)) {
+      document.addEventListener('click', this.handleOutsideClick.bind(this));
+    }
   }
 
   ngOnDestroy(): void {
     this.subscriptions.forEach((sub) => sub.unsubscribe());
-    document.removeEventListener('click', this.handleOutsideClick.bind(this));
+    if (isPlatformBrowser(this.platformId)) {
+      document.removeEventListener('click', this.handleOutsideClick.bind(this));
+    }
   }
 
   /**

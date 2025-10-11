@@ -1,5 +1,5 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, inject, signal, OnInit, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser, CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
@@ -12,6 +12,7 @@ import { AuthService } from '../../services/auth.service';
   styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent implements OnInit {
+  private readonly platformId = inject(PLATFORM_ID);
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
@@ -58,7 +59,7 @@ export class LoginComponent implements OnInit {
         next: (response) => {
           this.isLoading.set(false);
           // Store remember me preference
-          if (this.loginForm.get('rememberMe')?.value) {
+          if (this.loginForm.get('rememberMe')?.value && isPlatformBrowser(this.platformId)) {
             localStorage.setItem('rememberMe', 'true');
           }
           // Navigate to dashboard
