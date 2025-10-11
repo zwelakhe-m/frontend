@@ -148,11 +148,16 @@
         <div class="flex items-center space-x-3">
           <a
             routerLink="/login"
-            class="text-gray-600 hover:text-gray-900 font-medium text-sm transition-colors"
+            class="border border-purple-500 text-purple-700 font-medium rounded-lg px-4 py-2 text-sm text-center bg-white hover:bg-purple-50 transition-colors sm:w-auto w-full"
           >
             Sign In
           </a>
-          <a routerLink="/register" class="btn-primary px-4 py-2 text-sm rounded-lg"> Sign Up </a>
+          <a
+            routerLink="/register"
+            class="btn-primary px-4 py-2 text-sm rounded-lg text-center sm:w-auto w-full"
+          >
+            Sign Up
+          </a>
         </div>
         }
       </div>
@@ -247,17 +252,17 @@
       </div>
       } @else {
       <!-- Guest Actions -->
-      <div class="border-t border-gray-200 pt-4 mt-4 space-y-2">
+      <div class="border-t border-gray-200 pt-4 mt-4 flex flex-col gap-3">
         <a
           routerLink="/login"
-          class="block px-4 py-3 text-gray-600 font-medium hover:bg-gray-50 transition-colors"
+          class="block px-4 py-3 border border-purple-500 text-purple-700 font-medium rounded-lg text-center bg-white hover:bg-purple-50 transition-colors w-full sm:w-auto"
           (click)="showMobileMenu.set(false)"
         >
           Sign In
         </a>
         <a
           routerLink="/register"
-          class="block px-4 py-3 bg-purple-600 text-white font-medium rounded-lg text-center hover:bg-purple-700 transition-colors"
+          class="block px-4 py-3 bg-purple-600 text-white font-medium rounded-lg text-center hover:bg-purple-700 transition-colors w-full sm:w-auto"
           (click)="showMobileMenu.set(false)"
         >
           Sign Up
