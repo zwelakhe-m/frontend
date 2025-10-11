@@ -199,9 +199,9 @@ export class AnalyticsComponent implements OnInit {
   }
 
   protected formatCurrency(amount: number): string {
-    return new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat('en-ZA', {
       style: 'currency',
-      currency: 'USD',
+      currency: 'ZAR',
     }).format(amount);
   }
 
