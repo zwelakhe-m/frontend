@@ -84,8 +84,7 @@ export class MessagesComponent implements OnInit {
     return conversation.id;
   }
 
-  goBack(): void {
-    // Use Angular's Location service for better navigation
-    this.location.back();
+  goBackToDashboard(): void {
+    this.router.navigate(['/dashboard']);
   }
 }
