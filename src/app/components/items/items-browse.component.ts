@@ -1,4 +1,5 @@
 import { Component, inject, signal, OnInit, OnDestroy } from '@angular/core';
+import { BrowseFilterService } from '../../services/browse-filter.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -22,6 +23,7 @@ export interface FilterOptions {
   styleUrls: ['./items-browse.component.scss'],
 })
 export class ItemsBrowseComponent implements OnInit, OnDestroy {
+  private browseFilterService = inject(BrowseFilterService);
   private itemsService = inject(ItemsService);
   protected authService = inject(AuthService);
   private router = inject(Router);
@@ -75,6 +77,13 @@ export class ItemsBrowseComponent implements OnInit, OnDestroy {
         }));
       }
     });
+
+    // Check for selected category from landing page
+    const selectedCategory = this.browseFilterService.selectedCategory();
+    if (selectedCategory) {
+      this.filters.update((filters) => ({ ...filters, category: selectedCategory }));
+      this.browseFilterService.clearCategory();
+    }
 
     this.loadItems();
     this.loadCategories();

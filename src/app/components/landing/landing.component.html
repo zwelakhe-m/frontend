@@ -31,9 +31,9 @@
       </div>
 
       <!-- Auth Buttons -->
-      <div class="flex items-center space-x-4">
-        <button (click)="navigateToLogin()" class="btn-ghost">Sign In</button>
-        <button (click)="navigateToRegister()" class="btn-primary">Get Started</button>
+      <div class="flex flex-col xs:flex-row items-center gap-2 xs:gap-4 min-w-[120px]">
+  <button (click)="navigateToLogin()" class="btn-ghost border border-primary-500 text-primary-700 px-4 py-2 text-sm w-full xs:w-auto">Sign In</button>
+        <button (click)="navigateToRegister()" class="btn-primary px-4 py-2 text-sm w-full xs:w-auto">Get Started</button>
       </div>
     </div>
   </nav>
@@ -192,24 +192,57 @@
         <p class="text-xl text-gray-600">Explore what's available near you</p>
       </div>
 
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-        <!-- Category Cards -->
-        <div class="card hover:scale-105 transform transition-all duration-300 p-6 text-center">
-          <div class="text-4xl mb-4">🔧</div>
-          <h5 class="font-semibold text-gray-900">Tools</h5>
+      <!-- Carousel for categories: 3 per slide, scrollable, with arrows -->
+      <div class="flex flex-row items-center justify-center gap-2 md:gap-4 w-full">
+        <!-- Left Arrow (always visible) -->
+        <button
+          type="button"
+          class="flex items-center justify-center w-10 h-10 bg-white border border-gray-300 rounded-full shadow hover:bg-gray-100 transition-colors"
+          (click)="prevSlide()"
+          aria-label="Scroll left"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M15 19l-7-7 7-7"
+            />
+          </svg>
+        </button>
+        <!-- Carousel -->
+        <div
+          #carousel
+          class="flex gap-4 overflow-x-auto pb-2 hide-scrollbar snap-x snap-mandatory scroll-smooth w-full"
+          style="scroll-padding-left: 1rem; scroll-snap-type: x mandatory"
+        >
+          @for (cat of categories; track cat.name) {
+          <button
+            (click)="goToCategory(cat.name)"
+            class="card min-w-[90vw] max-w-[90vw] md:min-w-[340px] md:max-w-[360px] hover:scale-105 transform transition-all duration-300 p-8 text-center flex-shrink-0 focus:outline-none focus:ring-2 focus:ring-primary-500 snap-start"
+            style="scroll-snap-align: start"
+          >
+            <div class="text-5xl mb-4">{{ cat.icon }}</div>
+            <h5 class="font-semibold text-gray-900 text-lg md:text-xl">{{ cat.name }}</h5>
+          </button>
+          }
         </div>
-        <div class="card hover:scale-105 transform transition-all duration-300 p-6 text-center">
-          <div class="text-4xl mb-4">📷</div>
-          <h5 class="font-semibold text-gray-900">Electronics</h5>
-        </div>
-        <div class="card hover:scale-105 transform transition-all duration-300 p-6 text-center">
-          <div class="text-4xl mb-4">🚗</div>
-          <h5 class="font-semibold text-gray-900">Vehicles</h5>
-        </div>
-        <div class="card hover:scale-105 transform transition-all duration-300 p-6 text-center">
-          <div class="text-4xl mb-4">🏠</div>
-          <h5 class="font-semibold text-gray-900">Home & Garden</h5>
-        </div>
+        <!-- Right Arrow (always visible) -->
+        <button
+          type="button"
+          class="flex items-center justify-center w-10 h-10 bg-white border border-gray-300 rounded-full shadow hover:bg-gray-100 transition-colors"
+          (click)="nextSlide()"
+          aria-label="Scroll right"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 5l7 7-7 7"
+            />
+          </svg>
+        </button>
       </div>
     </div>
   </section>
