@@ -5,13 +5,23 @@
     <div class="max-w-7xl mx-auto flex items-center justify-between">
       <!-- Logo -->
       <div class="flex items-center space-x-2 group">
-        <span class="inline-flex items-center justify-center w-9 h-9 rounded-lg bg-purple-600 shadow-sm">
+        <span
+          class="inline-flex items-center justify-center w-9 h-9 rounded-lg bg-purple-600 shadow-sm"
+        >
           <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M3 12L12 5L21 12" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <rect x="7" y="12" width="10" height="7" rx="2" fill="white" fill-opacity="0.95"/>
+            <path
+              d="M3 12L12 5L21 12"
+              stroke="white"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <rect x="7" y="12" width="10" height="7" rx="2" fill="white" fill-opacity="0.95" />
           </svg>
         </span>
-        <span class="text-xl font-bold text-gray-900 group-hover:text-purple-700 transition-colors duration-200">
+        <span
+          class="text-xl font-bold text-gray-900 group-hover:text-purple-700 transition-colors duration-200"
+        >
           RentHub
         </span>
       </div>
@@ -130,7 +140,9 @@
 
       <div class="grid md:grid-cols-3 gap-8">
         <!-- Feature 1 -->
-        <div class="card-glass p-8 text-center animate-fade-in-up">
+        <div
+          class="card-glass p-8 text-center animate-fade-in-up block cursor-pointer hover:shadow-xl transition-shadow duration-200 focus:ring-2 focus:ring-primary-500"
+        >
           <div
             class="w-16 h-16 bg-gradient-to-r from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-6"
           >
@@ -140,17 +152,21 @@
                 stroke-linejoin="round"
                 stroke-width="2"
                 d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-              ></path>
+              />
             </svg>
           </div>
           <h4 class="text-2xl font-bold text-gray-900 mb-4">Secure & Safe</h4>
-          <p class="text-gray-600">
+          <p class="text-gray-600 mb-4">
             All rentals are protected with insurance and verified user profiles.
           </p>
+          <button class="btn-primary px-6 py-2 mt-2" (click)="openFeatureModal('secure')">
+            Read More
+          </button>
         </div>
-
         <!-- Feature 2 -->
-        <div class="card-glass p-8 text-center animate-fade-in-up" style="animation-delay: 0.1s">
+        <div
+          class="card-glass p-8 text-center animate-fade-in-up animate-delay-100 block cursor-pointer hover:shadow-xl transition-shadow duration-200 focus:ring-2 focus:ring-primary-500"
+        >
           <div
             class="w-16 h-16 bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-2xl flex items-center justify-center mx-auto mb-6"
           >
@@ -160,17 +176,21 @@
                 stroke-linejoin="round"
                 stroke-width="2"
                 d="M13 10V3L4 14h7v7l9-11h-7z"
-              ></path>
+              />
             </svg>
           </div>
           <h4 class="text-2xl font-bold text-gray-900 mb-4">Instant Booking</h4>
-          <p class="text-gray-600">
+          <p class="text-gray-600 mb-4">
             Find and book items instantly with our smart matching algorithm.
           </p>
+          <button class="btn-primary px-6 py-2 mt-2" (click)="openFeatureModal('instant')">
+            Read More
+          </button>
         </div>
-
         <!-- Feature 3 -->
-        <div class="card-glass p-8 text-center animate-fade-in-up" style="animation-delay: 0.2s">
+        <div
+          class="card-glass p-8 text-center animate-fade-in-up animate-delay-200 block cursor-pointer hover:shadow-xl transition-shadow duration-200 focus:ring-2 focus:ring-primary-500"
+        >
           <div
             class="w-16 h-16 bg-gradient-to-r from-pink-500 to-pink-600 rounded-2xl flex items-center justify-center mx-auto mb-6"
           >
@@ -180,13 +200,48 @@
                 stroke-linejoin="round"
                 stroke-width="2"
                 d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"
-              ></path>
+              />
             </svg>
           </div>
           <h4 class="text-2xl font-bold text-gray-900 mb-4">Earn Money</h4>
-          <p class="text-gray-600">Turn your unused items into income with competitive rates.</p>
+          <p class="text-gray-600 mb-4">
+            Turn your unused items into income with competitive rates.
+          </p>
+          <button class="btn-primary px-6 py-2 mt-2" (click)="openFeatureModal('earn')">
+            Read More
+          </button>
         </div>
       </div>
+      <!-- Modal Popup for Feature Info -->
+      <app-modal *ngIf="modalOpen" [open]="modalOpen" (close)="closeFeatureModal()">
+        <div class="text-center p-4">
+          @if (featureContent?.title === 'Secure & Safe') {
+            <div class="w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center bg-gradient-to-r from-purple-500 to-purple-600">
+              <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+              </svg>
+            </div>
+          } @else if (featureContent?.title === 'Instant Booking') {
+            <div class="w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center bg-gradient-to-r from-emerald-500 to-emerald-600">
+              <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+            </div>
+          } @else if (featureContent?.title === 'Earn Money') {
+            <div class="w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center bg-gradient-to-r from-pink-500 to-pink-600">
+              <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
+              </svg>
+            </div>
+          }
+          <h2 class="text-3xl font-bold mb-2 text-primary-700">{{ featureContent?.title }}</h2>
+          <p class="text-lg text-gray-700 mb-2">{{ featureContent?.subtitle }}</p>
+          <p *ngIf="featureContent?.future" class="text-sm text-purple-400 italic mb-2">
+            {{ featureContent?.future }}
+          </p>
+          <p class="text-base text-gray-600 mt-4">{{ featureContent?.description }}</p>
+        </div>
+      </app-modal>
     </div>
   </section>
 
