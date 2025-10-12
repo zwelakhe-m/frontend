@@ -1,3 +1,10 @@
+// Override page-title and page-subtitle color for My Items page
+.page-title {
+  color: #7c3aed !important;
+}
+.page-subtitle {
+  color: #000000 !important;
+}
 // Glass effects
 .glass-header {
   backdrop-filter: blur(16px);
