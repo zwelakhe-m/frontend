@@ -1,2 +1,10 @@
+/* Hide scrollbar utility for horizontal slider */
+.hide-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
 // Landing component styles
 // This component inherits styles from the global app.scss
