@@ -72,10 +72,12 @@ export class NavigationHeaderComponent implements OnInit {
     if (isPlatformBrowser(this.platformId)) {
       document.addEventListener('click', (event) => {
         const target = event.target as HTMLElement;
-        if (!target.closest('.user-menu-container')) {
+        // For user menu
+        if (!target.closest('.user-menu-container') && !target.closest('.user-menu-toggle')) {
           this.showUserMenu.set(false);
         }
-        if (!target.closest('.mobile-menu-container')) {
+        // For mobile menu: don't close if clicking the menu button or inside the menu
+        if (!target.closest('.mobile-menu-container') && !target.closest('.mobile-menu-toggle')) {
           this.showMobileMenu.set(false);
         }
       });

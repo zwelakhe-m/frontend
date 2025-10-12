@@ -13,10 +13,8 @@
   }
 
   body {
-    /* Light mode: calm palette background */
-    @apply bg-gradient-to-br from-primary-50 via-neutral-100 to-secondary-50 min-h-screen font-sans text-neutral-900;
+    @apply bg-gradient-to-br from-primary-50 via-white to-accent-50 min-h-screen font-sans text-gray-900;
     background-attachment: fixed;
-    transition: background 0.3s, color 0.3s;
   }
 
   html {
@@ -24,29 +22,17 @@
   }
 }
 
-/* Dark mode base styles */
-@media (prefers-color-scheme: dark) {
-  body {
-    /* Dark mode: calm palette, deep blue/teal background */
-    @apply bg-gradient-to-br from-secondary-900 via-primary-900 to-neutral-900 text-neutral-100;
-  }
-  /* Cards remain light for contrast in both modes */
-  .card, .glass-card {
-    @apply bg-neutral-50 border-neutral-200 text-neutral-900;
-  }
-}
-
 /* Custom Component Classes */
 @layer components {
   /* Glass Morphism Effect */
   .glass {
-    @apply bg-primary-50/40 backdrop-blur-lg border border-primary-100;
-    box-shadow: 0 8px 32px 0 rgba(0, 188, 212, 0.12);
+    @apply bg-white/20 backdrop-blur-lg border border-white/30;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
   }
 
   .glass-dark {
-    @apply bg-neutral-800/60 backdrop-blur-lg border border-neutral-700;
-    box-shadow: 0 8px 32px 0 rgba(33, 150, 243, 0.12);
+    @apply bg-gray-900/20 backdrop-blur-lg border border-white/10;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
   }
 
   /* Button Styles */
@@ -55,11 +41,11 @@
   }
 
   .btn-primary {
-    @apply btn bg-gradient-to-r from-primary-500 to-secondary-500 text-white hover:from-primary-600 hover:to-secondary-600 focus:ring-primary-500 shadow-lg hover:shadow-xl hover:-translate-y-0.5;
+    @apply btn bg-gradient-to-r from-primary-500 to-primary-600 text-white hover:from-primary-600 hover:to-primary-700 focus:ring-primary-500 shadow-lg hover:shadow-xl hover:-translate-y-0.5;
   }
 
   .btn-secondary {
-    @apply btn bg-gradient-to-r from-accent-500 to-secondary-400 text-white hover:from-accent-600 hover:to-secondary-500 focus:ring-accent-500 shadow-lg hover:shadow-xl hover:-translate-y-0.5;
+    @apply btn bg-gradient-to-r from-emerald-500 to-emerald-600 text-white hover:from-emerald-600 hover:to-emerald-700 focus:ring-emerald-500 shadow-lg hover:shadow-xl hover:-translate-y-0.5;
   }
 
   .btn-outline {
@@ -67,7 +53,7 @@
   }
 
   .btn-ghost {
-    @apply btn text-neutral-700 hover:bg-neutral-100 focus:ring-primary-500;
+    @apply btn text-gray-700 hover:bg-gray-100 focus:ring-gray-500;
   }
 
   /* Card Styles */
@@ -81,16 +67,16 @@
 
   /* Input Styles */
   .input {
-    @apply w-full px-4 py-3 rounded-xl border border-neutral-300 focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-colors duration-200 bg-white/80 backdrop-blur-sm;
+    @apply w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-colors duration-200 bg-white/80 backdrop-blur-sm;
   }
 
   .input-glass {
-    @apply w-full px-4 py-3 rounded-xl border border-primary-100 bg-primary-50/40 backdrop-blur-md placeholder-neutral-600 focus:border-primary-400 focus:ring-1 focus:ring-primary-400 transition-all duration-200;
+    @apply w-full px-4 py-3 rounded-xl border border-white/30 bg-white/20 backdrop-blur-md placeholder-gray-600 focus:border-primary-400 focus:ring-1 focus:ring-primary-400 transition-all duration-200;
   }
 
   /* Navigation Styles */
   .nav-link {
-    @apply px-4 py-2 rounded-lg text-neutral-700 hover:text-primary-600 hover:bg-primary-50 transition-all duration-200 font-medium;
+    @apply px-4 py-2 rounded-lg text-gray-700 hover:text-primary-600 hover:bg-primary-50 transition-all duration-200 font-medium;
   }
 
   .nav-link.active {
@@ -99,7 +85,7 @@
 
   /* Hero Section */
   .hero-gradient {
-    @apply bg-gradient-to-r from-primary-600 via-secondary-500 to-accent-400;
+    @apply bg-gradient-to-r from-primary-600 via-primary-500 to-accent-500;
   }
 
   /* Premium Shadows */
@@ -122,7 +108,7 @@
 /* Custom Utility Classes */
 @layer utilities {
   .text-gradient {
-    @apply bg-gradient-to-r from-primary-600 to-secondary-500 bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-primary-600 to-accent-600 bg-clip-text text-transparent;
   }
 
   .bg-pattern {
@@ -212,23 +198,23 @@
 
 /* Glassmorphism Variants */
 .glass-card {
-  background: rgba(255, 255, 255, 0.49);
+  background: rgba(255, 255, 255, 0.25);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.547);
+  border: 1px solid rgba(255, 255, 255, 0.18);
   box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
 }
 
 .glass-card:hover {
   background: rgba(255, 255, 255, 0.35);
   transform: translateY(-2px);
-  box-shadow: 0 12px 40px 0 rgba(225, 226, 236, 0.864);
+  box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.45);
 }
 
 /* Dark Mode Support */
 @media (prefers-color-scheme: dark) {
   .glass-card {
-    background: rgba(233, 227, 227, 0.814);
+    background: rgba(0, 0, 0, 0.25);
     border: 1px solid rgba(255, 255, 255, 0.1);
   }
 }
