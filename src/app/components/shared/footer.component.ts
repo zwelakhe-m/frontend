@@ -24,7 +24,8 @@ import { Component } from '@angular/core';
           <span class="text-xl font-bold text-white">RentHub</span>
         </div>
         <p class="text-gray-400 mb-8">Making sharing economy accessible to everyone</p>
-        <p class="text-gray-500">&copy; 2025 RentHub. All rights reserved.</p>
+  <p class="text-gray-500">&copy; 2025 RentHub. All rights reserved.</p>
+  <p class="text-xs text-gray-600 mt-2">Created by Zwelakhe Solutions Pty (Ltd) — <a href="mailto:zwelakhe_masilela@protonmail.com" class="underline hover:text-purple-400">Contact</a></p>
       </div>
     </footer>
   `,
