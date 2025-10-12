@@ -9,10 +9,10 @@
 
       <div class="flex justify-between items-center">
         <div>
-          <h1 class="page-title">My Items</h1>
-          <p class="page-subtitle">Manage your rental listings</p>
+          <h1 class="page-title text-purple-500 font-bold">My Items</h1>
+          <p class="page-subtitle text-purple-500">Manage your rental listings</p>
         </div>
-        <button (click)="createNewItem()" class="btn-primary px-6 py-3 rounded-xl font-semibold">
+  <button (click)="createNewItem()" class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-xl font-semibold shadow-lg transition-colors">
           <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
               stroke-linecap="round"
@@ -34,8 +34,9 @@
           <div class="flex flex-col sm:flex-row gap-4">
             <!-- Status Filter -->
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
+              <label for="statusFilter" class="block text-sm font-medium text-gray-700 mb-2">Status</label>
               <select
+                id="statusFilter"
                 [(ngModel)]="statusFilter"
                 (change)="onFilterChange()"
                 class="filter-select px-3 py-2 rounded-lg border border-gray-300 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
@@ -49,8 +50,9 @@
 
             <!-- Sort By -->
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">Sort By</label>
+              <label for="sortBy" class="block text-sm font-medium text-gray-700 mb-2">Sort By</label>
               <select
+                id="sortBy"
                 [(ngModel)]="sortBy"
                 (change)="onSortChange()"
                 class="filter-select px-3 py-2 rounded-lg border border-gray-300 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
@@ -63,8 +65,9 @@
 
             <!-- Sort Order -->
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">Order</label>
+              <label for="sortOrder" class="block text-sm font-medium text-gray-700 mb-2">Order</label>
               <select
+                id="sortOrder"
                 [(ngModel)]="sortOrder"
                 (change)="onSortChange()"
                 class="filter-select px-3 py-2 rounded-lg border border-gray-300 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
@@ -121,9 +124,11 @@
             <div class="flex-shrink-0">
               <img
                 [src]="getImageUrl(item)"
-                [alt]="item.title"
+                [alt]="item.title || 'Item'"
                 class="w-full lg:w-24 h-48 lg:h-24 object-cover rounded-xl cursor-pointer hover:scale-105 transition-transform"
                 (click)="viewItem(item)"
+                (keydown.enter)="viewItem(item)"
+                (keydown.space)="viewItem(item)"
               />
             </div>
 
@@ -134,6 +139,8 @@
                   <h3
                     class="text-lg font-semibold text-gray-900 cursor-pointer hover:text-purple-600 transition-colors"
                     (click)="viewItem(item)"
+                    (keydown.enter)="viewItem(item)"
+                    (keydown.space)="viewItem(item)"
                   >
                     {{ item.title }}
                   </h3>

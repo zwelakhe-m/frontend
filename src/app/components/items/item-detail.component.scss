@@ -1,3 +1,12 @@
+// Lighter glass card for about/owner sections
+.glass-card-light {
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(124, 58, 237, 0.10);
+  transition: background 0.2s;
+}
+.glass-card-light:hover {
+  background: rgba(139, 92, 246, 0.08); /* subtle purple tint on hover */
+}
 // Item Detail Component Styles
 
 .item-detail {
@@ -60,9 +69,7 @@
         opacity: 0.8;
       }
 
-      &.active {
-        ring: 2px solid #8b5cf6;
-      }
+
 
       img {
         width: 100%;
@@ -114,7 +121,7 @@
 
       &:focus {
         outline: none;
-        ring: 2px solid #8b5cf6;
+
         border-color: transparent;
       }
     }
