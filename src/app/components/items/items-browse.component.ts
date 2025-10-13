@@ -363,12 +363,12 @@ export class ItemsBrowseComponent implements OnInit, OnDestroy {
       }
       // If it's a relative path, prepend the backend URL
       if (imageUrl.startsWith('/uploads/')) {
-  // return `http://localhost:8081${imageUrl}`; // Localhost for reference
-  return `${environment.apiUrl.replace(/\/api$/, '')}${imageUrl}`;
+        // return `http://localhost:8081${imageUrl}`; // Localhost for reference
+        return `${environment.apiUrl.replace(/\/api$/, '')}${imageUrl}`;
       }
       // If it's just a filename, assume it's in uploads
-  // return `http://localhost:8081/uploads/${imageUrl}`; // Localhost for reference
-  return `${environment.apiUrl.replace(/\/api$/, '')}/uploads/${imageUrl}`;
+      // return `http://localhost:8081/uploads/${imageUrl}`; // Localhost for reference
+      return `${environment.apiUrl.replace(/\/api$/, '')}/uploads/${imageUrl}`;
     }
     return '/assets/images/placeholder-item.jpg';
   }

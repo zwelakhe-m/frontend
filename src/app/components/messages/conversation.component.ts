@@ -139,8 +139,10 @@ export class ConversationComponent implements OnInit, AfterViewChecked {
     if (!imageUrl) {
       return '/assets/placeholder-item.jpg';
     }
-  // return imageUrl.startsWith('http') ? imageUrl : `http://localhost:8081${imageUrl}`; // Localhost for reference
-  return imageUrl.startsWith('http') ? imageUrl : `${environment.apiUrl.replace(/\/api$/, '')}${imageUrl}`;
+    // return imageUrl.startsWith('http') ? imageUrl : `http://localhost:8081${imageUrl}`; // Localhost for reference
+    return imageUrl.startsWith('http')
+      ? imageUrl
+      : `${environment.apiUrl.replace(/\/api$/, '')}${imageUrl}`;
   }
 
   getMessageClasses(isSent: boolean): string {
