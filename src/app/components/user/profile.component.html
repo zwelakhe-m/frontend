@@ -1,426 +1,410 @@
 <div class="min-h-screen bg-gradient-to-br from-purple-50 via-white to-emerald-50 pt-6 pb-12">
   <div class="max-w-4xl mx-auto px-6">
-    <!-- Phone -->
-    <div>
-      <label for="phone" class="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
-      <input
-        id="phone"
-        type="tel"
-        formControlName="phone"
-        [readonly]="!isEditing()"
-        [class]="isEditing() ? 'input-field' : 'input-field bg-gray-50'"
-        class="w-full"
-        placeholder="Enter your phone number"
-      />Page Header -->
-      <div class="flex items-center justify-between mb-8">
-        <div>
-          <h1 class="text-3xl font-bold text-gray-900">Profile & Settings</h1>
-          <p class="text-gray-600 mt-1">Manage your account and preferences</p>
-        </div>
-        <button
-          (click)="navigateBack()"
-          class="btn-outline px-4 py-2 text-sm flex items-center space-x-2"
-        >
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M10 19l-7-7m0 0l7-7m-7 7h18"
-            ></path>
-          </svg>
-          <span>Back to Dashboard</span>
-        </button>
+    <!-- Page Header -->
+    <div class="flex items-center justify-between mb-8">
+      <div>
+        <h1 class="text-3xl font-bold text-gray-900">Profile & Settings</h1>
+        <p class="text-gray-600 mt-1">Manage your account and preferences</p>
       </div>
+      <button
+        (click)="navigateBack()"
+        class="btn-outline px-4 py-2 text-sm flex items-center space-x-2"
+      >
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M10 19l-7-7m0 0l7-7m-7 7h18"
+          ></path>
+        </svg>
+        <span>Back to Dashboard</span>
+      </button>
+    </div>
 
-      <!-- Profile Overview Card -->
-      <div class="glass-card rounded-2xl p-8 mb-8">
-        <div class="flex items-center space-x-6">
-          <!-- Avatar -->
-          <div
-            class="w-24 h-24 bg-gradient-to-br from-purple-400 to-emerald-400 rounded-full flex items-center justify-center"
-          >
-            <span class="text-white font-bold text-2xl">{{ getUserInitials() }}</span>
+    <!-- Profile Overview Card -->
+    <div class="glass-card glass-card-light rounded-2xl p-8 mb-8">
+      <div class="flex items-center space-x-6">
+        <!-- Avatar -->
+        <div
+          class="w-24 h-24 bg-gradient-to-r from-primary-500 to-primary-300 rounded-full flex items-center justify-center shadow"
+        >
+          <span class="text-white font-bold text-2xl">{{ getUserInitials() }}</span>
+        </div>
+
+        <!-- User Info -->
+        <div class="flex-1">
+          <h2 class="text-2xl font-bold text-gray-900">{{ currentUser()?.name || 'User' }}</h2>
+          <p class="text-gray-600 mb-2">{{ currentUser()?.email || '' }}</p>
+          <div class="flex items-center space-x-4 text-sm text-gray-500">
+            <span>Member since {{ userStats().joinDate }}</span>
+            <span class="flex items-center space-x-1">
+              <svg class="w-4 h-4 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
+                <path
+                  d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
+                />
+              </svg>
+              <span>{{ userStats().averageRating }} ({{ userStats().totalRatings }} reviews)</span>
+            </span>
           </div>
+        </div>
 
-          <!-- User Info -->
-          <div class="flex-1">
-            <h2 class="text-2xl font-bold text-gray-900">{{ currentUser()?.name || 'User' }}</h2>
-            <p class="text-gray-600 mb-2">{{ currentUser()?.email || '' }}</p>
-            <div class="flex items-center space-x-4 text-sm text-gray-500">
-              <span>Member since {{ userStats().joinDate }}</span>
-              <span class="flex items-center space-x-1">
-                <svg class="w-4 h-4 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
-                  <path
-                    d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
-                  />
-                </svg>
-                <span
-                  >{{ userStats().averageRating }} ({{ userStats().totalRatings }} reviews)</span
-                >
-              </span>
-            </div>
+        <!-- Quick Stats -->
+        <div class="hidden md:flex space-x-8">
+          <div class="text-center">
+            <div class="text-2xl font-bold text-gray-900">{{ userStats().itemsListed }}</div>
+            <div class="text-sm text-gray-500">Items Listed</div>
           </div>
-
-          <!-- Quick Stats -->
-          <div class="hidden md:flex space-x-8">
-            <div class="text-center">
-              <div class="text-2xl font-bold text-gray-900">{{ userStats().itemsListed }}</div>
-              <div class="text-sm text-gray-500">Items Listed</div>
-            </div>
-            <div class="text-center">
-              <div class="text-2xl font-bold text-gray-900">{{ userStats().totalBookings }}</div>
-              <div class="text-sm text-gray-500">Bookings</div>
-            </div>
-            <div class="text-center">
-              <div class="text-2xl font-bold text-green-600">R{{ userStats().totalEarnings }}</div>
-              <div class="text-sm text-gray-500">Total Earned</div>
-            </div>
+          <div class="text-center">
+            <div class="text-2xl font-bold text-gray-900">{{ userStats().totalBookings }}</div>
+            <div class="text-sm text-gray-500">Bookings</div>
+          </div>
+          <div class="text-center">
+            <div class="text-2xl font-bold text-green-600">R{{ userStats().totalEarnings }}</div>
+            <div class="text-sm text-gray-500">Total Earned</div>
           </div>
         </div>
       </div>
+    </div>
 
-      <!-- Tab Navigation -->
-      <div class="flex space-x-1 mb-8 bg-gray-100 p-1 rounded-xl">
+    <!-- Tab Navigation -->
+    <div class="flex space-x-1 mb-8 bg-gray-100 p-1 rounded-xl">
+      <button
+        (click)="setActiveTab('profile')"
+        [class]="
+          activeTab() === 'profile'
+            ? 'bg-white text-purple-600 shadow-sm'
+            : 'text-gray-600 hover:text-gray-900'
+        "
+        class="flex-1 px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200"
+      >
+        Profile Information
+      </button>
+      <button
+        (click)="setActiveTab('security')"
+        [class]="
+          activeTab() === 'security'
+            ? 'bg-white text-purple-600 shadow-sm'
+            : 'text-gray-600 hover:text-gray-900'
+        "
+        class="flex-1 px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200"
+      >
+        Security
+      </button>
+      <button
+        (click)="setActiveTab('ratings')"
+        [class]="
+          activeTab() === 'ratings'
+            ? 'bg-white text-purple-600 shadow-sm'
+            : 'text-gray-600 hover:text-gray-900'
+        "
+        class="flex-1 px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200"
+      >
+        Reviews & Ratings
+      </button>
+    </div>
+
+    <!-- Tab Content -->
+    @if (activeTab() === 'profile') {
+    <!-- Profile Information Tab -->
+    <div class="glass-card rounded-2xl p-8">
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="text-xl font-bold text-gray-900">Profile Information</h3>
         <button
-          (click)="setActiveTab('profile')"
-          [class]="
-            activeTab() === 'profile'
-              ? 'bg-white text-purple-600 shadow-sm'
-              : 'text-gray-600 hover:text-gray-900'
-          "
-          class="flex-1 px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200"
+          (click)="toggleEdit()"
+          [class]="isEditing() ? 'btn-outline border-gray-300 text-gray-600' : 'btn-primary'"
+          class="px-4 py-2 text-sm rounded-lg"
         >
-          Profile Information
-        </button>
-        <button
-          (click)="setActiveTab('security')"
-          [class]="
-            activeTab() === 'security'
-              ? 'bg-white text-purple-600 shadow-sm'
-              : 'text-gray-600 hover:text-gray-900'
-          "
-          class="flex-1 px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200"
-        >
-          Security
-        </button>
-        <button
-          (click)="setActiveTab('ratings')"
-          [class]="
-            activeTab() === 'ratings'
-              ? 'bg-white text-purple-600 shadow-sm'
-              : 'text-gray-600 hover:text-gray-900'
-          "
-          class="flex-1 px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200"
-        >
-          Reviews & Ratings
+          {{ isEditing() ? 'Cancel' : 'Edit Profile' }}
         </button>
       </div>
 
-      <!-- Tab Content -->
-      @if (activeTab() === 'profile') {
-      <!-- Profile Information Tab -->
-      <div class="glass-card rounded-2xl p-8">
-        <div class="flex items-center justify-between mb-6">
-          <h3 class="text-xl font-bold text-gray-900">Profile Information</h3>
-          <button
-            (click)="toggleEdit()"
-            [class]="isEditing() ? 'btn-outline border-gray-300 text-gray-600' : 'btn-primary'"
-            class="px-4 py-2 text-sm rounded-lg"
-          >
-            {{ isEditing() ? 'Cancel' : 'Edit Profile' }}
-          </button>
-        </div>
-
-        <form [formGroup]="profileForm" (ngSubmit)="saveProfile()">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <!-- Name -->
-            <div>
-              <label for="fullName" class="block text-sm font-medium text-gray-700 mb-2"
-                >Full Name</label
-              >
-              <input
-                id="fullName"
-                type="text"
-                formControlName="fullName"
-                [readonly]="!isEditing()"
-                [class]="isEditing() ? 'input-field' : 'input-field bg-gray-50'"
-                class="w-full"
-              />
-              @if (profileForm.get('fullName')?.invalid && profileForm.get('fullName')?.touched) {
-              <p class="text-red-500 text-xs mt-1">Name is required (minimum 2 characters)</p>
-              }
-            </div>
-
-            <!-- Email -->
-            <div>
-              <label for="email" class="block text-sm font-medium text-gray-700 mb-2"
-                >Email Address</label
-              >
-              <input
-                id="email"
-                type="email"
-                formControlName="email"
-                [readonly]="!isEditing()"
-                [class]="isEditing() ? 'input-field' : 'input-field bg-gray-50'"
-                class="w-full"
-              />
-              @if (profileForm.get('email')?.invalid && profileForm.get('email')?.touched) {
-              <p class="text-red-500 text-xs mt-1">Please enter a valid email address</p>
-              }
-            </div>
-
-            <!-- Phone -->
-            <div>
-              <label for="phone2" class="block text-sm font-medium text-gray-700 mb-2"
-                >Phone Number</label
-              >
-              <input
-                id="phone2"
-                type="tel"
-                formControlName="phone"
-                [readonly]="!isEditing()"
-                [class]="isEditing() ? 'input-field' : 'input-field bg-gray-50'"
-                class="w-full"
-                placeholder="(555) 123-4567"
-              />
-            </div>
-          </div>
-
-          <!-- Bio -->
-          <div class="mt-6">
-            <label for="bio" class="block text-sm font-medium text-gray-700 mb-2">Bio</label>
-            <textarea
-              id="bio"
-              formControlName="bio"
+      <form [formGroup]="profileForm" (ngSubmit)="saveProfile()">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Name -->
+          <div>
+            <label for="fullName" class="block text-sm font-medium text-gray-700 mb-2"
+              >Full Name</label
+            >
+            <input
+              id="fullName"
+              type="text"
+              formControlName="fullName"
               [readonly]="!isEditing()"
               [class]="isEditing() ? 'input-field' : 'input-field bg-gray-50'"
-              class="w-full h-24 resize-none"
-              placeholder="Tell others about yourself..."
-            ></textarea>
+              class="w-full"
+            />
+            @if (profileForm.get('fullName')?.invalid && profileForm.get('fullName')?.touched) {
+            <p class="text-red-500 text-xs mt-1">Name is required (minimum 2 characters)</p>
+            }
           </div>
 
-          @if (isEditing()) {
-          <div class="flex justify-end space-x-3 mt-8">
-            <button type="button" (click)="toggleEdit()" class="btn-outline px-6 py-2">
-              Cancel
-            </button>
-            <button
-              type="submit"
-              [disabled]="profileForm.invalid || isLoading()"
-              class="btn-primary px-6 py-2"
+          <!-- Email -->
+          <div>
+            <label for="email" class="block text-sm font-medium text-gray-700 mb-2"
+              >Email Address</label
             >
-              @if (isLoading()) {
-              <span class="flex items-center space-x-2">
-                <svg class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
-                  <circle
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    stroke-width="4"
-                    class="opacity-25"
-                  ></circle>
-                  <path
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                    class="opacity-75"
-                  ></path>
-                </svg>
-                <span>Saving...</span>
-              </span>
-              } @else { Save Changes }
-            </button>
+            <input
+              id="email"
+              type="email"
+              formControlName="email"
+              [readonly]="!isEditing()"
+              [class]="isEditing() ? 'input-field' : 'input-field bg-gray-50'"
+              class="w-full"
+            />
+            @if (profileForm.get('email')?.invalid && profileForm.get('email')?.touched) {
+            <p class="text-red-500 text-xs mt-1">Please enter a valid email address</p>
+            }
           </div>
-          }
-        </form>
-      </div>
-      } @if (activeTab() === 'security') {
-      <!-- Security Tab -->
-      <div class="glass-card rounded-2xl p-8">
-        <h3 class="text-xl font-bold text-gray-900 mb-6">Security Settings</h3>
 
-        <!-- Change Password -->
-        <div class="mb-8">
-          <h4 class="text-lg font-semibold text-gray-900 mb-4">Change Password</h4>
-          <form [formGroup]="passwordForm" (ngSubmit)="changePassword()">
-            <div class="space-y-4">
-              <div>
-                <label for="currentPassword" class="block text-sm font-medium text-gray-700 mb-2"
-                  >Current Password</label
-                >
-                <input
-                  id="currentPassword"
-                  type="password"
-                  formControlName="currentPassword"
-                  class="input-field w-full"
-                  placeholder="Enter your current password"
-                />
-              </div>
-              <div>
-                <label for="newPassword" class="block text-sm font-medium text-gray-700 mb-2"
-                  >New Password</label
-                >
-                <input
-                  id="newPassword"
-                  type="password"
-                  formControlName="newPassword"
-                  class="input-field w-full"
-                  placeholder="Enter your new password"
-                />
-                @if (passwordForm.get('newPassword')?.invalid &&
-                passwordForm.get('newPassword')?.touched) {
-                <p class="text-red-500 text-xs mt-1">Password must be at least 6 characters</p>
-                }
-              </div>
-              <div>
-                <label for="confirmPassword" class="block text-sm font-medium text-gray-700 mb-2"
-                  >Confirm New Password</label
-                >
-                <input
-                  id="confirmPassword"
-                  type="password"
-                  formControlName="confirmPassword"
-                  class="input-field w-full"
-                  placeholder="Confirm your new password"
-                />
-                @if (passwordForm.hasError('passwordMismatch') &&
-                passwordForm.get('confirmPassword')?.touched) {
-                <p class="text-red-500 text-xs mt-1">Passwords do not match</p>
-                }
-              </div>
-            </div>
-            <button
-              type="submit"
-              [disabled]="passwordForm.invalid || isLoading()"
-              class="btn-primary px-6 py-2 mt-6"
+          <!-- Phone -->
+          <div>
+            <label for="phone2" class="block text-sm font-medium text-gray-700 mb-2"
+              >Phone Number</label
             >
-              @if (isLoading()) {
-              <span class="flex items-center space-x-2">
-                <svg class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
-                  <circle
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    stroke-width="4"
-                    class="opacity-25"
-                  ></circle>
-                  <path
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                    class="opacity-75"
-                  ></path>
-                </svg>
-                <span>Updating...</span>
-              </span>
-              } @else { Change Password }
-            </button>
-          </form>
-        </div>
-
-        <!-- Danger Zone -->
-        <div class="border-t border-gray-200 pt-8">
-          <h4 class="text-lg font-semibold text-red-600 mb-4">Danger Zone</h4>
-          <div class="bg-red-50 border border-red-200 rounded-lg p-4">
-            <h5 class="font-medium text-red-800 mb-2">Delete Account</h5>
-            <p class="text-sm text-red-600 mb-4">
-              Once you delete your account, there is no going back. Please be certain.
-            </p>
-            <button
-              (click)="deleteAccount()"
-              [disabled]="isLoading()"
-              class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
-            >
-              Delete Account
-            </button>
+            <input
+              id="phone2"
+              type="tel"
+              formControlName="phone"
+              [readonly]="!isEditing()"
+              [class]="isEditing() ? 'input-field' : 'input-field bg-gray-50'"
+              class="w-full"
+              placeholder="(555) 123-4567"
+            />
           </div>
         </div>
-      </div>
-      } @if (activeTab() === 'ratings') {
-      <!-- Reviews & Ratings Tab -->
-      <div class="glass-card rounded-2xl p-8">
-        <h3 class="text-xl font-bold text-gray-900 mb-6">Reviews & Ratings</h3>
 
-        <!-- Rating Overview -->
-        <div class="bg-gradient-to-r from-purple-50 to-emerald-50 rounded-xl p-6 mb-8">
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div class="text-center">
-              <div class="text-3xl font-bold text-gray-900">{{ userStats().averageRating }}</div>
-              <div class="flex justify-center space-x-1 mb-2">
-                @for (star of getStars(userStats().averageRating); track $index) {
-                <svg
-                  [class]="
-                    star === 'full'
-                      ? 'text-yellow-400'
-                      : star === 'half'
-                      ? 'text-yellow-400'
-                      : 'text-gray-300'
-                  "
-                  class="w-5 h-5"
+        <!-- Bio -->
+        <div class="mt-6">
+          <label for="bio" class="block text-sm font-medium text-gray-700 mb-2">Bio</label>
+          <textarea
+            id="bio"
+            formControlName="bio"
+            [readonly]="!isEditing()"
+            [class]="isEditing() ? 'input-field' : 'input-field bg-gray-50'"
+            class="w-full h-24 resize-none"
+            placeholder="Tell others about yourself..."
+          ></textarea>
+        </div>
+
+        @if (isEditing()) {
+        <div class="flex justify-end space-x-3 mt-8">
+          <button type="button" (click)="toggleEdit()" class="btn-outline px-6 py-2">Cancel</button>
+          <button
+            type="submit"
+            [disabled]="profileForm.invalid || isLoading()"
+            class="btn-primary px-6 py-2"
+          >
+            @if (isLoading()) {
+            <span class="flex items-center space-x-2">
+              <svg class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+                <circle
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  stroke-width="4"
+                  class="opacity-25"
+                ></circle>
+                <path
                   fill="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
-                  />
-                </svg>
-                }
-              </div>
-              <div class="text-sm text-gray-600">Average Rating</div>
-            </div>
-            <div class="text-center">
-              <div class="text-3xl font-bold text-gray-900">{{ userStats().totalRatings }}</div>
-              <div class="text-sm text-gray-600">Total Reviews</div>
-            </div>
-            <div class="text-center">
-              <div class="text-3xl font-bold text-gray-900">{{ userStats().totalBookings }}</div>
-              <div class="text-sm text-gray-600">Completed Bookings</div>
-            </div>
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  class="opacity-75"
+                ></path>
+              </svg>
+              <span>Saving...</span>
+            </span>
+            } @else { Save Changes }
+          </button>
+        </div>
+        }
+      </form>
+    </div>
+    } @if (activeTab() === 'security') {
+    <!-- Security Tab -->
+    <div class="glass-card rounded-2xl p-8">
+      <h3 class="text-xl font-bold text-gray-900 mb-6">Security Settings</h3>
 
-            <!-- Location -->
+      <!-- Change Password -->
+      <div class="mb-8">
+        <h4 class="text-lg font-semibold text-gray-900 mb-4">Change Password</h4>
+        <form [formGroup]="passwordForm" (ngSubmit)="changePassword()">
+          <div class="space-y-4">
             <div>
-              <label for="location" class="block text-sm font-medium text-gray-700 mb-2"
-                >Location (Optional)</label
+              <label for="currentPassword" class="block text-sm font-medium text-gray-700 mb-2"
+                >Current Password</label
               >
               <input
-                id="location"
-                type="text"
-                formControlName="location"
-                [readonly]="!isEditing()"
-                [class]="isEditing() ? 'input-field' : 'input-field bg-gray-50'"
-                class="w-full"
-                placeholder="City, State or Country"
+                id="currentPassword"
+                type="password"
+                formControlName="currentPassword"
+                class="input-field w-full"
+                placeholder="Enter your current password"
               />
             </div>
+            <div>
+              <label for="newPassword" class="block text-sm font-medium text-gray-700 mb-2"
+                >New Password</label
+              >
+              <input
+                id="newPassword"
+                type="password"
+                formControlName="newPassword"
+                class="input-field w-full"
+                placeholder="Enter your new password"
+              />
+              @if (passwordForm.get('newPassword')?.invalid &&
+              passwordForm.get('newPassword')?.touched) {
+              <p class="text-red-500 text-xs mt-1">Password must be at least 6 characters</p>
+              }
+            </div>
+            <div>
+              <label for="confirmPassword" class="block text-sm font-medium text-gray-700 mb-2"
+                >Confirm New Password</label
+              >
+              <input
+                id="confirmPassword"
+                type="password"
+                formControlName="confirmPassword"
+                class="input-field w-full"
+                placeholder="Confirm your new password"
+              />
+              @if (passwordForm.hasError('passwordMismatch') &&
+              passwordForm.get('confirmPassword')?.touched) {
+              <p class="text-red-500 text-xs mt-1">Passwords do not match</p>
+              }
+            </div>
           </div>
-        </div>
-
-        <!-- Recent Reviews Placeholder -->
-        <div class="text-center py-12">
-          <svg
-            class="w-16 h-16 text-gray-300 mx-auto mb-4"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
+          <button
+            type="submit"
+            [disabled]="passwordForm.invalid || isLoading()"
+            class="btn-primary px-6 py-2 mt-6"
           >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M7 8h10m0 0V6a2 2 0 00-2-2H9a2 2 0 00-2 2v2m0 0v10a2 2 0 002 2h10a2 2 0 002-2V8"
-            ></path>
-          </svg>
-          <h4 class="text-lg font-medium text-gray-900 mb-2">No Reviews Yet</h4>
-          <p class="text-gray-600 mb-4">
-            Complete your first rental to start receiving reviews from other users.
+            @if (isLoading()) {
+            <span class="flex items-center space-x-2">
+              <svg class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+                <circle
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  stroke-width="4"
+                  class="opacity-25"
+                ></circle>
+                <path
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  class="opacity-75"
+                ></path>
+              </svg>
+              <span>Updating...</span>
+            </span>
+            } @else { Change Password }
+          </button>
+        </form>
+      </div>
+
+      <!-- Danger Zone -->
+      <div class="border-t border-gray-200 pt-8">
+        <h4 class="text-lg font-semibold text-red-600 mb-4">Danger Zone</h4>
+        <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+          <h5 class="font-medium text-red-800 mb-2">Delete Account</h5>
+          <p class="text-sm text-red-600 mb-4">
+            Once you delete your account, there is no going back. Please be certain.
           </p>
-          <button (click)="navigateToBrowse()" class="btn-primary px-6 py-2">
-            Browse Items to Rent
+          <button
+            (click)="deleteAccount()"
+            [disabled]="isLoading()"
+            class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+          >
+            Delete Account
           </button>
         </div>
       </div>
-      }
     </div>
+    } @if (activeTab() === 'ratings') {
+    <!-- Reviews & Ratings Tab -->
+    <div class="glass-card rounded-2xl p-8">
+      <h3 class="text-xl font-bold text-gray-900 mb-6">Reviews & Ratings</h3>
+
+      <!-- Rating Overview -->
+      <div class="bg-gradient-to-r from-purple-50 to-emerald-50 rounded-xl p-6 mb-8">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="text-center">
+            <div class="text-3xl font-bold text-gray-900">{{ userStats().averageRating }}</div>
+            <div class="flex justify-center space-x-1 mb-2">
+              @for (star of getStars(userStats().averageRating); track $index) {
+              <svg
+                [class]="
+                  star === 'full'
+                    ? 'text-yellow-400'
+                    : star === 'half'
+                    ? 'text-yellow-400'
+                    : 'text-gray-300'
+                "
+                class="w-5 h-5"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
+                />
+              </svg>
+              }
+            </div>
+            <div class="text-sm text-gray-600">Average Rating</div>
+          </div>
+          <div class="text-center">
+            <div class="text-3xl font-bold text-gray-900">{{ userStats().totalRatings }}</div>
+            <div class="text-sm text-gray-600">Total Reviews</div>
+          </div>
+          <div class="text-center">
+            <div class="text-3xl font-bold text-gray-900">{{ userStats().totalBookings }}</div>
+            <div class="text-sm text-gray-600">Completed Bookings</div>
+          </div>
+
+          <!-- Location -->
+          <div>
+            <label for="location" class="block text-sm font-medium text-gray-700 mb-2"
+              >Location (Optional)</label
+            >
+            <input
+              id="location"
+              type="text"
+              formControlName="location"
+              [readonly]="!isEditing()"
+              [class]="isEditing() ? 'input-field' : 'input-field bg-gray-50'"
+              class="w-full"
+              placeholder="City, State or Country"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Reviews Placeholder -->
+      <div class="text-center py-12">
+        <svg
+          class="w-16 h-16 text-gray-300 mx-auto mb-4"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M7 8h10m0 0V6a2 2 0 00-2-2H9a2 2 0 00-2 2v2m0 0v10a2 2 0 002 2h10a2 2 0 002-2V8"
+          ></path>
+        </svg>
+        <h4 class="text-lg font-medium text-gray-900 mb-2">No Reviews Yet</h4>
+        <p class="text-gray-600 mb-4">
+          Complete your first rental to start receiving reviews from other users.
+        </p>
+        <button (click)="navigateToBrowse()" class="btn-primary px-6 py-2">
+          Browse Items to Rent
+        </button>
+      </div>
+    </div>
+    }
   </div>
 </div>
