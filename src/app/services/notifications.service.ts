@@ -1,4 +1,5 @@
 import { Injectable, inject, signal } from '@angular/core';
+import { environment } from '../../environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, BehaviorSubject, throwError, interval } from 'rxjs';
 import { map, catchError, tap, switchMap, startWith } from 'rxjs/operators';
@@ -34,7 +35,8 @@ export interface NotificationResponse {
 export class NotificationsService {
   private http = inject(HttpClient);
   private authService = inject(AuthService);
-  private readonly baseUrl = 'http://localhost:8081/api/notifications';
+  // private readonly baseUrl = 'http://localhost:8081/api/notifications'; // Localhost for reference
+  private readonly baseUrl = `${environment.apiUrl}/notifications`;
 
   // Reactive state management
   private notificationsSubject = new BehaviorSubject<Notification[]>([]);

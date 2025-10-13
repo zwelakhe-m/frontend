@@ -1,3 +1,4 @@
+import { environment } from '../../../environments/environment';
 import { Component, Input, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -127,6 +128,7 @@ export class ContactOwnerComponent {
     }
     return this.itemImage.startsWith('http')
       ? this.itemImage
-      : `http://localhost:8081${this.itemImage}`;
+  // : `http://localhost:8081${this.itemImage}`; // Localhost for reference
+  : `${environment.apiUrl.replace(/\/api$/, '')}${this.itemImage}`;
   }
 }

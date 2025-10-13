@@ -1,3 +1,4 @@
+import { environment } from '../../../environments/environment';
 import { Component, OnInit, inject, ViewChild, ElementRef, AfterViewChecked } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -138,7 +139,8 @@ export class ConversationComponent implements OnInit, AfterViewChecked {
     if (!imageUrl) {
       return '/assets/placeholder-item.jpg';
     }
-    return imageUrl.startsWith('http') ? imageUrl : `http://localhost:8081${imageUrl}`;
+  // return imageUrl.startsWith('http') ? imageUrl : `http://localhost:8081${imageUrl}`; // Localhost for reference
+  return imageUrl.startsWith('http') ? imageUrl : `${environment.apiUrl.replace(/\/api$/, '')}${imageUrl}`;
   }
 
   getMessageClasses(isSent: boolean): string {
