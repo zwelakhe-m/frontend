@@ -128,7 +128,7 @@ export class ContactOwnerComponent {
     }
     return this.itemImage.startsWith('http')
       ? this.itemImage
-  // : `http://localhost:8081${this.itemImage}`; // Localhost for reference
-  : `${environment.apiUrl.replace(/\/api$/, '')}${this.itemImage}`;
+      : // : `http://localhost:8081${this.itemImage}`; // Localhost for reference
+        `${environment.apiUrl.replace(/\/api$/, '')}${this.itemImage}`;
   }
 }
