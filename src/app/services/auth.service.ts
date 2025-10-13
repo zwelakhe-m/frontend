@@ -1,5 +1,6 @@
 import { Injectable, inject, signal, PLATFORM_ID } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { environment } from '../../environments/environment';
 import { Observable, BehaviorSubject, throwError } from 'rxjs';
 import { map, catchError, tap } from 'rxjs/operators';
 import { isPlatformBrowser } from '@angular/common';
@@ -40,7 +41,8 @@ export interface RegisterRequest {
 export class AuthService {
   private http = inject(HttpClient);
   private platformId = inject(PLATFORM_ID);
-  private readonly baseUrl = 'http://localhost:8081/api/auth';
+  // private readonly baseUrl = 'http://localhost:8081/api/auth'; // Localhost for reference
+  private readonly baseUrl = `${environment.apiUrl}/auth`;
 
   // Reactive state management
   private currentUserSubject = new BehaviorSubject<User | null>(null);

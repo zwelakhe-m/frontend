@@ -1,3 +1,4 @@
+import { environment } from '../../../environments/environment';
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
@@ -57,7 +58,8 @@ export class MessagesComponent implements OnInit {
     if (!imageUrl) {
       return '/assets/placeholder-item.jpg';
     }
-    return imageUrl.startsWith('http') ? imageUrl : `http://localhost:8081${imageUrl}`;
+  // return imageUrl.startsWith('http') ? imageUrl : `http://localhost:8081${imageUrl}`; // Localhost for reference
+  return imageUrl.startsWith('http') ? imageUrl : `${environment.apiUrl.replace(/\/api$/, '')}${imageUrl}`;
   }
 
   formatTime(timestamp: string): string {

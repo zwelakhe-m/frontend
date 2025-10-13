@@ -1,3 +1,4 @@
+import { environment } from '../../../environments/environment';
 import { Component, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -103,7 +104,8 @@ export class ItemDetailComponent implements OnInit {
     if (item && item.images && item.images.length > 0) {
       const imageUrl = item.images[this.currentImageIndex()];
       if (imageUrl && !imageUrl.startsWith('http')) {
-        return `http://localhost:8081/uploads/${imageUrl}`;
+        // return `http://localhost:8081/uploads/${imageUrl}`; // Localhost for reference
+        return `${environment.apiUrl.replace(/\/api$/, '')}/uploads/${imageUrl}`;
       }
       return imageUrl || '/assets/images/placeholder-item.jpg';
     }
@@ -112,7 +114,8 @@ export class ItemDetailComponent implements OnInit {
 
   getThumbnailUrl(imageUrl: string): string {
     if (imageUrl && !imageUrl.startsWith('http')) {
-      return `http://localhost:8081/uploads/${imageUrl}`;
+      // return `http://localhost:8081/uploads/${imageUrl}`; // Localhost for reference
+      return `${environment.apiUrl.replace(/\/api$/, '')}/uploads/${imageUrl}`;
     }
     return imageUrl || '/assets/images/placeholder-item.jpg';
   }

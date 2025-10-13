@@ -1,4 +1,5 @@
 import { Injectable, inject, signal } from '@angular/core';
+import { environment } from '../../environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, BehaviorSubject, throwError } from 'rxjs';
 import { map, catchError, tap } from 'rxjs/operators';
@@ -94,7 +95,8 @@ export interface UserRatingsResponse {
 export class RatingsService {
   private http = inject(HttpClient);
   private authService = inject(AuthService);
-  private readonly baseUrl = 'http://localhost:8081/api/ratings';
+  // private readonly baseUrl = 'http://localhost:8081/api/ratings'; // Localhost for reference
+  private readonly baseUrl = `${environment.apiUrl}/ratings`;
 
   // Reactive state management
   private userRatingsSubject = new BehaviorSubject<UserRating[]>([]);

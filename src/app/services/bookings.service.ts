@@ -1,4 +1,5 @@
 import { Injectable, inject, signal } from '@angular/core';
+import { environment } from '../../environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, BehaviorSubject, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
@@ -75,7 +76,8 @@ export interface BookingStats {
 export class BookingsService {
   private readonly http = inject(HttpClient);
   private readonly authService = inject(AuthService);
-  private readonly baseUrl = 'http://localhost:8081/api/bookings';
+  // private readonly baseUrl = 'http://localhost:8081/api/bookings'; // Localhost for reference
+  private readonly baseUrl = `${environment.apiUrl}/bookings`;
 
   // Reactive state management
   private readonly myBookingsSubject = new BehaviorSubject<Booking[]>([]);
