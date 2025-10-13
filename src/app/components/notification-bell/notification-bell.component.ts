@@ -1,7 +1,16 @@
-import { Component, inject, signal, ElementRef, ViewChild, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
-import { CommonModule } from '@angular/common';
+import {
+  Component,
+  inject,
+  signal,
+  ElementRef,
+  ViewChild,
+  OnDestroy,
+  PLATFORM_ID,
+} from '@angular/core';
+import { isPlatformBrowser, CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { ItemsService } from '../../services/items.service';
+import { AuthService } from '../../services/auth.service';
 import { NotificationsService, Notification } from '../../services/notifications.service';
 import { Subscription } from 'rxjs';
 
@@ -292,9 +301,11 @@ import { Subscription } from 'rxjs';
   ],
 })
 export class NotificationBellComponent implements OnDestroy {
-  private platformId = inject(PLATFORM_ID);
-  protected notificationsService = inject(NotificationsService);
-  private router = inject(Router);
+  private readonly platformId = inject(PLATFORM_ID);
+  protected readonly notificationsService = inject(NotificationsService);
+  private readonly router = inject(Router);
+  private readonly itemsService = inject(ItemsService);
+  private readonly authService = inject(AuthService);
 
   @ViewChild('dropdown', { static: false }) dropdown?: ElementRef;
   @ViewChild('bellButton', { static: false }) bellButton?: ElementRef;
@@ -305,8 +316,8 @@ export class NotificationBellComponent implements OnDestroy {
   protected unreadCount = signal<number>(0);
   protected hasNewNotifications = signal<boolean>(false);
 
-  private subscriptions: Subscription[] = [];
-  private previousUnreadCount = 0;
+  private readonly subscriptions: Subscription[] = [];
+  private readonly previousUnreadCount = 0;
 
   constructor() {
     // Subscribe to notifications
@@ -397,7 +408,7 @@ export class NotificationBellComponent implements OnDestroy {
   /**
    * Handle notification click
    */
-  protected handleNotificationClick(notification: Notification): void {
+  protected async handleNotificationClick(notification: Notification): Promise<void> {
     // Mark as read if unread
     if (!notification.is_read) {
       this.notificationsService.markAsRead(notification.id).subscribe({
@@ -408,7 +419,7 @@ export class NotificationBellComponent implements OnDestroy {
     }
 
     // Navigate based on notification type and related data
-    this.navigateToNotificationTarget(notification);
+    await this.navigateToNotificationTarget(notification);
     this.closeDropdown();
   }
 
@@ -432,7 +443,7 @@ export class NotificationBellComponent implements OnDestroy {
    * Navigate to view all notifications page
    */
   protected viewAllNotifications(): void {
-    this.router.navigate(['/notifications']);
+    this.router.navigate(['/booking-requests']);
     this.closeDropdown();
   }
 
@@ -446,49 +457,48 @@ export class NotificationBellComponent implements OnDestroy {
   /**
    * Navigate to notification target based on type and related data
    */
-  private navigateToNotificationTarget(notification: Notification): void {
-    const relatedId = notification.related_id;
-    const relatedType = notification.related_type;
+  private async navigateToNotificationTarget(notification: Notification): Promise<void> {
+    // Route based on notification type
+    const bookingTypes = [
+      'booking_request',
+      'booking_approved',
+      'booking_denied',
+      'booking_cancelled',
+      'booking_completed',
+      'payment_received',
+    ];
 
-    switch (notification.type) {
-      case 'booking_request':
-      case 'booking_approved':
-      case 'booking_denied':
-      case 'booking_cancelled':
-      case 'booking_completed':
-        if (relatedId) {
-          this.router.navigate(['/bookings', relatedId]);
+    const routeToBookingOrRequests = async (itemId: number) => {
+      try {
+        const { firstValueFrom } = await import('rxjs');
+        const item = await firstValueFrom(this.itemsService.getItem(itemId));
+        let user = this.authService.currentUser();
+        user ??= await firstValueFrom(this.authService.currentUser$);
+        if (user && item.ownerId === user.id) {
+          this.router.navigate([`/items/${itemId}/bookings`]);
         } else {
-          this.router.navigate(['/bookings']);
+          this.router.navigate(['/booking-requests']);
         }
-        break;
+      } catch {
+        this.router.navigate(['/booking-requests']);
+      }
+    };
 
-      case 'payment_received':
-        if (relatedId) {
-          this.router.navigate(['/bookings', relatedId]);
-        } else {
-          this.router.navigate(['/dashboard']);
-        }
-        break;
-
-      case 'rating_received':
-        if (relatedType === 'item' && relatedId) {
-          this.router.navigate(['/items', relatedId]);
-        } else {
-          this.router.navigate(['/dashboard']);
-        }
-        break;
-
-      case 'system':
-      case 'promotion':
-      case 'reminder':
-        // For system notifications, stay on current page or go to dashboard
-        break;
-
-      default:
-        // Default to dashboard for unknown notification types
-        this.router.navigate(['/dashboard']);
-        break;
+    if (bookingTypes.includes(notification.type)) {
+      const itemId = (notification as any).item_id || (notification as any).itemId;
+      if (itemId) {
+        await routeToBookingOrRequests(itemId);
+        return;
+      }
+      if (notification.related_id) {
+        await routeToBookingOrRequests(notification.related_id);
+        return;
+      }
+      this.router.navigate(['/booking-requests']);
+    } else if (notification.type === 'message' || notification.type === 'chat') {
+      this.router.navigate(['/messages']);
+    } else {
+      this.router.navigate(['/notifications']);
     }
   }
 

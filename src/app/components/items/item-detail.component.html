@@ -104,7 +104,11 @@
           >
             <img
               [src]="getThumbnailUrl(image)"
-              [alt]="item()?.title ? item()?.title + ' thumbnail ' + ($index + 1) : 'Thumbnail ' + ($index + 1)"
+              [alt]="
+                item()?.title
+                  ? item()?.title + ' thumbnail ' + ($index + 1)
+                  : 'Thumbnail ' + ($index + 1)
+              "
               class="w-full h-full object-cover"
             />
           </button>
@@ -219,13 +223,13 @@
         </div>
 
         <!-- Item Details -->
-        <div class="glass-card glass-card-light rounded-2xl p-6">
+        <div class="bg-white bg-opacity-80 rounded-2xl p-6 shadow-sm mb-4">
           <h3 class="text-lg font-semibold text-primary-700 mb-4">About this item</h3>
           <p class="text-gray-700 leading-relaxed">{{ item()?.description }}</p>
         </div>
 
         <!-- Owner Information -->
-        <div class="glass-card glass-card-light rounded-2xl p-6">
+        <div class="bg-white bg-opacity-80 rounded-2xl p-6 shadow-sm">
           <h3 class="text-lg font-semibold text-primary-700 mb-4">Owner</h3>
           <div class="flex items-center">
             <div
@@ -237,7 +241,9 @@
             </div>
             <div>
               <p class="font-semibold text-primary-800">{{ item()?.ownerName || 'Unknown' }}</p>
-              <p class="text-sm text-primary-500">Member since {{ formatDate(item()!.createdAt) }}</p>
+              <p class="text-sm text-primary-500">
+                Member since {{ formatDate(item()!.createdAt) }}
+              </p>
             </div>
           </div>
         </div>

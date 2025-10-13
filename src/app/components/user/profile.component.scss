@@ -57,14 +57,22 @@
 
 // Responsive adjustments
 @media (max-width: 768px) {
-  .profile-overview {
-    .quick-stats {
-      @apply hidden;
-    }
+  /* Avatar circle blue like buttons */
+  .profile-avatar {
+    @apply w-24 h-24 rounded-full flex items-center justify-center font-bold text-2xl;
+    background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
+    color: #fff;
+  }
 
-    .user-info {
-      @apply text-center;
-    }
+  /* Card style to match item cards */
+  .profile-card {
+    @apply bg-white rounded-2xl shadow-lg p-8 transition-all duration-200;
+    border: 1px solid #e5e7eb;
+  }
+
+  .profile-card:hover {
+    box-shadow: 0 8px 32px 0 rgba(59, 130, 246, 0.12);
+    border-color: #3b82f6;
   }
 
   .tab-navigation {
