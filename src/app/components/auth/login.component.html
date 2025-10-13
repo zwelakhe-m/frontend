@@ -1,6 +1,6 @@
 <!-- Login Modal Overlay -->
 <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-sm">
-  <div class="relative w-full max-w-md mx-4">
+  <div class="relative w-full max-w-sm mx-4">
     <!-- Login Form Card -->
     <div class="glass-strong rounded-3xl p-8 border border-white/20 shadow-2xl">
       <!-- Close Button -->
@@ -21,18 +21,15 @@
       <!-- Header -->
       <div class="text-center mb-8">
         <div
-          class="w-16 h-16 bg-gradient-to-r from-purple-500 to-emerald-500 rounded-2xl flex items-center justify-center mx-auto mb-4"
+          class="w-16 h-16 bg-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg"
         >
-          <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-            ></path>
+          <!-- Use the main site logo SVG for consistency -->
+          <svg class="w-10 h-10" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M3 12L12 5L21 12" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <rect x="7" y="12" width="10" height="7" rx="2" fill="#fff" fill-opacity="0.95"/>
           </svg>
         </div>
-        <h2 class="text-3xl font-bold text-gradient mb-2">Welcome Back</h2>
+  <h2 class="text-3xl font-bold text-primary-700 mb-2">Welcome Back</h2>
         <p class="text-gray-600">Sign in to your RentHub account</p>
       </div>
 
@@ -42,7 +39,18 @@
         <div class="form-group">
           <label for="email" class="form-label">Email Address</label>
           <div class="relative">
-            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+            <input
+              id="email"
+              type="email"
+              formControlName="email"
+              autocomplete="username"
+              class="form-input pr-12"
+              placeholder="Enter your email"
+              [class.border-red-300]="
+                loginForm.get('email')?.invalid && loginForm.get('email')?.touched
+              "
+            />
+            <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
               <svg
                 class="w-5 h-5 text-gray-400"
                 fill="none"
@@ -57,17 +65,6 @@
                 ></path>
               </svg>
             </div>
-            <input
-              id="email"
-              type="email"
-              formControlName="email"
-              autocomplete="username"
-              class="form-input pl-12"
-              placeholder="Enter your email"
-              [class.border-red-300]="
-                loginForm.get('email')?.invalid && loginForm.get('email')?.touched
-              "
-            />
           </div>
           @if (loginForm.get('email')?.invalid && loginForm.get('email')?.touched) {
           <p class="error-message">Please enter a valid email address</p>
@@ -78,27 +75,12 @@
         <div class="form-group">
           <label for="password" class="form-label">Password</label>
           <div class="relative">
-            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-              <svg
-                class="w-5 h-5 text-gray-400"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-                ></path>
-              </svg>
-            </div>
             <input
               id="password"
               [type]="showPassword() ? 'text' : 'password'"
               formControlName="password"
               autocomplete="current-password"
-              class="form-input pl-12 pr-12"
+              class="form-input pr-12"
               placeholder="Enter your password"
               [class.border-red-300]="
                 loginForm.get('password')?.invalid && loginForm.get('password')?.touched
@@ -185,7 +167,7 @@
         <button
           type="submit"
           [disabled]="loginForm.invalid || isLoading()"
-          class="btn-primary w-full h-12 text-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+          class="w-full h-12 text-lg font-semibold rounded-xl bg-purple-600 hover:bg-purple-700 text-white transition disabled:opacity-50 disabled:cursor-not-allowed shadow"
         >
           @if (isLoading()) {
           <div class="flex items-center justify-center space-x-2">
