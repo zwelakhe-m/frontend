@@ -56,6 +56,7 @@ export class ItemsBrowseComponent implements OnInit, OnDestroy {
 
   // Sort options
   sortOptions = [
+    { value: 'distance_asc', label: 'Closest to You' },
     { value: 'price_asc', label: 'Price: Low to High' },
     { value: 'price_desc', label: 'Price: High to Low' },
     { value: 'created_desc', label: 'Newest First' },
@@ -63,9 +64,35 @@ export class ItemsBrowseComponent implements OnInit, OnDestroy {
     { value: 'rating_desc', label: 'Highest Rated' },
   ];
 
-  currentSort = signal('created_desc');
+  currentSort = signal('distance_asc');
+  userLocation: { latitude: number; longitude: number } | null = null;
 
   ngOnInit() {
+    // Try to get user geolocation for default sorting
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          this.userLocation = {
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+          };
+          // Set filters for location-based search
+          this.filters.update((filters) => ({
+            ...filters,
+            latitude: this.userLocation!.latitude,
+            longitude: this.userLocation!.longitude,
+          }));
+          this.currentSort.set('distance_asc');
+          this.loadItems();
+        },
+        (error) => {
+          // If denied, fallback to default sort
+          this.currentSort.set('created_desc');
+        }
+      );
+    } else {
+      this.currentSort.set('created_desc');
+    }
     // Read query parameters from URL
     this.route.queryParams.subscribe((params) => {
       if (params['search']) {
@@ -235,8 +262,15 @@ export class ItemsBrowseComponent implements OnInit, OnDestroy {
 
     return [...items].sort((a, b) => {
       let comparison = 0;
-
       switch (sortField) {
+        case 'distance':
+          // If both have distance, sort by it; otherwise, fallback to createdAt
+          if (typeof a.distance === 'number' && typeof b.distance === 'number') {
+            comparison = a.distance - b.distance;
+          } else {
+            comparison = new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+          }
+          break;
         case 'price':
           comparison = a.pricePerDay - b.pricePerDay;
           break;
@@ -249,7 +283,6 @@ export class ItemsBrowseComponent implements OnInit, OnDestroy {
         default:
           comparison = new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
       }
-
       return sortOrder === 'asc' ? comparison : -comparison;
     });
   }
@@ -316,11 +349,12 @@ export class ItemsBrowseComponent implements OnInit, OnDestroy {
   }
 
   private getSortField(): string {
-    const sort = this.currentSort();
-    if (sort.includes('price')) return 'price';
-    if (sort.includes('rating')) return 'rating';
-    if (sort.includes('created')) return 'newest';
-    return 'newest';
+  const sort = this.currentSort();
+  if (sort.includes('distance')) return 'distance';
+  if (sort.includes('price')) return 'price';
+  if (sort.includes('rating')) return 'rating';
+  if (sort.includes('created')) return 'created';
+  return 'created';
   }
 
   private getSortOrder(): 'asc' | 'desc' {

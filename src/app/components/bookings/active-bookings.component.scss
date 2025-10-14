@@ -343,39 +343,64 @@
 .booking-actions {
   display: flex;
   flex-direction: row;
-  flex-wrap: wrap;
-  gap: 0.5rem;
+  flex-wrap: nowrap;
+  gap: 1.5rem;
   min-width: 0;
-  justify-content: flex-start;
+  justify-content: center;
+  align-items: center;
   width: 100%;
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
 }
 
 .action-button {
-  padding: 0.5rem 0.75rem;
+  padding: 1rem 2.5rem;
   border: none;
-  border-radius: 8px;
+  border-radius: 14px;
   cursor: pointer;
-  font-weight: 500;
+  font-weight: 600;
   transition: all 0.3s ease;
   text-align: center;
   white-space: normal;
-  font-size: 0.95rem;
-  min-width: 90px;
+  font-size: 1.08rem;
+  min-width: 160px;
   max-width: 100%;
-  flex: 1 1 48%;
+  flex: 0 0 auto;
   margin-bottom: 0.25rem;
 
   &.secondary {
-    background: linear-gradient(to right, #00bcd4, #00acc1);
-    color: #fff;
-    border: 0;
-    box-shadow: 0 2px 8px 0 rgba(0, 188, 212, 0.1);
-    transition: box-shadow 0.2s, transform 0.2s;
+    background: rgba(255, 255, 255, 0.8);
+    color: rgb(75, 85, 99);
+    border: 2px solid rgba(209, 213, 219, 0.5);
+    transition: all 0.2s ease;
+    font-weight: 600;
+    box-shadow: none;
   }
   &.secondary:hover {
-    box-shadow: 0 4px 16px 0 rgba(0, 172, 193, 0.18);
-    transform: translateY(-2px);
+    background: rgba(255, 255, 255, 0.95);
+    border-color: rgb(139, 92, 246);
+    color: rgb(139, 92, 246);
   }
+@media (max-width: 768px) {
+  .booking-actions {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    min-width: auto;
+    justify-content: flex-start;
+    width: 100%;
+  }
+  .action-button {
+    flex: 1 1 48%;
+    min-width: 90px;
+    max-width: 100%;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.95rem;
+    border-radius: 8px;
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+  }
+}
 
   &.success {
     background: #10b981;
