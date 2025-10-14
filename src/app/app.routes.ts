@@ -104,6 +104,13 @@ export const routes: Routes = [
     title: 'List New Item - RentHub',
   },
   {
+    path: 'items/edit/:id',
+    loadComponent: () =>
+      import('./components/items/item-create.component').then((m) => m.ItemCreateComponent),
+    canActivate: [authGuard],
+    title: 'Edit Item - RentHub',
+  },
+  {
     path: 'my-items',
     loadComponent: () =>
       import('./components/items/my-items.component').then((m) => m.MyItemsComponent),
