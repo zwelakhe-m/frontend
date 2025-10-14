@@ -49,6 +49,27 @@ export class ProfileComponent implements OnInit {
     joinDate: '',
   });
 
+  // Profile photo upload state (using signals for reactivity)
+  protected profilePhotoPreviewUrl = signal<string | null>(null);
+  protected profilePhotoFile: File | null = null;
+
+  // Handle profile photo selection
+  protected onProfilePhotoSelect(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      const file = input.files[0];
+      this.profilePhotoFile = file;
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        this.profilePhotoPreviewUrl.set(e.target.result);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      this.profilePhotoFile = null;
+      this.profilePhotoPreviewUrl.set(null);
+    }
+  }
+
   ngOnInit(): void {
     this.initializeForms();
     this.loadUserData();
@@ -139,7 +160,7 @@ export class ProfileComponent implements OnInit {
 
   protected toggleEdit(): void {
     if (this.isEditing()) {
-      // Cancel editing - reset form
+      // Cancel editing - reset form and photo preview
       const user = this.currentUser();
       if (user) {
         this.profileForm.patchValue({
@@ -150,6 +171,8 @@ export class ProfileComponent implements OnInit {
           location: user.location || '',
         });
       }
+      this.profilePhotoFile = null;
+      this.profilePhotoPreviewUrl.set(null);
     }
     this.isEditing.set(!this.isEditing());
   }

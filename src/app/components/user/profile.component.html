@@ -120,6 +120,34 @@
       </div>
 
       <form [formGroup]="profileForm" (ngSubmit)="saveProfile()">
+        <!-- Profile Photo Upload (only when editing) -->
+        @if (isEditing()) {
+        <div class="mb-6 flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6">
+          <div class="flex-1">
+            <label for="profilePhotoInput" class="block text-sm font-medium text-gray-700 mb-2"
+              >Profile Photo</label
+            >
+            <input
+              id="profilePhotoInput"
+              type="file"
+              accept="image/*"
+              capture="user"
+              (change)="onProfilePhotoSelect($event)"
+              class="form-input w-full"
+            />
+            <p class="text-gray-500 text-xs mt-1">PNG, JPG up to 5MB</p>
+          </div>
+          @if (profilePhotoPreviewUrl()) {
+          <div class="flex-shrink-0 flex justify-center sm:block">
+            <img
+              [src]="profilePhotoPreviewUrl()"
+              alt="Profile Preview"
+              class="w-20 h-20 object-cover rounded-full border"
+            />
+          </div>
+          }
+        </div>
+        }
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <!-- Name -->
           <div>

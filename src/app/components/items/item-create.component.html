@@ -65,7 +65,7 @@
             </label>
             <div class="relative">
               <span class="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500"
-                >$</span
+                >R</span
               >
               <input
                 id="price"
@@ -120,6 +120,7 @@
               type="file"
               multiple
               accept="image/*"
+              capture="environment"
               (change)="onImageSelect($event)"
               class="hidden"
               #fileInput
