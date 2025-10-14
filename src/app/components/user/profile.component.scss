@@ -78,4 +78,16 @@
   .tab-navigation {
     @apply flex-col space-x-0 space-y-1;
   }
+
+  /* Profile photo upload: stack vertically and full width */
+  .profile-photo-upload {
+    flex-direction: column !important;
+    gap: 1rem !important;
+    align-items: stretch !important;
+  }
+  #profilePhotoInput.form-input {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
 }

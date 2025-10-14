@@ -18,7 +18,6 @@
   padding: 0 2rem;
 }
 
-
 .back-icon {
   font-size: 1.2rem;
 }
@@ -343,30 +342,39 @@
 
 .booking-actions {
   display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  min-width: 150px;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  min-width: 0;
+  justify-content: flex-start;
+  width: 100%;
 }
 
 .action-button {
-  padding: 0.75rem 1.5rem;
+  padding: 0.5rem 0.75rem;
   border: none;
   border-radius: 8px;
   cursor: pointer;
   font-weight: 500;
   transition: all 0.3s ease;
   text-align: center;
-  white-space: nowrap;
+  white-space: normal;
+  font-size: 0.95rem;
+  min-width: 90px;
+  max-width: 100%;
+  flex: 1 1 48%;
+  margin-bottom: 0.25rem;
 
   &.secondary {
-    background: #f1f5f9;
-    color: #475569;
-    border: 1px solid #e2e8f0;
-
-    &:hover {
-      background: #e2e8f0;
-      color: #334155;
-    }
+    background: linear-gradient(to right, #00bcd4, #00acc1);
+    color: #fff;
+    border: 0;
+    box-shadow: 0 2px 8px 0 rgba(0, 188, 212, 0.1);
+    transition: box-shadow 0.2s, transform 0.2s;
+  }
+  &.secondary:hover {
+    box-shadow: 0 4px 16px 0 rgba(0, 172, 193, 0.18);
+    transform: translateY(-2px);
   }
 
   &.success {
@@ -442,7 +450,11 @@
   }
 
   .action-button {
-    flex: 1;
-    min-width: 120px;
+    flex: 1 1 45%;
+    min-width: 90px;
+    max-width: 100%;
+  }
+  .booking-actions {
+    gap: 0.5rem;
   }
 }
