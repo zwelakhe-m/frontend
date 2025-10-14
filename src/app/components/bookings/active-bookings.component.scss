@@ -381,26 +381,26 @@
     border-color: rgb(139, 92, 246);
     color: rgb(139, 92, 246);
   }
-@media (max-width: 768px) {
-  .booking-actions {
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    min-width: auto;
-    justify-content: flex-start;
-    width: 100%;
+  @media (max-width: 768px) {
+    .booking-actions {
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      min-width: auto;
+      justify-content: flex-start;
+      width: 100%;
+    }
+    .action-button {
+      flex: 1 1 48%;
+      min-width: 90px;
+      max-width: 100%;
+      padding: 0.5rem 0.75rem;
+      font-size: 0.95rem;
+      border-radius: 8px;
+      font-weight: 500;
+      margin-bottom: 0.25rem;
+    }
   }
-  .action-button {
-    flex: 1 1 48%;
-    min-width: 90px;
-    max-width: 100%;
-    padding: 0.5rem 0.75rem;
-    font-size: 0.95rem;
-    border-radius: 8px;
-    font-weight: 500;
-    margin-bottom: 0.25rem;
-  }
-}
 
   &.success {
     background: #10b981;
