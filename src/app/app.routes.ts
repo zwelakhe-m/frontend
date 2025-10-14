@@ -63,8 +63,8 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./components/items/item-detail.component').then((m) => m.ItemDetailComponent),
     title: 'Item Details - RentHub',
-    data: { prerender: false }
-},
+    data: { prerender: false },
+  },
   {
     path: 'items/:id/bookings',
     loadComponent: () =>
@@ -157,13 +157,13 @@ export const routes: Routes = [
     title: 'Messages - RentHub',
   },
   {
-      path: 'messages/:id',
-      loadComponent: () =>
-        import('./components/messages/conversation.component').then((m) => m.ConversationComponent),
-      canActivate: [authGuard],
-      title: 'Conversation - RentHub',
-      data: { prerender: false }
-    },
+    path: 'messages/:id',
+    loadComponent: () =>
+      import('./components/messages/conversation.component').then((m) => m.ConversationComponent),
+    canActivate: [authGuard],
+    title: 'Conversation - RentHub',
+    data: { prerender: false },
+  },
 
   // Fallback route
   {

@@ -13,7 +13,6 @@ import { ToastService } from '../../services/shared/toast.service';
   templateUrl: './item-create.component.html',
   styleUrls: ['./item-create.component.scss'],
 })
-
 export class ItemCreateComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly itemsService = inject(ItemsService);
@@ -73,7 +72,6 @@ export class ItemCreateComponent implements OnInit {
     { value: 'good', label: 'Good - Some wear but fully functional' },
     { value: 'fair', label: 'Fair - Noticeable wear but works well' },
   ];
-
 
   ngOnInit() {
     this.loadCurrentUser();
@@ -247,7 +245,10 @@ export class ItemCreateComponent implements OnInit {
 
     // Validate location based on method
     if (this.locationMethod() === 'current' && !this.currentLocation()) {
-      this.toastService.warning('Location Required', 'Please allow location access or switch to manual address entry');
+      this.toastService.warning(
+        'Location Required',
+        'Please allow location access or switch to manual address entry'
+      );
       return;
     }
     if (this.locationMethod() === 'manual' && !this.itemForm.get('manualLocation')?.value?.trim()) {
@@ -267,17 +268,25 @@ export class ItemCreateComponent implements OnInit {
       category: formValues.category,
       pricePerDay: parseFloat(formValues.price),
       useCurrentLocation: this.locationMethod() === 'current',
-      ...(this.locationMethod() === 'current' && this.currentLocation() && {
-        locationLat: this.currentLocation()!.lat,
-        locationLon: this.currentLocation()!.lon,
-      }),
+      ...(this.locationMethod() === 'current' &&
+        this.currentLocation() && {
+          locationLat: this.currentLocation()!.lat,
+          locationLon: this.currentLocation()!.lon,
+        }),
       ...(this.locationMethod() === 'manual' && {
         manualAddress: formValues.manualLocation,
       }),
       images: this.selectedImages(),
     };
 
-    if (this.isEditMode && this.itemId) {
+    if (this.isEditMode) {
+      console.log('Edit mode: itemId =', this.itemId);
+      if (!this.itemId || isNaN(this.itemId)) {
+        this.toastService.error('Invalid Item', 'Cannot update: Item ID is missing or invalid.');
+        this.loading.set(false);
+        this.uploadingImages.set(false);
+        return;
+      }
       // Update item
       this.itemsService.updateItem(this.itemId, itemData).subscribe({
         next: (updatedItem) => {
@@ -296,14 +305,20 @@ export class ItemCreateComponent implements OnInit {
       // Create item
       this.itemsService.createItem(itemData).subscribe({
         next: (newItem) => {
-          this.toastService.success('Item Listed Successfully!', 'Your item has been added to the marketplace.');
+          this.toastService.success(
+            'Item Listed Successfully!',
+            'Your item has been added to the marketplace.'
+          );
           this.router.navigate(['/my-items']);
           this.loading.set(false);
           this.uploadingImages.set(false);
         },
         error: (error) => {
           if (error.message?.includes('timeout') || error.name === 'TimeoutError') {
-            this.toastService.warning('Item Creation Delayed', 'Creation is taking longer than expected. Please check "My Items" to see if it was created successfully.');
+            this.toastService.warning(
+              'Item Creation Delayed',
+              'Creation is taking longer than expected. Please check "My Items" to see if it was created successfully.'
+            );
           } else {
             this.toastService.error('Creation Failed', 'Failed to create item. Please try again.');
           }
