@@ -27,9 +27,14 @@
       <div class="flex items-center space-x-6">
         <!-- Avatar -->
         <div
-          class="w-24 h-24 bg-gradient-to-r from-primary-500 to-primary-300 rounded-full flex items-center justify-center shadow"
+          class="w-24 h-24 rounded-full flex items-center justify-center shadow overflow-hidden bg-gradient-to-r from-primary-500 to-primary-300"
         >
-          <span class="text-white font-bold text-2xl">{{ getUserInitials() }}</span>
+          <ng-container *ngIf="currentUser()?.profilePhoto; else showInitials">
+            <img [src]="currentUser()?.profilePhoto" alt="Profile Photo" class="w-full h-full object-cover" />
+          </ng-container>
+          <ng-template #showInitials>
+            <span class="text-white font-bold text-2xl">{{ getUserInitials() }}</span>
+          </ng-template>
         </div>
 
         <!-- User Info -->

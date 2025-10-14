@@ -13,7 +13,7 @@ export interface User {
   bio?: string;
   location?: string;
   isVerified: boolean;
-  profilePicture?: string;
+  profilePhoto?: string;
   createdAt: string;
 }
 

@@ -64,10 +64,16 @@ export class UserService {
     });
   }
 
-  updateProfile(profileData: UpdateProfileRequest): Observable<User> {
-    return this.http.put<User>(`${this.apiUrl}/users/profile`, profileData, {
-      headers: this.authService.getAuthHeaders(),
-    });
+  updateProfile(profileData: UpdateProfileRequest | FormData): Observable<User> {
+    // If FormData, do not set Content-Type header (browser will set it)
+    const isFormData = profileData instanceof FormData;
+    return this.http.put<User>(
+      `${this.apiUrl}/users/profile`,
+      profileData,
+      {
+        headers: isFormData ? this.authService.getAuthHeaders().delete('Content-Type') : this.authService.getAuthHeaders(),
+      }
+    );
   }
 
   changePassword(passwordData: ChangePasswordRequest): Observable<{ message: string }> {
