@@ -1,8 +1,8 @@
 import { Component, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
-import { ItemsService, CreateItemRequest } from '../../services/items.service';
+import { Router, ActivatedRoute } from '@angular/router';
+import { ItemsService, CreateItemRequest, RentalItem } from '../../services/items.service';
 import { AuthService, User } from '../../services/auth.service';
 import { ToastService } from '../../services/shared/toast.service';
 
@@ -13,12 +13,17 @@ import { ToastService } from '../../services/shared/toast.service';
   templateUrl: './item-create.component.html',
   styleUrls: ['./item-create.component.scss'],
 })
+
 export class ItemCreateComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly itemsService = inject(ItemsService);
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
   private readonly toastService = inject(ToastService);
+
+  isEditMode = false;
+  itemId: number | null = null;
 
   loading = signal(false);
   uploadingImages = signal(false);
@@ -69,8 +74,46 @@ export class ItemCreateComponent implements OnInit {
     { value: 'fair', label: 'Fair - Noticeable wear but works well' },
   ];
 
+
   ngOnInit() {
     this.loadCurrentUser();
+    // Detect edit mode
+    const idParam = this.route.snapshot.paramMap.get('id');
+    if (idParam) {
+      this.isEditMode = true;
+      this.itemId = +idParam;
+      this.loadItemForEdit(this.itemId);
+    }
+  }
+
+  loadItemForEdit(id: number) {
+    this.itemsService.getItem(id).subscribe({
+      next: (item: RentalItem) => {
+        // Patch form with item data
+        this.itemForm.patchValue({
+          title: item.title,
+          description: item.description,
+          category: item.category,
+          price: item.pricePerDay,
+          manualLocation: item.location || '',
+          availability: item.isAvailable,
+          // Add more fields as needed
+          // deposit, minRentalDays, maxRentalDays, deliveryAvailable, deliveryFee, pickupInstructions, condition, rules
+        });
+        // If item has coordinates, set location method and currentLocation
+        if (item.latitude && item.longitude) {
+          this.locationMethod.set('current');
+          this.currentLocation.set({ lat: item.latitude, lon: item.longitude });
+        } else {
+          this.locationMethod.set('manual');
+        }
+        // TODO: Load images if needed (for preview)
+      },
+      error: (err) => {
+        this.toastService.error('Failed to load item for editing', '');
+        this.router.navigate(['/my-items']);
+      },
+    });
   }
 
   loadCurrentUser() {
@@ -193,8 +236,6 @@ export class ItemCreateComponent implements OnInit {
     if (this.itemForm.invalid) {
       console.log('❌ Form is invalid, marking all as touched');
       this.itemForm.markAllAsTouched();
-
-      // Log specific field errors
       Object.keys(this.itemForm.controls).forEach((key) => {
         const control = this.itemForm.get(key);
         if (control?.invalid) {
@@ -206,86 +247,71 @@ export class ItemCreateComponent implements OnInit {
 
     // Validate location based on method
     if (this.locationMethod() === 'current' && !this.currentLocation()) {
-      console.log('❌ Current location not available');
-      this.toastService.warning(
-        'Location Required',
-        'Please allow location access or switch to manual address entry'
-      );
+      this.toastService.warning('Location Required', 'Please allow location access or switch to manual address entry');
       return;
     }
-
     if (this.locationMethod() === 'manual' && !this.itemForm.get('manualLocation')?.value?.trim()) {
-      console.log('❌ Manual location not provided');
       this.toastService.warning('Address Required', 'Please enter a location address');
       return;
     }
-
-    if (this.selectedImages().length === 0) {
-      console.log('❌ No images selected');
+    if (!this.isEditMode && this.selectedImages().length === 0) {
       this.toastService.warning('Images Required', 'Please add at least one image of your item');
       return;
     }
 
-    console.log('✅ All validations passed, creating item...');
     this.loading.set(true);
+    const formValues = this.itemForm.value;
+    const itemData: CreateItemRequest = {
+      name: formValues.title,
+      description: formValues.description,
+      category: formValues.category,
+      pricePerDay: parseFloat(formValues.price),
+      useCurrentLocation: this.locationMethod() === 'current',
+      ...(this.locationMethod() === 'current' && this.currentLocation() && {
+        locationLat: this.currentLocation()!.lat,
+        locationLon: this.currentLocation()!.lon,
+      }),
+      ...(this.locationMethod() === 'manual' && {
+        manualAddress: formValues.manualLocation,
+      }),
+      images: this.selectedImages(),
+    };
 
-    try {
-      // Create item request with images
-      const formValues = this.itemForm.value;
-      const itemData: CreateItemRequest = {
-        name: formValues.title,
-        description: formValues.description,
-        category: formValues.category,
-        pricePerDay: parseFloat(formValues.price),
-        useCurrentLocation: this.locationMethod() === 'current',
-        ...(this.locationMethod() === 'current' &&
-          this.currentLocation() && {
-            locationLat: this.currentLocation()!.lat,
-            locationLon: this.currentLocation()!.lon,
-          }),
-        ...(this.locationMethod() === 'manual' && {
-          manualAddress: formValues.manualLocation,
-        }),
-        images: this.selectedImages(), // Send actual File[] objects
-      };
-
-      console.log('📤 Sending item data:', itemData);
-
-      this.itemsService.createItem(itemData).subscribe({
-        next: (newItem) => {
-          console.log('✅ Item created successfully:', newItem);
-          this.toastService.success(
-            'Item Listed Successfully!',
-            'Your item has been added to the marketplace.'
-          );
+    if (this.isEditMode && this.itemId) {
+      // Update item
+      this.itemsService.updateItem(this.itemId, itemData).subscribe({
+        next: (updatedItem) => {
+          this.toastService.success('Item Updated Successfully!', 'Your item has been updated.');
           this.router.navigate(['/my-items']);
           this.loading.set(false);
           this.uploadingImages.set(false);
         },
         error: (error) => {
-          console.error('❌ Error creating item:', error);
-
-          // Check if it's a timeout error
-          if (error.message?.includes('timeout') || error.name === 'TimeoutError') {
-            this.toastService.warning(
-              'Item Creation Delayed',
-              'Creation is taking longer than expected. Please check "My Items" to see if it was created successfully.'
-            );
-          } else {
-            this.toastService.error('Creation Failed', 'Failed to create item. Please try again.');
-          }
-
+          this.toastService.error('Update Failed', 'Failed to update item. Please try again.');
           this.loading.set(false);
           this.uploadingImages.set(false);
         },
       });
-    } catch (error) {
-      console.error('❌ Exception in onSubmit:', error);
-      this.toastService.error('Creation Failed', 'Failed to create item. Please try again.');
-      this.loading.set(false);
-      this.uploadingImages.set(false);
+    } else {
+      // Create item
+      this.itemsService.createItem(itemData).subscribe({
+        next: (newItem) => {
+          this.toastService.success('Item Listed Successfully!', 'Your item has been added to the marketplace.');
+          this.router.navigate(['/my-items']);
+          this.loading.set(false);
+          this.uploadingImages.set(false);
+        },
+        error: (error) => {
+          if (error.message?.includes('timeout') || error.name === 'TimeoutError') {
+            this.toastService.warning('Item Creation Delayed', 'Creation is taking longer than expected. Please check "My Items" to see if it was created successfully.');
+          } else {
+            this.toastService.error('Creation Failed', 'Failed to create item. Please try again.');
+          }
+          this.loading.set(false);
+          this.uploadingImages.set(false);
+        },
+      });
     }
-    // Removed finally block to avoid state conflicts
   }
 
   onCancel() {
