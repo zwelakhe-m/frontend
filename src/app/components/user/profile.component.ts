@@ -104,10 +104,9 @@ export class ProfileComponent implements OnInit {
 
   private loadUserData(): void {
     this.isLoading.set(true);
-
-    // Load current user
-    this.authService.currentUser$.subscribe((user) => {
-      if (user) {
+  // Always fetch latest user from backend to get profilePhoto
+    this.userService.getCurrentUser().subscribe({
+      next: (user) => {
         this.currentUser.set(user);
         this.profileForm.patchValue({
           fullName: user.name,
@@ -116,13 +115,13 @@ export class ProfileComponent implements OnInit {
           bio: user.bio || '',
           location: user.location || '',
         });
-
-        // Load user stats
         this.loadUserStats(user.id);
-      }
+        this.isLoading.set(false);
+      },
+      error: (err) => {
+        this.isLoading.set(false);
+      },
     });
-
-    this.isLoading.set(false);
   }
 
   private loadUserStats(userId: number): void {
@@ -180,13 +179,25 @@ export class ProfileComponent implements OnInit {
   protected saveProfile(): void {
     if (this.profileForm.valid) {
       this.isLoading.set(true);
-      const formData = this.profileForm.value;
-
-      this.userService.updateProfile(formData).subscribe({
+      let dataToSend: any = this.profileForm.value;
+      // If a new profile photo is selected, use FormData
+      if (this.profilePhotoFile) {
+        const formData = new FormData();
+        formData.append('fullName', this.profileForm.get('fullName')?.value || '');
+        formData.append('email', this.profileForm.get('email')?.value || '');
+        formData.append('phone', this.profileForm.get('phone')?.value || '');
+        formData.append('bio', this.profileForm.get('bio')?.value || '');
+        formData.append('location', this.profileForm.get('location')?.value || '');
+        formData.append('profilePhoto', this.profilePhotoFile);
+        dataToSend = formData;
+      }
+      this.userService.updateProfile(dataToSend).subscribe({
         next: (updatedUser) => {
           this.currentUser.set(updatedUser);
           this.isEditing.set(false);
           this.isLoading.set(false);
+          this.profilePhotoFile = null;
+          this.profilePhotoPreviewUrl.set(null);
           this.toastService.success(
             'Profile Updated',
             'Your profile has been updated successfully.'
