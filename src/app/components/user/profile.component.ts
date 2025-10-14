@@ -13,6 +13,7 @@ import { AuthService, User } from '../../services/auth.service';
 import { UserService } from '../../services/user.service';
 import { RatingsService, UserRating } from '../../services/ratings.service';
 import { ToastService } from '../../services/shared/toast.service';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-profile',
@@ -77,7 +78,7 @@ export class ProfileComponent implements OnInit {
 
   private initializeForms(): void {
     this.profileForm = this.fb.group({
-      fullName: ['', [Validators.required, Validators.minLength(2)]],
+      name: ['', [Validators.required, Validators.minLength(2)]],
       email: ['', [Validators.required, Validators.email]],
       phone: [''],
       bio: [''],
@@ -104,12 +105,12 @@ export class ProfileComponent implements OnInit {
 
   private loadUserData(): void {
     this.isLoading.set(true);
-  // Always fetch latest user from backend to get profilePhoto
+    // Always fetch latest user from backend to get profilePhoto
     this.userService.getCurrentUser().subscribe({
       next: (user) => {
         this.currentUser.set(user);
         this.profileForm.patchValue({
-          fullName: user.name,
+          name: user.name || '',
           email: user.email,
           phone: user.phone || '',
           bio: user.bio || '',
@@ -163,7 +164,7 @@ export class ProfileComponent implements OnInit {
       const user = this.currentUser();
       if (user) {
         this.profileForm.patchValue({
-          fullName: user.name,
+          name: user.name,
           email: user.email,
           phone: user.phone || '',
           bio: user.bio || '',
@@ -183,13 +184,21 @@ export class ProfileComponent implements OnInit {
       // If a new profile photo is selected, use FormData
       if (this.profilePhotoFile) {
         const formData = new FormData();
-        formData.append('fullName', this.profileForm.get('fullName')?.value || '');
+        formData.append('name', this.profileForm.get('name')?.value || '');
         formData.append('email', this.profileForm.get('email')?.value || '');
         formData.append('phone', this.profileForm.get('phone')?.value || '');
         formData.append('bio', this.profileForm.get('bio')?.value || '');
         formData.append('location', this.profileForm.get('location')?.value || '');
         formData.append('profilePhoto', this.profilePhotoFile);
         dataToSend = formData;
+      } else {
+        dataToSend = {
+          name: this.profileForm.get('name')?.value || '',
+          email: this.profileForm.get('email')?.value || '',
+          phone: this.profileForm.get('phone')?.value || '',
+          bio: this.profileForm.get('bio')?.value || '',
+          location: this.profileForm.get('location')?.value || '',
+        };
       }
       this.userService.updateProfile(dataToSend).subscribe({
         next: (updatedUser) => {
@@ -210,6 +219,20 @@ export class ProfileComponent implements OnInit {
         },
       });
     }
+  }
+
+  protected getProfilePhotoUrl(): string | null {
+    const user = this.currentUser();
+    if (!user?.profilePhoto) return null;
+    const photo = user.profilePhoto;
+    if (photo.startsWith('http://') || photo.startsWith('https://')) {
+      return photo;
+    }
+    if (photo.startsWith('/uploads/')) {
+      return `${environment.apiUrl.replace(/\/api$/, '')}${photo}`;
+    }
+    // If just a filename or relative, assume uploads/profile_photos
+    return `${environment.apiUrl.replace(/\/api$/, '')}/uploads/profile_photos/${photo}`;
   }
 
   protected changePassword(): void {
