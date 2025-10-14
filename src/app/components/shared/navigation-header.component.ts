@@ -1,3 +1,4 @@
+import { environment } from '../../../environments/environment';
 import { Component, inject, signal, OnInit, Inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser, CommonModule } from '@angular/common';
 import { Router, RouterModule, NavigationEnd } from '@angular/router';
@@ -15,6 +16,22 @@ import { filter } from 'rxjs/operators';
   styleUrls: ['./navigation-header.component.scss'],
 })
 export class NavigationHeaderComponent implements OnInit {
+  /**
+   * Returns the correct profile photo URL (handles relative and absolute URLs)
+   */
+  protected getProfilePhotoUrl(): string | null {
+    const user = this.currentUser();
+    if (!user?.profilePhoto) return null;
+    const photo = user.profilePhoto;
+    if (photo.startsWith('http://') || photo.startsWith('https://')) {
+      return photo;
+    }
+    if (photo.startsWith('/uploads/')) {
+      return `${environment.apiUrl.replace(/\/api$/, '')}${photo}`;
+    }
+    // If just a filename or relative, assume uploads/profile_photos
+    return `${environment.apiUrl.replace(/\/api$/, '')}/uploads/profile_photos/${photo}`;
+  }
   private readonly platformId = inject(PLATFORM_ID);
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
