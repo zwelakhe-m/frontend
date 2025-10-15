@@ -29,8 +29,12 @@
         <div
           class="w-24 h-24 rounded-full flex items-center justify-center shadow overflow-hidden bg-gradient-to-r from-primary-500 to-primary-300"
         >
-          <ng-container *ngIf="currentUser()?.profilePhoto; else showInitials">
-            <img [src]="currentUser()?.profilePhoto" alt="Profile Photo" class="w-full h-full object-cover" />
+          <ng-container *ngIf="getProfilePhotoUrl(); else showInitials">
+            <img
+              [src]="getProfilePhotoUrl()"
+              alt="Profile Photo"
+              class="w-full h-full object-cover"
+            />
           </ng-container>
           <ng-template #showInitials>
             <span class="text-white font-bold text-2xl">{{ getUserInitials() }}</span>
@@ -156,18 +160,16 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <!-- Name -->
           <div>
-            <label for="fullName" class="block text-sm font-medium text-gray-700 mb-2"
-              >Full Name</label
-            >
+            <label for="name" class="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
             <input
-              id="fullName"
+              id="name"
               type="text"
-              formControlName="fullName"
+              formControlName="name"
               [readonly]="!isEditing()"
               [class]="isEditing() ? 'input-field' : 'input-field bg-gray-50'"
               class="w-full"
             />
-            @if (profileForm.get('fullName')?.invalid && profileForm.get('fullName')?.touched) {
+            @if (profileForm.get('name')?.invalid && profileForm.get('name')?.touched) {
             <p class="text-red-500 text-xs mt-1">Name is required (minimum 2 characters)</p>
             }
           </div>
