@@ -28,11 +28,11 @@ export interface GeocodeResponse {
   providedIn: 'root',
 })
 export class GeocodingService {
-  private http = inject(HttpClient);
-  private cache = new Map<string, string>();
+  private readonly http = inject(HttpClient);
+  private readonly cache = new Map<string, string>();
 
   // Rate limiting to be respectful to Nominatim
-  private requestQueue: Array<() => void> = [];
+  private readonly requestQueue: Array<() => void> = [];
   private isProcessing = false;
   private readonly DELAY_BETWEEN_REQUESTS = 1000; // 1 second delay
 

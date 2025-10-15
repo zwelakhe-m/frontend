@@ -200,6 +200,9 @@ export class ItemsService {
    * Get item by ID
    */
   getItem(id: number): Observable<RentalItem> {
+    if (typeof id !== 'number' || isNaN(id)) {
+      return throwError(() => new Error('Invalid item ID'));
+    }
     return this.http.get<any>(`${this.baseUrl}/${id}`).pipe(
       map((apiItem) => this.transformBackendItem(apiItem)),
       catchError((error) => this.handleError(error))
@@ -261,12 +264,16 @@ export class ItemsService {
     // Add form fields
     formData.append('name', itemData.name);
     formData.append('description', itemData.description);
-    formData.append('pricePerDay', itemData.pricePerDay.toString());
-
-    if (itemData.locationLat) {
+    // Validate pricePerDay
+    if (typeof itemData.pricePerDay === 'number' && !isNaN(itemData.pricePerDay)) {
+      formData.append('pricePerDay', itemData.pricePerDay.toString());
+    }
+    // Validate locationLat
+    if (typeof itemData.locationLat === 'number' && !isNaN(itemData.locationLat)) {
       formData.append('locationLat', itemData.locationLat.toString());
     }
-    if (itemData.locationLon) {
+    // Validate locationLon
+    if (typeof itemData.locationLon === 'number' && !isNaN(itemData.locationLon)) {
       formData.append('locationLon', itemData.locationLon.toString());
     }
     if (itemData.manualAddress) {
@@ -310,6 +317,9 @@ export class ItemsService {
    * Update rental item
    */
   updateItem(id: number, itemData: Partial<CreateItemRequest>): Observable<RentalItem> {
+    if (typeof id !== 'number' || isNaN(id)) {
+      return throwError(() => new Error('Invalid item ID'));
+    }
     this.isLoading.set(true);
 
     const formData = new FormData();
@@ -355,6 +365,9 @@ export class ItemsService {
    * Delete rental item
    */
   deleteItem(id: number): Observable<void> {
+    if (typeof id !== 'number' || isNaN(id)) {
+      return throwError(() => new Error('Invalid item ID'));
+    }
     return this.http
       .delete<void>(`${this.baseUrl}/${id}`, {
         headers: this.authService.getAuthHeaders(),

@@ -132,7 +132,7 @@ export class MyItemsComponent implements OnInit {
   }
 
   createNewItem() {
-    this.router.navigate(['/items/create']);
+  this.router.navigate(['/create-item']);
   }
 
   editItem(item: RentalItem) {
