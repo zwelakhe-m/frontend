@@ -234,6 +234,7 @@ export class ItemsService {
     return this.http
       .get<ApiRentalItem[]>(`${this.baseUrl}/my`, {
         headers: this.authService.getAuthHeaders(),
+        withCredentials: true,
       })
       .pipe(
         map((apiItems) => apiItems.map((item) => this.transformApiItem(item))),
@@ -286,6 +287,7 @@ export class ItemsService {
     return this.http
       .post<any>(this.baseUrl, formData, {
         headers,
+        withCredentials: true,
         // Add longer timeout for geocoding process
         timeout: 30000, // 30 seconds timeout for geocoding
       })
@@ -329,6 +331,7 @@ export class ItemsService {
     return this.http
       .put<RentalItem>(`${this.baseUrl}/${id}`, formData, {
         headers: this.authService.getAuthHeaders().delete('Content-Type'),
+        withCredentials: true,
       })
       .pipe(
         tap((item) => {
@@ -355,6 +358,7 @@ export class ItemsService {
     return this.http
       .delete<void>(`${this.baseUrl}/${id}`, {
         headers: this.authService.getAuthHeaders(),
+        withCredentials: true,
       })
       .pipe(
         tap(() => {
