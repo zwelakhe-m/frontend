@@ -223,16 +223,14 @@ export class ProfileComponent implements OnInit {
 
   protected getProfilePhotoUrl(): string | null {
     const user = this.currentUser();
-    if (!user?.profilePhoto) return null;
+    if (!user?.profilePhoto) return 'https://res.cloudinary.com/demo/image/upload/v1699999999/no-image-placeholder.png';
     const photo = user.profilePhoto;
+    // If already a Cloudinary or external URL, use as is
     if (photo.startsWith('http://') || photo.startsWith('https://')) {
       return photo;
     }
-    if (photo.startsWith('/uploads/')) {
-      return `${environment.apiUrl.replace(/\/api$/, '')}${photo}`;
-    }
-    // If just a filename or relative, assume uploads/profile_photos
-    return `${environment.apiUrl.replace(/\/api$/, '')}/uploads/profile_photos/${photo}`;
+    // Fallback to placeholder if not a valid URL
+    return 'https://res.cloudinary.com/demo/image/upload/v1699999999/no-image-placeholder.png';
   }
 
   protected changePassword(): void {
