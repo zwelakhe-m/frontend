@@ -39,9 +39,10 @@ export class ItemDetailComponent implements OnInit {
   bookingLoading = signal(false);
 
   ngOnInit() {
-    const itemId = this.route.snapshot.paramMap.get('id');
-    if (itemId) {
-      this.loadItem(+itemId);
+    const itemIdParam = this.route.snapshot.paramMap.get('id');
+    const itemId = itemIdParam !== null ? Number(itemIdParam) : NaN;
+    if (!isNaN(itemId) && itemId > 0) {
+      this.loadItem(itemId);
     } else {
       this.error.set('Invalid item ID');
       this.loading.set(false);

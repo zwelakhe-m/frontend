@@ -195,7 +195,7 @@ export class NavigationHeaderComponent implements OnInit {
   }
 
   protected goToCreateItem() {
-    this.router.navigate(['/items/create']);
+  this.router.navigate(['/create-item']);
   }
 
   protected goToProfile() {

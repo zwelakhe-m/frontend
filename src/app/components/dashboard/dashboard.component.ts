@@ -90,7 +90,7 @@ export class DashboardComponent implements OnInit {
     const currentMonth = now.getMonth();
     const currentYear = now.getFullYear();
     // Only include bookings for this month and year, and with status APPROVED or COMPLETED
-    return bookings
+    const total = bookings
       .filter(b => {
         const endDate = new Date(b.end_date);
         return (
@@ -99,7 +99,11 @@ export class DashboardComponent implements OnInit {
           (b.status === BookingStatus.APPROVED || b.status === BookingStatus.COMPLETED)
         );
       })
-      .reduce((sum, b) => sum + (b.total_price || 0), 0);
+      .reduce((sum, b) => {
+        const price = typeof b.total_price === 'number' ? b.total_price : parseFloat(b.total_price);
+        return sum + (isNaN(price) ? 0 : price);
+      }, 0);
+    return isNaN(total) ? 0 : total;
   }
 
   protected formatBookingDate(booking: Booking): string {
