@@ -1,5 +1,5 @@
 import { environment } from '../../../environments/environment';
-import { Component, inject, signal, OnInit, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, inject, signal, OnInit, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser, CommonModule } from '@angular/common';
 import { Router, RouterModule, NavigationEnd } from '@angular/router';
 import { AuthService, User } from '../../services/auth.service';
