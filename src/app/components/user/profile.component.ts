@@ -13,7 +13,6 @@ import { AuthService, User } from '../../services/auth.service';
 import { UserService } from '../../services/user.service';
 import { RatingsService, UserRating } from '../../services/ratings.service';
 import { ToastService } from '../../services/shared/toast.service';
-import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-profile',
@@ -180,7 +179,7 @@ export class ProfileComponent implements OnInit {
   protected saveProfile(): void {
     if (this.profileForm.valid) {
       this.isLoading.set(true);
-      let dataToSend: any = this.profileForm.value;
+      let dataToSend: any;
       // If a new profile photo is selected, use FormData
       if (this.profilePhotoFile) {
         const formData = new FormData();
