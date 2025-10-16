@@ -1,3 +1,4 @@
+import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { Component, inject, signal, OnInit, OnDestroy } from '@angular/core';
 import { BrowseFilterService } from '../../services/browse-filter.service';
@@ -24,6 +25,9 @@ export interface FilterOptions {
   styleUrls: ['./items-browse.component.scss'],
 })
 export class ItemsBrowseComponent implements OnInit, OnDestroy {
+  // Cache for geocoded addresses
+  private geocodeCache: { [address: string]: { latitude: number; longitude: number } | null } = {};
+  private http = inject(HttpClient);
   private browseFilterService = inject(BrowseFilterService);
   private itemsService = inject(ItemsService);
   protected authService = inject(AuthService);
@@ -66,8 +70,9 @@ export class ItemsBrowseComponent implements OnInit, OnDestroy {
 
   currentSort = signal('distance_asc');
   userLocation: { latitude: number; longitude: number } | null = null;
+  // (Removed duplicate geocodeCache and http declarations)
 
-  ngOnInit() {
+  async ngOnInit() {
     // Try to get user geolocation for default sorting
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -105,14 +110,12 @@ export class ItemsBrowseComponent implements OnInit, OnDestroy {
         }));
       }
     });
-
     // Check for selected category from landing page
     const selectedCategory = this.browseFilterService.selectedCategory();
     if (selectedCategory) {
       this.filters.update((filters) => ({ ...filters, category: selectedCategory }));
       this.browseFilterService.clearCategory();
     }
-
     this.loadItems();
     this.loadCategories();
   }
@@ -122,6 +125,133 @@ export class ItemsBrowseComponent implements OnInit, OnDestroy {
     if (this.searchTimeout) {
       clearTimeout(this.searchTimeout);
     }
+  }
+
+  loadItems() {
+    this.loading.set(true);
+    try {
+      const hasActiveFilters =
+        (this.searchQuery && this.searchQuery.trim()) ||
+        (this.filters().category && this.filters().category.trim()) ||
+        (this.filters().location && this.filters().location.trim()) ||
+        this.filters().priceMin > 0 ||
+        this.filters().priceMax < 1000;
+
+      if (hasActiveFilters) {
+        this.itemsService.getAllItems().subscribe({
+          next: (allItems) => {
+            (async () => {
+              let filteredItems = [...allItems];
+              if (this.filters().location && this.filters().location.trim()) {
+                const locationQuery = this.filters().location.toLowerCase();
+                filteredItems = filteredItems.filter(
+                  (item) => item.location && item.location.toLowerCase().includes(locationQuery)
+                );
+              }
+              await this.calculateAndSetItems(filteredItems);
+            })();
+          },
+          error: (error) => {
+            console.error('Error loading items for search:', error);
+            this.loading.set(false);
+          },
+        });
+      } else {
+        this.itemsService.getAllItems().subscribe({
+          next: (items) => {
+            (async () => {
+              await this.calculateAndSetItems(items);
+            })();
+          },
+          error: (error) => {
+            console.error('Error loading items:', error);
+            this.loading.set(false);
+          },
+        });
+      }
+    } catch (error) {
+      console.error('Error loading items:', error);
+      this.loading.set(false);
+    }
+  }
+
+  private calculateAndSetItems(items: RentalItem[]) {
+    this.calculateDistances(items).then((itemsWithDistance) => {
+      const sortedItems = this.applySorting(itemsWithDistance);
+      const startIndex = (this.currentPage() - 1) * this.itemsPerPage;
+      const paginatedItems = sortedItems.slice(startIndex, startIndex + this.itemsPerPage);
+      this.items.set(paginatedItems);
+      this.totalItems.set(sortedItems.length);
+      this.loading.set(false);
+    });
+  }
+
+  private async calculateDistances(items: RentalItem[]): Promise<RentalItem[]> {
+    if (!this.userLocation) {
+      // No user location, set all distances to undefined
+      return items.map((item) => ({ ...item, distance: undefined }));
+    }
+    const userLat = this.userLocation.latitude;
+    const userLon = this.userLocation.longitude;
+
+    // Helper to geocode address
+    const geocodeAddress = async (address: string): Promise<{ latitude: number; longitude: number } | null> => {
+      if (!address) return null;
+      if (this.geocodeCache[address]) return this.geocodeCache[address];
+      try {
+        // Use Nominatim OpenStreetMap API for geocoding
+        const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`;
+        const result: any = await this.http.get(url).toPromise();
+        if (result && result.length > 0) {
+          const lat = parseFloat(result[0].lat);
+          const lon = parseFloat(result[0].lon);
+          this.geocodeCache[address] = { latitude: lat, longitude: lon };
+          return { latitude: lat, longitude: lon };
+        }
+        this.geocodeCache[address] = null;
+        return null;
+      } catch {
+        this.geocodeCache[address] = null;
+        return null;
+      }
+    };
+
+    // Haversine formula for distance in km
+    const haversine = (lat1: number, lon1: number, lat2: number, lon2: number): number => {
+      const toRad = (x: number) => (x * Math.PI) / 180;
+      const R = 6371; // Earth radius in km
+      const dLat = toRad(lat2 - lat1);
+      const dLon = toRad(lon2 - lon1);
+      const a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+        Math.sin(dLon / 2) * Math.sin(dLon / 2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      return R * c;
+    };
+
+    // Calculate distance for each item
+    const promises = items.map(async (item) => {
+      let lat = item.latitude;
+      let lon = item.longitude;
+      // If coordinates are missing or zero, try geocoding address
+      if ((!lat || !lon) && item.location && item.location !== 'Location not available') {
+        const geo = await geocodeAddress(item.location);
+        if (geo) {
+          lat = geo.latitude;
+          lon = geo.longitude;
+        }
+      }
+      // If still missing, set distance to Infinity
+      let distance: number | undefined = undefined;
+      if (lat && lon) {
+        distance = haversine(userLat, userLon, lat, lon);
+      } else {
+        distance = Infinity;
+      }
+      return { ...item, distance };
+    });
+    return await Promise.all(promises);
   }
 
   private loadCategories() {
@@ -137,106 +267,6 @@ export class ItemsBrowseComponent implements OnInit, OnDestroy {
     });
   }
 
-  async loadItems() {
-    this.loading.set(true);
-    try {
-      // Check if we have any active filters
-      const hasActiveFilters =
-        (this.searchQuery && this.searchQuery.trim()) ||
-        (this.filters().category && this.filters().category.trim()) ||
-        (this.filters().location && this.filters().location.trim()) ||
-        this.filters().priceMin > 0 ||
-        this.filters().priceMax < 1000;
-
-      if (hasActiveFilters) {
-        // Use search with filters - but implement client-side filtering for now
-        // since the backend search has location requirements
-        this.itemsService.getAllItems().subscribe({
-          next: (allItems) => {
-            let filteredItems = [...allItems];
-
-            // Apply text search filter
-            if (this.searchQuery && this.searchQuery.trim()) {
-              const query = this.searchQuery.toLowerCase();
-              filteredItems = filteredItems.filter(
-                (item) =>
-                  item.title.toLowerCase().includes(query) ||
-                  item.description.toLowerCase().includes(query)
-              );
-            }
-
-            // Apply category filter
-            if (this.filters().category && this.filters().category.trim()) {
-              filteredItems = filteredItems.filter(
-                (item) =>
-                  item.category &&
-                  item.category.toLowerCase() === this.filters().category.toLowerCase()
-              );
-            }
-
-            // Apply price filters
-            if (this.filters().priceMin > 0) {
-              filteredItems = filteredItems.filter(
-                (item) => item.pricePerDay >= this.filters().priceMin
-              );
-            }
-
-            if (this.filters().priceMax < 1000) {
-              filteredItems = filteredItems.filter(
-                (item) => item.pricePerDay <= this.filters().priceMax
-              );
-            }
-
-            // Apply location filter (simple text matching for now)
-            if (this.filters().location && this.filters().location.trim()) {
-              const locationQuery = this.filters().location.toLowerCase();
-              filteredItems = filteredItems.filter(
-                (item) => item.location && item.location.toLowerCase().includes(locationQuery)
-              );
-            }
-
-            // Apply sorting
-            const sortedItems = this.applySorting(filteredItems);
-
-            // Apply pagination
-            const startIndex = (this.currentPage() - 1) * this.itemsPerPage;
-            const paginatedItems = sortedItems.slice(startIndex, startIndex + this.itemsPerPage);
-
-            this.items.set(paginatedItems);
-            this.totalItems.set(sortedItems.length);
-            this.loading.set(false);
-          },
-          error: (error) => {
-            console.error('Error loading items for search:', error);
-            this.loading.set(false);
-          },
-        });
-      } else {
-        // No filters, use getAllItems for better performance and to show all items
-        this.itemsService.getAllItems().subscribe({
-          next: (items) => {
-            // Apply sorting if needed
-            const sortedItems = this.applySorting(items);
-
-            // Apply pagination
-            const startIndex = (this.currentPage() - 1) * this.itemsPerPage;
-            const paginatedItems = sortedItems.slice(startIndex, startIndex + this.itemsPerPage);
-
-            this.items.set(paginatedItems);
-            this.totalItems.set(sortedItems.length);
-            this.loading.set(false);
-          },
-          error: (error) => {
-            console.error('Error loading items:', error);
-            this.loading.set(false);
-          },
-        });
-      }
-    } catch (error) {
-      console.error('Error loading items:', error);
-      this.loading.set(false);
-    }
-  }
 
   private fallbackToGetAllItems() {
     this.itemsService.getAllItems().subscribe({
@@ -264,11 +294,21 @@ export class ItemsBrowseComponent implements OnInit, OnDestroy {
       let comparison = 0;
       switch (sortField) {
         case 'distance':
-          // If both have distance, sort by it; otherwise, fallback to createdAt
-          if (typeof a.distance === 'number' && typeof b.distance === 'number') {
-            comparison = a.distance - b.distance;
+          // Sort by distance, but items with Infinity (unavailable) go last
+          if (a.distance === undefined && b.distance === undefined) {
+            comparison = 0;
+          } else if (a.distance === undefined) {
+            comparison = 1;
+          } else if (b.distance === undefined) {
+            comparison = -1;
+          } else if (a.distance === Infinity && b.distance === Infinity) {
+            comparison = 0;
+          } else if (a.distance === Infinity) {
+            comparison = 1;
+          } else if (b.distance === Infinity) {
+            comparison = -1;
           } else {
-            comparison = new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+            comparison = a.distance - b.distance;
           }
           break;
         case 'price':
