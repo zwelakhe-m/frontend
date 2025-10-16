@@ -39,14 +39,46 @@ export interface RegisterRequest {
   providedIn: 'root',
 })
 export class AuthService {
-  private http = inject(HttpClient);
-  private platformId = inject(PLATFORM_ID);
+  /**
+   * Login with Facebook access token
+   */
+  loginWithFacebook(accessToken: string): Observable<AuthResponse> {
+    this.isLoading.set(true);
+    return this.http.post<AuthResponse>(`${this.baseUrl}/login/facebook`, { accessToken }).pipe(
+      tap((response) => {
+        this.setAuthData(response.token, response.user);
+        this.isLoading.set(false);
+      }),
+      catchError((error) => {
+        this.isLoading.set(false);
+        return this.handleError(error);
+      })
+    );
+  }
+  /**
+   * Login with Google ID token
+   */
+  loginWithGoogle(idToken: string): Observable<AuthResponse> {
+    this.isLoading.set(true);
+    return this.http.post<AuthResponse>(`${this.baseUrl}/login/google`, { idToken }).pipe(
+      tap((response) => {
+        this.setAuthData(response.token, response.user);
+        this.isLoading.set(false);
+      }),
+      catchError((error) => {
+        this.isLoading.set(false);
+        return this.handleError(error);
+      })
+    );
+  }
+  private readonly http = inject(HttpClient);
+  private readonly platformId = inject(PLATFORM_ID);
   // private readonly baseUrl = 'http://localhost:8081/api/auth'; // Localhost for reference
   private readonly baseUrl = `${environment.apiUrl}/auth`;
 
   // Reactive state management
-  private currentUserSubject = new BehaviorSubject<User | null>(null);
-  private tokenSubject = new BehaviorSubject<string | null>(null);
+  private readonly currentUserSubject = new BehaviorSubject<User | null>(null);
+  private readonly tokenSubject = new BehaviorSubject<string | null>(null);
 
   // Public observables
   public currentUser$ = this.currentUserSubject.asObservable();
