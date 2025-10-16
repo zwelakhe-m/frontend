@@ -457,49 +457,18 @@ export class ItemsService {
   }
 
   private transformApiItem(apiItem: ApiRentalItem): RentalItem {
-    // Determine category from item name and description
-    const itemText = `${apiItem.name} ${apiItem.description}`.toLowerCase();
-    let category = 'Other';
-
-    if (
-      itemText.includes('drill') ||
-      itemText.includes('tool') ||
-      itemText.includes('mower') ||
-      itemText.includes('clipper')
-    ) {
-      category = 'Tools & Equipment';
-    } else if (
-      itemText.includes('camera') ||
-      itemText.includes('projector') ||
-      itemText.includes('electronic')
-    ) {
-      category = 'Electronics';
-    } else if (
-      itemText.includes('bike') ||
-      itemText.includes('bicycle') ||
-      itemText.includes('sport')
-    ) {
-      category = 'Sports & Recreation';
-    } else if (
-      itemText.includes('car') ||
-      itemText.includes('vehicle') ||
-      itemText.includes('automotive')
-    ) {
-      category = 'Automotive';
-    }
-
     return {
       id: apiItem.id,
       title: apiItem.name,
       description: apiItem.description,
-      category: category,
+      category: (apiItem as any).category || 'Other',
       pricePerDay: apiItem.price_per_day,
       location: apiItem.address?.formatted_address || 'Location not available',
       latitude: apiItem.location?.lat || 0,
       longitude: apiItem.location?.lon || 0,
-      images: apiItem.image_urls || [], // Use actual image URLs from API
-      isAvailable: true, // Assuming available if returned in search
-      ownerId: 0, // Not provided in search response
+      images: apiItem.image_urls || [],
+      isAvailable: true,
+      ownerId: 0,
       ownerName: apiItem.owner?.name || 'Unknown',
       ownerVerified: false,
       createdAt: apiItem.created_at,
@@ -509,45 +478,11 @@ export class ItemsService {
   }
 
   private transformBackendItem(backendItem: any): RentalItem {
-    // Determine category from item name and description
-    const itemText = `${backendItem.name} ${backendItem.description}`.toLowerCase();
-    let category = backendItem.category || 'Other';
-
-    // If no category provided, try to determine from content
-    if (!backendItem.category || backendItem.category === 'Other') {
-      if (
-        itemText.includes('drill') ||
-        itemText.includes('tool') ||
-        itemText.includes('mower') ||
-        itemText.includes('clipper')
-      ) {
-        category = 'Tools & Equipment';
-      } else if (
-        itemText.includes('camera') ||
-        itemText.includes('projector') ||
-        itemText.includes('electronic')
-      ) {
-        category = 'Electronics';
-      } else if (
-        itemText.includes('bike') ||
-        itemText.includes('bicycle') ||
-        itemText.includes('sport')
-      ) {
-        category = 'Sports & Recreation';
-      } else if (
-        itemText.includes('car') ||
-        itemText.includes('vehicle') ||
-        itemText.includes('automotive')
-      ) {
-        category = 'Automotive';
-      }
-    }
-
     return {
       id: backendItem.id,
       title: backendItem.name,
       description: backendItem.description,
-      category: category,
+      category: backendItem.category || 'Other',
       pricePerDay: parseFloat(backendItem.price_per_day),
       location:
         backendItem.address?.formatted_address ||
