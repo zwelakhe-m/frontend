@@ -40,16 +40,13 @@ export class LoginComponent implements OnInit {
   }
 
   triggerFacebookLogin(): void {
-    (window as any).FB.login(
-      (response: any) => {
-        if (response.authResponse) {
-          this.handleFacebookCredential(response.authResponse.accessToken);
-        } else {
-          this.errorMessage.set('Facebook login failed or cancelled.');
-        }
-      },
-      { scope: 'email,public_profile' }
-    );
+    (window as any).FB.login((response: any) => {
+      if (response.authResponse) {
+        this.handleFacebookCredential(response.authResponse.accessToken);
+      } else {
+        this.errorMessage.set('Facebook login failed or cancelled.');
+      }
+    }, { scope: 'email,public_profile' });
   }
 
   handleFacebookCredential(accessToken: string): void {
@@ -66,8 +63,7 @@ export class LoginComponent implements OnInit {
     });
   }
   // Google OAuth
-  public googleClientId =
-    '547425240105-drc54prgr1cmern62j23iivrn9lsg53a.apps.googleusercontent.com';
+  public googleClientId = '547425240105-drc54prgr1cmern62j23iivrn9lsg53a.apps.googleusercontent.com';
 
   onGoogleSignIn(): void {
     // Load Google Identity Services SDK if not already loaded
@@ -183,4 +179,5 @@ export class LoginComponent implements OnInit {
   closeModal(): void {
     this.router.navigate(['/']);
   }
+// ...existing code...
 }
