@@ -6,6 +6,7 @@ import { BookingsService, Booking, BookingStatus } from '../../services/bookings
 import { ItemsService, RentalItem } from '../../services/items.service';
 import { NotificationsService } from '../../services/notifications.service';
 import { ToastService } from '../../services/shared/toast.service';
+import { UserService, AnalyticsData } from '../../services/user.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -22,13 +23,25 @@ export class DashboardComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly toastService = inject(ToastService);
 
+  private readonly userService = inject(UserService);
+
   // Reactive state
   protected currentUser = signal<User | null>(null);
   protected recentBookings = signal<Booking[]>([]);
   protected pendingRequests = signal<Booking[]>([]);
   protected myItems = signal<RentalItem[]>([]);
-  protected activeBookingsCount = signal(0);
+  // protected activeBookingsCount = signal(0); // No longer used for dashboard card
   protected myItemsCount = signal(0);
+
+  // Analytics state for dashboard
+  protected dashboardAnalytics = signal<AnalyticsData | null>(null);
+  protected dashboardEarnings = signal<number>(0);
+  protected dashboardGrowth = signal<number>(0);
+
+  // Get total bookings from backend analytics for dashboard card
+  protected getTotalBookings(): number {
+    return this.dashboardAnalytics()?.totalStats?.totalBookings ?? 0;
+  }
 
   ngOnInit(): void {
     // Subscribe to current user
@@ -38,6 +51,7 @@ export class DashboardComponent implements OnInit {
 
     // Load initial data
     this.loadDashboardData();
+    this.loadDashboardAnalytics();
   }
 
   private loadDashboardData(): void {
@@ -47,11 +61,7 @@ export class DashboardComponent implements OnInit {
       .subscribe((response) => {
         const bookings = response.bookings || [];
         this.recentBookings.set(bookings);
-        this.activeBookingsCount.set(
-          bookings.filter(
-            (b: any) => b.status === BookingStatus.APPROVED || b.status === BookingStatus.PENDING
-          ).length
-        );
+        // activeBookingsCount is not used for dashboard card anymore
       });
 
     // Load my items
@@ -72,6 +82,23 @@ export class DashboardComponent implements OnInit {
     this.notificationsService.refresh().subscribe();
   }
 
+  private loadDashboardAnalytics(): void {
+    // Fetch analytics for 'month' period for dashboard summary
+    this.userService.getAnalytics('month').subscribe({
+      next: (data) => {
+        this.dashboardAnalytics.set(data);
+        this.dashboardEarnings.set(data.totalStats?.totalEarnings ?? 0);
+        this.dashboardGrowth.set(data.totalStats?.growthPercentage ?? 0);
+      },
+      error: (error) => {
+        console.error('Error loading dashboard analytics:', error);
+        this.dashboardAnalytics.set(null);
+        this.dashboardEarnings.set(0);
+        this.dashboardGrowth.set(0);
+      },
+    });
+  }
+
   protected getUserInitials(): string {
     const user = this.currentUser();
     if (!user?.name) return 'U';
@@ -83,27 +110,14 @@ export class DashboardComponent implements OnInit {
     return names[0][0].toUpperCase();
   }
 
-   protected getMonthlyEarnings(): number {
-    const bookings = this.recentBookings();
-    if (!bookings || bookings.length === 0) return 0;
-    const now = new Date();
-    const currentMonth = now.getMonth();
-    const currentYear = now.getFullYear();
-    // Only include bookings for this month and year, and with status APPROVED or COMPLETED
-    const total = bookings
-      .filter(b => {
-        const endDate = new Date(b.end_date);
-        return (
-          endDate.getMonth() === currentMonth &&
-          endDate.getFullYear() === currentYear &&
-          (b.status === BookingStatus.APPROVED || b.status === BookingStatus.COMPLETED)
-        );
-      })
-      .reduce((sum, b) => {
-        const price = typeof b.total_price === 'number' ? b.total_price : parseFloat(b.total_price);
-        return sum + (isNaN(price) ? 0 : price);
-      }, 0);
-    return isNaN(total) ? 0 : total;
+  // Use backend analytics for monthly earnings
+  protected getMonthlyEarnings(): number {
+    return this.dashboardEarnings();
+  }
+
+  // Expose growth percentage for dashboard
+  protected getMonthlyGrowth(): number {
+    return this.dashboardGrowth();
   }
 
   protected formatBookingDate(booking: Booking): string {
@@ -164,7 +178,7 @@ export class DashboardComponent implements OnInit {
   }
 
   protected navigateToAnalytics(): void {
-    this.router.navigate(['/analytics']);
+    this.router.navigate(['/analytics'], { queryParams: { period: 'month' } });
   }
 
   // Booking management methods

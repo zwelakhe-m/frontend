@@ -93,7 +93,7 @@ export class ItemsBrowseComponent implements OnInit, OnDestroy {
         (error) => {
           // If denied, fallback to default sort
           this.currentSort.set('created_desc');
-        }
+        },
       );
     } else {
       this.currentSort.set('created_desc');
@@ -267,6 +267,106 @@ export class ItemsBrowseComponent implements OnInit, OnDestroy {
     });
   }
 
+  async loadItems() {
+    this.loading.set(true);
+    try {
+      // Check if we have any active filters
+      const hasActiveFilters =
+        (this.searchQuery && this.searchQuery.trim()) ||
+        (this.filters().category && this.filters().category.trim()) ||
+        (this.filters().location && this.filters().location.trim()) ||
+        this.filters().priceMin > 0 ||
+        this.filters().priceMax < 1000;
+
+      if (hasActiveFilters) {
+        // Use search with filters - but implement client-side filtering for now
+        // since the backend search has location requirements
+        this.itemsService.getAllItems().subscribe({
+          next: (allItems) => {
+            let filteredItems = [...allItems];
+
+            // Apply text search filter
+            if (this.searchQuery && this.searchQuery.trim()) {
+              const query = this.searchQuery.toLowerCase();
+              filteredItems = filteredItems.filter(
+                (item) =>
+                  item.title.toLowerCase().includes(query) ||
+                  item.description.toLowerCase().includes(query),
+              );
+            }
+
+            // Apply category filter
+            if (this.filters().category && this.filters().category.trim()) {
+              filteredItems = filteredItems.filter(
+                (item) =>
+                  item.category &&
+                  item.category.toLowerCase() === this.filters().category.toLowerCase(),
+              );
+            }
+
+            // Apply price filters
+            if (this.filters().priceMin > 0) {
+              filteredItems = filteredItems.filter(
+                (item) => item.pricePerDay >= this.filters().priceMin,
+              );
+            }
+
+            if (this.filters().priceMax < 1000) {
+              filteredItems = filteredItems.filter(
+                (item) => item.pricePerDay <= this.filters().priceMax,
+              );
+            }
+
+            // Apply location filter (simple text matching for now)
+            if (this.filters().location && this.filters().location.trim()) {
+              const locationQuery = this.filters().location.toLowerCase();
+              filteredItems = filteredItems.filter(
+                (item) => item.location && item.location.toLowerCase().includes(locationQuery),
+              );
+            }
+
+            // Apply sorting
+            const sortedItems = this.applySorting(filteredItems);
+
+            // Apply pagination
+            const startIndex = (this.currentPage() - 1) * this.itemsPerPage;
+            const paginatedItems = sortedItems.slice(startIndex, startIndex + this.itemsPerPage);
+
+            this.items.set(paginatedItems);
+            this.totalItems.set(sortedItems.length);
+            this.loading.set(false);
+          },
+          error: (error) => {
+            console.error('Error loading items for search:', error);
+            this.loading.set(false);
+          },
+        });
+      } else {
+        // No filters, use getAllItems for better performance and to show all items
+        this.itemsService.getAllItems().subscribe({
+          next: (items) => {
+            // Apply sorting if needed
+            const sortedItems = this.applySorting(items);
+
+            // Apply pagination
+            const startIndex = (this.currentPage() - 1) * this.itemsPerPage;
+            const paginatedItems = sortedItems.slice(startIndex, startIndex + this.itemsPerPage);
+
+            this.items.set(paginatedItems);
+            this.totalItems.set(sortedItems.length);
+            this.loading.set(false);
+          },
+          error: (error) => {
+            console.error('Error loading items:', error);
+            this.loading.set(false);
+          },
+        });
+      }
+    } catch (error) {
+      console.error('Error loading items:', error);
+      this.loading.set(false);
+    }
+  }
 
   private fallbackToGetAllItems() {
     this.itemsService.getAllItems().subscribe({
@@ -389,12 +489,12 @@ export class ItemsBrowseComponent implements OnInit, OnDestroy {
   }
 
   private getSortField(): string {
-  const sort = this.currentSort();
-  if (sort.includes('distance')) return 'distance';
-  if (sort.includes('price')) return 'price';
-  if (sort.includes('rating')) return 'rating';
-  if (sort.includes('created')) return 'created';
-  return 'created';
+    const sort = this.currentSort();
+    if (sort.includes('distance')) return 'distance';
+    if (sort.includes('price')) return 'price';
+    if (sort.includes('rating')) return 'rating';
+    if (sort.includes('created')) return 'created';
+    return 'created';
   }
 
   private getSortOrder(): 'asc' | 'desc' {

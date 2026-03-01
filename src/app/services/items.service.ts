@@ -215,8 +215,12 @@ export class ItemsService {
   getAllItems(): Observable<RentalItem[]> {
     this.isLoading.set(true);
 
-    return this.http.get<any[]>(`${this.baseUrl}`).pipe(
-      map((apiItems) => apiItems.map((item) => this.transformBackendItem(item))),
+    return this.http.get<any>(`${this.baseUrl}`).pipe(
+      map((response) => {
+        // Handle both paginated response and direct array for backward compatibility
+        const itemsArray = Array.isArray(response) ? response : response.items || [];
+        return itemsArray.map((item: any) => this.transformBackendItem(item));
+      }),
       tap((items) => {
         this.itemsSubject.next(items);
         this.isLoading.set(false);

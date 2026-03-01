@@ -1,6 +1,15 @@
+// Type for earnings breakdown table row
+type EarningsBreakdownRow = {
+  date: string;
+  item: string;
+  renter: string;
+  amount: number;
+  commission: number;
+};
+
 import { Component, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService, User } from '../../services/auth.service';
 import { UserService, AnalyticsData } from '../../services/user.service';
 import { ToastService } from '../../services/shared/toast.service';
@@ -17,6 +26,7 @@ export class AnalyticsComponent implements OnInit {
   private readonly userService = inject(UserService);
   private readonly toastService = inject(ToastService);
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
 
   // State
   protected currentUser = signal<User | null>(null);
@@ -25,11 +35,19 @@ export class AnalyticsComponent implements OnInit {
   protected analytics = signal<AnalyticsData | null>(null);
 
   ngOnInit(): void {
-    this.authService.currentUser$.subscribe((user) => {
-      this.currentUser.set(user);
-      if (user) {
-        this.loadAnalyticsData();
+    // Read the 'period' query parameter if present
+    this.route.queryParamMap.subscribe((params) => {
+      const period = params.get('period') as 'week' | 'month' | 'year' | 'all' | null;
+      if (period && ['week', 'month', 'year', 'all'].includes(period)) {
+        this.activeTimeframe.set(period);
       }
+      // Wait for user to be loaded before fetching analytics
+      this.authService.currentUser$.subscribe((user) => {
+        this.currentUser.set(user);
+        if (user) {
+          this.loadAnalyticsData();
+        }
+      });
     });
   }
 
@@ -189,6 +207,16 @@ export class AnalyticsComponent implements OnInit {
     return Math.max(...data.map((d) => d.earnings), 100);
   }
 
+  protected getTotalEarnings(): number {
+    const analytics = this.analytics();
+    if (!analytics?.earnings) return 0;
+    // Sum all earnings for the period
+    return analytics.earnings.reduce(
+      (sum, e) => sum + (typeof e.earnings === 'number' ? e.earnings : parseFloat(e.earnings)),
+      0
+    );
+  }
+
   protected getGrowthPercentage(): number {
     const analytics = this.analytics();
     return analytics?.totalStats.growthPercentage || 0;
@@ -225,5 +253,25 @@ export class AnalyticsComponent implements OnInit {
   protected exportData(): void {
     // In a real app, this would generate and download a CSV/Excel file
     this.toastService.info('Export', 'Export functionality coming soon!');
+  }
+
+  /**
+   * Returns a detailed breakdown of earnings for the table:
+   * Each row: { date, item, renter, amount, commission }
+   * Commission is calculated as 10% of amount (customize as needed)
+   */
+  protected getEarningsBreakdown(): EarningsBreakdownRow[] {
+    const analytics = this.analytics();
+    if (!analytics?.recentBookings) return [];
+    // Only show bookings with a positive price and completed/confirmed status
+    return analytics.recentBookings
+      .filter((b: any) => b.total_price > 0 && ['confirmed', 'completed'].includes(b.status))
+      .map((b: any) => ({
+        date: this.formatDate(b.start_date),
+        item: b.item_name,
+        renter: b.renter_name,
+        amount: b.total_price,
+        commission: Math.round(b.total_price * 0.1 * 100) / 100, // 10% commission, rounded to 2 decimals
+      }));
   }
 }
