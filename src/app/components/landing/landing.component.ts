@@ -6,7 +6,9 @@ import {
   OnDestroy,
   HostListener,
   inject,
+  PLATFORM_ID,
 } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { ModalComponent } from '../shared/modal/modal.component';
 
 import { BrowseFilterService } from '../../services/browse-filter.service';
@@ -74,6 +76,7 @@ export class LandingComponent implements AfterViewInit, OnDestroy {
     this.featureContent = null;
   }
   private readonly browseFilterService = inject(BrowseFilterService);
+  private readonly platformId = inject(PLATFORM_ID);
   @ViewChild('carousel', { static: false }) carouselRef!: ElementRef<HTMLDivElement>;
   protected currentIndex = 0;
   private autoSlideInterval: any;
@@ -81,20 +84,25 @@ export class LandingComponent implements AfterViewInit, OnDestroy {
 
   @HostListener('window:resize')
   onResize() {
+    if (!isPlatformBrowser(this.platformId)) return;
     this.updateItemsPerSlide();
     this.snapToCurrent();
   }
 
   ngAfterViewInit() {
+    if (!isPlatformBrowser(this.platformId)) return;
     this.updateItemsPerSlide();
     this.startAutoSlide();
   }
 
   ngOnDestroy() {
-    clearInterval(this.autoSlideInterval);
+    if (this.autoSlideInterval) {
+      clearInterval(this.autoSlideInterval);
+    }
   }
 
   private updateItemsPerSlide() {
+    if (!isPlatformBrowser(this.platformId)) return;
     if (window.innerWidth < 768) {
       this.itemsPerSlide = 1;
     } else {
@@ -114,7 +122,7 @@ export class LandingComponent implements AfterViewInit, OnDestroy {
   }
 
   private snapToCurrent() {
-    if (!this.carouselRef) return;
+    if (!isPlatformBrowser(this.platformId) || !this.carouselRef) return;
     const carousel = this.carouselRef.nativeElement;
     const card = carousel.querySelector('button');
     if (card) {
@@ -127,6 +135,7 @@ export class LandingComponent implements AfterViewInit, OnDestroy {
   }
 
   private startAutoSlide() {
+    if (!isPlatformBrowser(this.platformId)) return;
     this.autoSlideInterval = setInterval(() => {
       const maxIndex = this.categories.length - this.itemsPerSlide;
       if (this.currentIndex < maxIndex) {
