@@ -86,7 +86,7 @@ export class NavigationHeaderComponent implements OnInit {
       });
 
     // Close menus when clicking outside (browser only)
-    if (isPlatformBrowser(this.platformId)) {
+    if (typeof document !== 'undefined' && typeof window !== 'undefined') {
       document.addEventListener('click', (event) => {
         const target = event.target as HTMLElement;
         // For user menu

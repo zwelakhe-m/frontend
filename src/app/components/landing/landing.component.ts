@@ -82,20 +82,23 @@ export class LandingComponent implements AfterViewInit, OnDestroy {
   private autoSlideInterval: any;
   protected itemsPerSlide = 3;
 
-  @HostListener('window:resize')
-  onResize() {
-    if (!isPlatformBrowser(this.platformId)) return;
+  private handleResize = () => {
+    if (typeof window === 'undefined') return;
     this.updateItemsPerSlide();
     this.snapToCurrent();
-  }
+  };
 
   ngAfterViewInit() {
-    if (!isPlatformBrowser(this.platformId)) return;
+    if (typeof window === 'undefined') return;
     this.updateItemsPerSlide();
+    window.addEventListener('resize', this.handleResize);
     this.startAutoSlide();
   }
 
   ngOnDestroy() {
+    if (typeof window !== 'undefined') {
+      window.removeEventListener('resize', this.handleResize);
+    }
     if (this.autoSlideInterval) {
       clearInterval(this.autoSlideInterval);
     }

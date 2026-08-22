@@ -339,14 +339,14 @@ export class NotificationBellComponent implements OnDestroy {
     );
 
     // Close dropdown when clicking outside (browser only)
-    if (isPlatformBrowser(this.platformId)) {
+    if (typeof document !== 'undefined' && typeof window !== 'undefined') {
       document.addEventListener('click', this.handleOutsideClick.bind(this));
     }
   }
 
   ngOnDestroy(): void {
     this.subscriptions.forEach((sub) => sub.unsubscribe());
-    if (isPlatformBrowser(this.platformId)) {
+    if (typeof document !== 'undefined' && typeof window !== 'undefined') {
       document.removeEventListener('click', this.handleOutsideClick.bind(this));
     }
   }
