@@ -332,3 +332,24 @@
     height: 1.3rem;
   }
 }
+/* Dark mode: keep listing text readable on the now-dark card surfaces */
+@media (prefers-color-scheme: dark) {
+  .listing-title,
+  .listing-price {
+    color: var(--neutral-900) !important; /* flips to light #e6eef6 in dark mode */
+  }
+
+  .listing-meta {
+    color: var(--muted) !important;
+  }
+
+  /* neutral action icon was dark-on-dark; keep it visible */
+  .action-icon.neutral {
+    color: var(--neutral-900) !important;
+    background: linear-gradient(
+      135deg,
+      rgba(148, 163, 184, 0.22),
+      rgba(148, 163, 184, 0.34)
+    ) !important;
+  }
+}
