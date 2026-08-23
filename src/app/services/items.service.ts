@@ -268,6 +268,9 @@ export class ItemsService {
     // Add form fields
     formData.append('name', itemData.name);
     formData.append('description', itemData.description);
+    if (itemData.category) {
+      formData.append('category', itemData.category);
+    }
     // Validate pricePerDay
     if (typeof itemData.pricePerDay === 'number' && !isNaN(itemData.pricePerDay)) {
       formData.append('pricePerDay', itemData.pricePerDay.toString());
@@ -330,7 +333,7 @@ export class ItemsService {
 
     // Add updated fields
     Object.entries(itemData).forEach(([key, value]) => {
-      if (value !== undefined && key !== 'images') {
+      if (value !== undefined && key !== 'images' && key !== 'imageUrls') {
         formData.append(key, value.toString());
       }
     });
