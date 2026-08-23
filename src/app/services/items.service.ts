@@ -62,6 +62,7 @@ export interface CreateItemRequest {
   useCurrentLocation?: boolean;
   images?: File[]; // For form data
   imageUrls?: string[]; // For URLs after upload
+  isAvailable?: boolean; // Sent on update so backend never stores NULL
 }
 
 export interface SearchFilters {
