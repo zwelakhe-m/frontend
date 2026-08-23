@@ -94,7 +94,7 @@ export class ItemCreateComponent implements OnInit {
           category: item.category,
           price: item.pricePerDay,
           manualLocation: item.location || '',
-          availability: item.isAvailable,
+          availability: item.isAvailable ?? true,
           // Add more fields as needed
           // deposit, minRentalDays, maxRentalDays, deliveryAvailable, deliveryFee, pickupInstructions, condition, rules
         });
@@ -267,6 +267,9 @@ export class ItemCreateComponent implements OnInit {
       description: formValues.description,
       category: formValues.category,
       pricePerDay: parseFloat(formValues.price),
+      // Always send availability on update so the backend never stores NULL
+      // (a NULL would hide the item from browse)
+      isAvailable: formValues.availability ?? true,
       useCurrentLocation: this.locationMethod() === 'current',
       ...(this.locationMethod() === 'current' &&
         this.currentLocation() && {
