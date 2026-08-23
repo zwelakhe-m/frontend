@@ -3,8 +3,27 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Import Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700;800&display=swap');
+/* Theme variables: Violet Night */
+:root {
+  --color-primary: #6d28d9;
+  --color-primary-600: #5b21b6;
+  --color-primary-100: #ede9fe;
+  --color-accent: #06b6d4;
+  --color-success: #22c55e;
+  --neutral-900: #0b1220;
+  --muted: #94a3b8;
+  --card-bg: rgba(255,255,255,0.9);
+  --glass-bg: rgba(255,255,255,0.12);
+  --border: #e5e7eb;
+  --shadow-primary-rgba: rgba(109,40,217,0.12);
+  --color-danger: #ef4444;
+  --color-warning: #f59e0b;
+  --bg-100: #f3f4f6;
+  --bg-200: #f9fafb;
+  --shadow-primary-500: rgba(109,40,217,0.5);
+  --danger-300: #fca5a5;
+  --radius-lg: 1rem;
+}
 
 /* Global Base Styles */
 @layer base {
@@ -14,6 +33,7 @@
 
   body {
     @apply bg-gradient-to-br from-primary-50 via-white to-accent-50 min-h-screen font-sans text-gray-900;
+    font-family: Poppins, Inter, 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial;
     background-attachment: fixed;
   }
 
@@ -119,6 +139,9 @@
       ),
       radial-gradient(circle at 75px 75px, rgba(0, 184, 148, 0.2) 2%, transparent 50%);
     background-size: 100px 100px;
+      @media (prefers-color-scheme: dark) {
+        /* Improve contrast for cards, modals and inputs in dark mode */
+        .card,
   }
 
   .scrollbar-hide {
@@ -184,17 +207,33 @@
   }
 }
 
-/* Animation Utilities */
-.animate-on-scroll {
-  opacity: 0;
-  transform: translateY(20px);
-  transition: all 0.6s ease-out;
-}
+  /* Icon utilities */
+  .icon {
+    display: inline-block;
+    vertical-align: middle;
+  }
 
-.animate-on-scroll.is-visible {
-  opacity: 1;
-  transform: translateY(0);
-}
+  .icon-muted {
+    color: var(--muted);
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  .icon-primary {
+    color: var(--color-primary);
+  }
+
+  /* Animation Utilities */
+  .animate-on-scroll {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.6s ease-out;
+  }
+
+  .animate-on-scroll.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
 
 /* Glassmorphism Variants */
 .glass-card {
@@ -216,5 +255,87 @@
   .glass-card {
     background: rgba(0, 0, 0, 0.25);
     border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+}
+
+/* Dark mode variable overrides for system preference */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-primary: #6d28d9;
+    --color-primary-600: #5b21b6;
+    --color-primary-100: #1f1230;
+    --color-accent: #06b6d4;
+    --color-success: #16a34a;
+    --neutral-900: #e6eef6; /* light text in dark mode */
+    --muted: #9ca3af;
+    --card-bg: rgba(8,10,15,0.6);
+    --glass-bg: rgba(255,255,255,0.04);
+    --border: rgba(255,255,255,0.06);
+    --shadow-primary-rgba: rgba(109,40,217,0.18);
+    --color-danger: #f87171;
+    --color-warning: #f59e0b;
+    --bg-100: #0b1220;
+    --bg-200: #071022;
+    --shadow-primary-500: rgba(109,40,217,0.85);
+    --danger-300: rgba(248,113,113,0.2);
+  }
+
+  body {
+    color: var(--neutral-900);
+    background: linear-gradient(180deg, rgba(11,18,32,1) 0%, rgba(4,6,12,1) 100%);
+  }
+
+  .page-subtitle {
+    color: var(--muted) !important;
+  }
+
+  .glass {
+    @apply bg-gray-900/30;
+  }
+  
+  /* Improve contrast for cards, modals and inputs in dark mode */
+  .card,
+  .card-glass,
+  .glass-card,
+  .tab-content,
+  .booking-card,
+  .contact-form,
+  .booking-modal .modal,
+  .modal,
+  .info-card {
+    background: var(--card-bg) !important;
+    color: var(--neutral-900) !important;
+    border: 1px solid var(--border) !important;
+  }
+
+  /* Make form backgrounds and labels more legible in dark mode */
+  .contact-form,
+  .glass-strong,
+  .booking-modal .modal,
+  .modal,
+  form,
+  .card {
+    background: white; /* make form/card background contrast strongly */
+    color: var(--neutral-900) !important;
+    border: 1px solid rgba(255,255,255,0.06) !important;
+  }
+
+  .form-label,
+  label {
+    color: var(--neutral-900) !important;
+  }
+
+  input,
+  textarea,
+  .form-input,
+  .filter-select,
+  .search-input {
+    background: rgba(255,255,255,0.04) !important;
+    color: var(--neutral-900) !important;
+    border: 1px solid var(--border) !important;
+  }
+
+  .btn-primary {
+    box-shadow: 0 6px 20px rgba(109,40,217,0.35);
   }
 }

@@ -1,9 +1,9 @@
 // Override page-title and page-subtitle color for My Items page
 .page-title {
-  color: #7c3aed !important;
+  color: var(--color-primary) !important;
 }
 .page-subtitle {
-  color: #000000 !important;
+  color: var(--neutral-900) !important;
 }
 // Glass effects
 .glass-header {
@@ -28,7 +28,7 @@
 
 // Text gradients
 .text-gradient {
-  background: linear-gradient(135deg, #8b5cf6 0%, #10b981 100%);
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-success) 100%);
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -41,50 +41,50 @@
   min-width: 120px;
 
   &:focus {
-    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+    box-shadow: 0 0 0 3px rgba(109,40,217,0.08);
   }
 }
 
 // Status badges
 .status-badge {
   &.status-available {
-    background-color: #d1fae5;
-    color: #065f46;
+    background-color: rgba(34,197,94,0.12);
+    color: var(--color-success);
   }
 
   &.status-rented {
-    background-color: #fef3c7;
-    color: #92400e;
+    background-color: rgba(234,179,8,0.12);
+    color: var(--color-warning);
   }
 
   &.status-unavailable {
-    background-color: #fee2e2;
-    color: #991b1b;
+    background-color: rgba(239,68,68,0.12);
+    color: var(--color-danger);
   }
 }
 
 // Button styles
 .btn-primary {
-  background: linear-gradient(to right, #7c3aed, #10b981);
+  background: linear-gradient(to right, var(--color-primary), var(--color-success));
   color: white;
   transition: all 0.2s ease;
   transform: scale(1);
 
   &:hover {
-    background: linear-gradient(to right, #6d28d9, #059669);
+    background: linear-gradient(to right, var(--color-primary-600), var(--color-success));
     transform: scale(1.02);
   }
 
   &:focus {
     outline: none;
-    box-shadow: 0 0 0 2px #7c3aed, 0 0 0 4px rgba(124, 58, 237, 0.2);
+    box-shadow: 0 0 0 2px var(--color-primary), 0 0 0 4px rgba(109,40,217,0.2);
   }
 }
 
 .btn-outline {
   background: rgba(255, 255, 255, 0.8);
-  border: 1px solid rgba(209, 213, 219, 0.5);
-  color: rgb(75, 85, 99);
+  border: 1px solid var(--border);
+  color: var(--muted);
   transition: all 0.2s ease;
   display: flex;
   align-items: center;
@@ -92,8 +92,8 @@
 
   &:hover:not(:disabled) {
     background: rgba(255, 255, 255, 0.95);
-    border-color: rgb(139, 92, 246);
-    color: rgb(139, 92, 246);
+    border-color: var(--color-primary);
+    color: var(--color-primary);
   }
 
   &:disabled {
@@ -103,9 +103,9 @@
 
   &.text-red-600 {
     &:hover {
-      background-color: #fef2f2;
-      border-color: #dc2626;
-      color: #dc2626;
+      background-color: rgba(239,68,68,0.12);
+      border-color: var(--color-danger);
+      color: var(--color-danger);
     }
   }
 }
@@ -113,23 +113,23 @@
 .pagination-btn {
   background: rgba(255, 255, 255, 0.8);
   border: 1px solid rgba(209, 213, 219, 0.5);
-  color: rgb(75, 85, 99);
+  color: var(--muted);
   transition: all 0.2s ease;
 
   &:hover:not(:disabled) {
     background: rgba(255, 255, 255, 0.95);
-    border-color: rgb(139, 92, 246);
-    color: rgb(139, 92, 246);
+    border-color: var(--color-primary);
+    color: var(--color-primary);
   }
 }
 
 .pagination-btn-active {
-  background: linear-gradient(to right, #7c3aed, #10b981);
+  background: linear-gradient(to right, var(--color-primary), var(--color-success));
   color: white;
   border: none;
 
   &:hover {
-    background: linear-gradient(to right, #6d28d9, #059669);
+    background: linear-gradient(to right, var(--color-primary-600), var(--color-success));
   }
 }
 
@@ -197,10 +197,10 @@
 .loading-card {
   .animate-pulse {
     .bg-gray-300 {
-      background: linear-gradient(90deg, #f3f4f6 25%, #e5e7eb 50%, #f3f4f6 75%);
-      background-size: 200% 100%;
-      animation: shimmer 2s infinite;
-    }
+        background: linear-gradient(90deg, var(--bg-200) 25%, var(--border) 50%, var(--bg-200) 75%);
+        background-size: 200% 100%;
+        animation: shimmer 2s infinite;
+      }
   }
 }
 

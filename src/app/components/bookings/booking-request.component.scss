@@ -25,8 +25,8 @@
 
   &:focus {
     outline: none;
-    border-color: rgba(168, 85, 247, 0.5);
-    box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.1);
+    border-color: rgba(109,40,217,0.5);
+    box-shadow: 0 0 0 3px rgba(109,40,217,0.08);
     background: rgba(255, 255, 255, 0.08);
   }
 
@@ -37,7 +37,7 @@
 
 // Button styling
 .btn-primary {
-  background: linear-gradient(135deg, #8b5cf6 0%, #06b6d4 50%, #10b981 100%);
+  background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
   color: white;
   font-weight: 600;
   padding: 16px 24px;
@@ -62,7 +62,7 @@
 
   &:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 10px 30px rgba(139, 92, 246, 0.3);
+    box-shadow: 0 10px 30px rgba(109,40,217,0.18);
 
     &:before {
       left: 100%;
@@ -82,7 +82,7 @@
 
 // Error message styling
 .error-message {
-  color: #f87171;
+  color: var(--color-danger);
   font-size: 12px;
   margin-top: 4px;
 }
@@ -91,10 +91,10 @@
 @keyframes pulse-glow {
   0%,
   100% {
-    box-shadow: 0 0 20px rgba(168, 85, 247, 0.3);
+    box-shadow: 0 0 20px rgba(109,40,217,0.22);
   }
   50% {
-    box-shadow: 0 0 30px rgba(168, 85, 247, 0.5);
+    box-shadow: 0 0 30px rgba(109,40,217,0.36);
   }
 }
 

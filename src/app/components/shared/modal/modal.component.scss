@@ -1,7 +1,7 @@
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(30, 27, 75, 0.45);
+  background: var(--glass-bg);
   backdrop-filter: blur(2px);
   z-index: 1000;
   display: flex;
@@ -42,13 +42,13 @@
   background: transparent;
   border: none;
   font-size: 2rem;
-  color: #6366f1;
+  color: var(--color-primary);
   cursor: pointer;
   z-index: 10;
   transition: color 0.2s;
 }
 .modal-close:hover {
-  color: #d946ef;
+  color: var(--color-accent);
 }
 
 @keyframes fadeIn {

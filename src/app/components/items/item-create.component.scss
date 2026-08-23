@@ -16,7 +16,7 @@
 
 // Text gradients
 .text-gradient {
-  background: linear-gradient(135deg, #8b5cf6 0%, #10b981 100%);
+  background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -28,16 +28,16 @@
   font-size: 0.875rem;
 
   &:focus {
-    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+    box-shadow: 0 0 0 3px rgba(109,40,217,0.08);
     transform: translateY(-1px);
   }
 
   &.error {
-    border-color: #ef4444;
-    background-color: #fef2f2;
+    border-color: var(--color-danger);
+    background-color: rgba(239,68,68,0.08);
 
     &:focus {
-      box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+      box-shadow: 0 0 0 3px rgba(239,68,68,0.08);
     }
   }
 }
@@ -48,19 +48,19 @@
 
 // Button styles
 .btn-primary {
-  background: linear-gradient(to right, #7c3aed, #10b981);
+  background: linear-gradient(to right, var(--color-primary), var(--color-accent));
   color: white;
   transition: all 0.2s ease;
   transform: scale(1);
 
   &:hover:not(:disabled) {
-    background: linear-gradient(to right, #6d28d9, #059669);
+    background: linear-gradient(to right, var(--color-primary-600), var(--color-accent));
     transform: scale(1.02);
   }
 
   &:focus {
     outline: none;
-    box-shadow: 0 0 0 2px #7c3aed, 0 0 0 4px rgba(124, 58, 237, 0.2);
+    box-shadow: 0 0 0 2px rgba(107,33,168,0.15);
   }
 }
 
@@ -84,13 +84,13 @@
 
 // File upload area
 .file-upload-area {
-  border: 2px dashed #d1d5db;
+  border: 2px dashed var(--border);
   border-radius: 12px;
   transition: all 0.3s ease;
 
   &:hover {
-    border-color: #8b5cf6;
-    background-color: rgba(139, 92, 246, 0.02);
+    border-color: var(--color-primary);
+    background-color: rgba(109,40,217,0.03);
   }
 }
 
@@ -113,7 +113,7 @@
     right: -8px;
     width: 24px;
     height: 24px;
-    background-color: #ef4444;
+    background-color: var(--color-danger);
     color: white;
     border-radius: 50%;
     display: flex;
@@ -124,7 +124,7 @@
     cursor: pointer;
 
     &:hover {
-      background-color: #dc2626;
+      background-color: var(--color-danger);
     }
   }
 }
@@ -162,11 +162,11 @@
 // Custom checkbox styles
 input[type='checkbox'] {
   &:checked {
-    background-color: #7c3aed;
-    border-color: #7c3aed;
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
   }
 
   &:focus {
-    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+    box-shadow: 0 0 0 3px rgba(109,40,217,0.12);
   }
 }

@@ -9,42 +9,42 @@
   display: block;
   font-size: 0.875rem;
   font-weight: 600;
-  color: #374151;
+  color: var(--muted);
   margin-bottom: 0.5rem;
 }
 
 .form-input {
   width: 100%;
   height: 2.5rem;
-  background-color: #f9fafb;
-  border: 1px solid #e5e7eb;
+  background-color: var(--bg-200);
+  border: 1px solid var(--border);
   border-radius: 0.75rem;
   padding: 0.75rem 1rem;
-  color: #22292f;
+  color: var(--neutral-900);
   font-size: 1rem;
   transition: all 0.2s ease;
 
   &::placeholder {
-    color: #6b7280;
+    color: var(--muted);
   }
 
   &:focus {
     outline: none;
-    border-color: #8b5cf6;
-    box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.5);
-    background-color: #fff;
-    color: #22292f;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 2px var(--shadow-primary-500);
+    background-color: var(--bg-100);
+    color: var(--neutral-900);
   }
 
   &.border-red-300 {
-    border-color: #fca5a5;
-    background-color: rgba(254, 242, 242, 0.5);
-    color: #b91c1c;
+    border-color: var(--danger-300);
+    background-color: rgba(239,68,68,0.12);
+    color: var(--color-danger);
   }
 }
 
 .error-message {
-  color: #dc2626;
+  color: var(--color-danger);
   font-size: 0.875rem;
   margin-top: 0.25rem;
   display: flex;
@@ -58,7 +58,7 @@
 
 // Button styles
 .btn-primary {
-  background: linear-gradient(to right, #8b5cf6, #10b981);
+  background: linear-gradient(to right, var(--color-primary), var(--color-success));
   color: white;
   border-radius: 0.75rem;
   border: none;
@@ -68,7 +68,7 @@
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 
   &:hover {
-    background: linear-gradient(to right, #7c3aed, #059669);
+    background: linear-gradient(to right, var(--color-primary-600), var(--color-success));
     transform: scale(1.05);
     box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
   }
@@ -78,15 +78,15 @@
   }
 
   &:focus {
-    box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.5);
+    box-shadow: 0 0 0 2px var(--shadow-primary-500);
   }
 }
 
 .btn-outline {
   background-color: rgba(255, 255, 255, 0.6);
   backdrop-filter: blur(8px);
-  border: 1px solid #e5e7eb;
-  color: #374151;
+  border: 1px solid var(--border);
+  color: var(--muted);
   border-radius: 0.75rem;
   cursor: pointer;
   outline: none;
@@ -94,7 +94,7 @@
 
   &:hover {
     background-color: rgba(255, 255, 255, 0.8);
-    border-color: #d1d5db;
+    border-color: var(--border);
     transform: scale(1.05);
   }
 
@@ -116,7 +116,7 @@
 
 // Text gradient
 .text-gradient {
-  background: linear-gradient(to right, #8b5cf6, #10b981);
+  background: linear-gradient(to right, var(--color-primary), var(--color-success));
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -167,19 +167,19 @@ input[type='checkbox'] {
   appearance: none;
   width: 1rem;
   height: 1rem;
-  border: 2px solid #d1d5db;
+  border: 2px solid var(--border);
   border-radius: 0.25rem;
   background-color: rgba(255, 255, 255, 0.5);
   transition: all 0.2s ease;
 
   &:checked {
-    background-color: #8b5cf6;
-    border-color: #8b5cf6;
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
   }
 
   &:focus {
     outline: none;
-    box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.5);
+    box-shadow: 0 0 0 2px var(--shadow-primary-500);
   }
 
   &:checked::after {
@@ -264,9 +264,9 @@ input[type='checkbox'] {
 }
 
 // Success feedback
-.form-input:valid {
-  border-color: #86efac;
-  background-color: rgba(240, 253, 244, 0.3);
+  .form-input:valid {
+  border-color: var(--color-success);
+  background-color: rgba(34,197,94,0.12);
 }
 
 // Disable text selection for buttons
@@ -279,12 +279,12 @@ input[type='checkbox'] {
 @media (prefers-contrast: high) {
   .glass-strong {
     background-color: white;
-    border: 2px solid #6b7280;
+    border: 2px solid var(--muted);
   }
 
   .form-input {
     background-color: white;
-    border: 2px solid #6b7280;
+    border: 2px solid var(--muted);
   }
 
   .text-gradient {
@@ -303,20 +303,20 @@ input[type='checkbox'] {
 
   .form-input {
     background-color: rgba(31, 41, 55, 0.6);
-    border-color: #4b5563;
+    border-color: var(--muted);
     color: white;
 
     &::placeholder {
-      color: #9ca3af;
+      color: var(--muted);
     }
   }
 
   .form-label {
-    color: #e5e7eb;
+    color: var(--border);
   }
 
   .text-gradient {
-    background: linear-gradient(to right, #a78bfa, #6ee7b7);
+    background: linear-gradient(to right, var(--color-primary), var(--color-success));
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;

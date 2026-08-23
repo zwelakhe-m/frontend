@@ -19,11 +19,11 @@
 }
 
 .character-count.warning {
-  color: #f59e0b;
+  color: var(--color-warning);
 }
 
 .character-count.error {
-  color: #ef4444;
+  color: var(--color-danger);
 }
 
 /* Collapsible animation */

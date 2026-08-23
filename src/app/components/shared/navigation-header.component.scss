@@ -10,7 +10,7 @@
     left: 50%;
     width: 0;
     height: 2px;
-    background: linear-gradient(90deg, #9333ea, #10b981);
+    background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
     transition: all 0.3s ease;
     transform: translateX(-50%);
   }

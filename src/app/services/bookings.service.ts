@@ -359,17 +359,17 @@ export class BookingsService {
   getStatusColor(status: BookingStatus): string {
     switch (status) {
       case BookingStatus.PENDING:
-        return '#f59e0b'; // amber
+        return 'var(--color-warning)';
       case BookingStatus.APPROVED:
-        return '#3b82f6'; // blue
+        return 'var(--color-primary)';
       case BookingStatus.COMPLETED:
-        return '#10b981'; // emerald
+        return 'var(--color-success)';
       case BookingStatus.CANCELLED:
-        return '#ef4444'; // red
+        return 'var(--color-danger)';
       case BookingStatus.DENIED:
-        return '#ef4444'; // red
+        return 'var(--color-danger)';
       default:
-        return '#6b7280'; // gray
+        return 'var(--muted)';
     }
   }
 

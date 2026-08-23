@@ -1,11 +1,11 @@
 // Lighter glass card for about/owner sections
 .glass-card-light {
   background: rgba(255, 255, 255, 0.92);
-  border: 1px solid rgba(124, 58, 237, 0.10);
+  border: 1px solid var(--shadow-primary-rgba);
   transition: background 0.2s;
 }
 .glass-card-light:hover {
-  background: rgba(139, 92, 246, 0.08); /* subtle purple tint on hover */
+  background: rgba(109,40,217,0.08); /* subtle purple tint on hover */
 }
 // Item Detail Component Styles
 
@@ -18,7 +18,7 @@
     aspect-ratio: 1;
     border-radius: 1rem;
     overflow: hidden;
-    background-color: #f3f4f6;
+    background-color: var(--bg-100);
     position: relative;
 
     img {
@@ -61,7 +61,7 @@
       aspect-ratio: 1;
       border-radius: 0.5rem;
       overflow: hidden;
-      background-color: #f3f4f6;
+      background-color: var(--bg-100);
       cursor: pointer;
       transition: opacity 0.2s;
 
@@ -107,7 +107,7 @@
       display: block;
       font-size: 0.875rem;
       font-weight: 500;
-      color: #374151;
+      color: var(--muted);
       margin-bottom: 0.5rem;
     }
 
@@ -115,7 +115,7 @@
     textarea {
       width: 100%;
       padding: 0.75rem;
-      border: 1px solid #d1d5db;
+      border: 1px solid var(--border);
       border-radius: 0.5rem;
       transition: all 0.2s;
 
@@ -134,7 +134,7 @@
   }
 
   .booking-summary {
-    background-color: #f9fafb;
+    background-color: var(--bg-200);
     border-radius: 0.75rem;
     padding: 1rem;
     margin: 1rem 0;
@@ -147,12 +147,12 @@
       &.total {
         font-size: 1.125rem;
         font-weight: 600;
-        border-top: 1px solid #e5e7eb;
+        border-top: 1px solid var(--border);
         padding-top: 0.5rem;
         margin-top: 0.5rem;
 
         .price {
-          color: #8b5cf6;
+          color: var(--color-primary);
         }
       }
     }
@@ -169,7 +169,7 @@
   h3 {
     font-size: 1.125rem;
     font-weight: 600;
-    color: #111827;
+    color: var(--neutral-900);
     margin-bottom: 1rem;
   }
 }
@@ -181,7 +181,7 @@
   .avatar {
     width: 3rem;
     height: 3rem;
-    background: linear-gradient(45deg, #8b5cf6, #10b981);
+    background: linear-gradient(45deg, var(--color-primary), var(--color-success));
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -197,12 +197,12 @@
   .details {
     .name {
       font-weight: 600;
-      color: #111827;
+      color: var(--neutral-900);
     }
 
     .member-since {
       font-size: 0.875rem;
-      color: #6b7280;
+      color: var(--muted);
     }
   }
 }
@@ -212,11 +212,11 @@
   align-items: center;
 
   &.available {
-    color: #10b981;
+    color: var(--color-success);
   }
 
   &.unavailable {
-    color: #ef4444;
+    color: var(--color-danger);
   }
 
   svg {

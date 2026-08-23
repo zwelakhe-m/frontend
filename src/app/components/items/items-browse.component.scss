@@ -21,7 +21,7 @@
 
 // Text gradients
 .text-gradient {
-  background: linear-gradient(135deg, #8b5cf6 0%, #10b981 100%);
+  background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -34,7 +34,7 @@
 
   &:focus {
     transform: scale(1.02);
-    box-shadow: 0 8px 32px rgba(139, 92, 246, 0.2);
+    box-shadow: 0 8px 32px rgba(109,40,217,0.18);
   }
 }
 
@@ -44,7 +44,7 @@
   font-size: 0.875rem;
 
   &:focus {
-    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+    box-shadow: 0 0 0 3px rgba(109,40,217,0.08);
   }
 }
 
@@ -72,43 +72,43 @@
 
 // Button styles
 .btn-primary {
-  background: linear-gradient(to right, #7c3aed, #10b981);
+  background: linear-gradient(to right, var(--color-primary), var(--color-accent));
   color: white;
   transition: all 0.2s ease;
   transform: scale(1);
 
   &:hover {
-    background: linear-gradient(to right, #6d28d9, #059669);
+    background: linear-gradient(to right, var(--color-primary-600), var(--color-accent));
     transform: scale(1.02);
   }
 
   &:focus {
     outline: none;
-    box-shadow: 0 0 0 2px #7c3aed, 0 0 0 4px rgba(124, 58, 237, 0.2);
+    box-shadow: 0 0 0 2px rgba(107, 33, 168, 0.15);
   }
 }
 
 .pagination-btn {
   background: rgba(255, 255, 255, 0.8);
   border: 1px solid rgba(209, 213, 219, 0.5);
-  color: rgb(75, 85, 99);
+  color: var(--muted);
   transition: all 0.2s ease;
 
   &:hover:not(:disabled) {
     background: rgba(255, 255, 255, 0.95);
-    border-color: rgb(139, 92, 246);
-    color: rgb(139, 92, 246);
+    border-color: var(--color-primary);
+    color: var(--color-primary);
   }
 }
 
 .pagination-btn-active {
-  background: linear-gradient(90deg, #00bcd4 0%, #3f51b5 100%);
-  color: #fff;
+  background: linear-gradient(90deg, var(--color-accent), var(--color-primary));
+  color: white;
   border: none;
-  box-shadow: 0 2px 8px 0 rgba(0, 188, 212, 0.10);
+  box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.08);
 
   &:hover {
-    background: linear-gradient(90deg, #3f51b5 0%, #00bcd4 100%);
+    background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
   }
 }
 

@@ -120,6 +120,22 @@ export class DashboardComponent implements OnInit {
     return this.dashboardGrowth();
   }
 
+  protected formatCurrency(value: number): string {
+    return new Intl.NumberFormat('en-ZA', {
+      style: 'currency',
+      currency: 'ZAR',
+      maximumFractionDigits: 0,
+    }).format(value || 0);
+  }
+
+  protected getItemStatusClass(item: RentalItem): string {
+    return item.isAvailable ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-200 text-slate-700';
+  }
+
+  protected getItemStatusLabel(item: RentalItem): string {
+    return item.isAvailable ? 'Active' : 'Booked';
+  }
+
   protected formatBookingDate(booking: Booking): string {
     const startDate = new Date(booking.start_date);
     const endDate = new Date(booking.end_date);
