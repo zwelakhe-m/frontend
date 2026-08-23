@@ -490,20 +490,28 @@ export class ItemsService {
       title: backendItem.name,
       description: backendItem.description,
       category: backendItem.category || 'Other',
-      pricePerDay: parseFloat(backendItem.price_per_day),
+      pricePerDay: parseFloat(
+        backendItem.price_per_day ?? backendItem.pricePerDay
+      ),
       location:
         backendItem.address?.formatted_address ||
         backendItem.formatted_address ||
         'Location not available',
-      latitude: parseFloat(backendItem.location_lat) || 0,
-      longitude: parseFloat(backendItem.location_lon) || 0,
-      images: backendItem.image_urls || [],
-      isAvailable: backendItem.is_available !== false,
+      latitude:
+        parseFloat(backendItem.location_lat ?? backendItem.location?.lat) || 0,
+      longitude:
+        parseFloat(backendItem.location_lon ?? backendItem.location?.lon) || 0,
+      images: backendItem.image_urls || backendItem.imageUrls || [],
+      isAvailable:
+        backendItem.is_available !== undefined
+          ? backendItem.is_available
+          : backendItem.isAvailable !== false,
       ownerId: backendItem.owner_id || 0,
       ownerName: backendItem.owner?.name || backendItem.owner_name || 'Unknown',
       ownerVerified: false,
-      createdAt: backendItem.created_at,
-      updatedAt: backendItem.updated_at || backendItem.created_at,
+      createdAt: backendItem.created_at || backendItem.createdAt,
+      updatedAt:
+        backendItem.updated_at || backendItem.created_at || backendItem.createdAt,
     };
   }
 

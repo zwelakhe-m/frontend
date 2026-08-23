@@ -341,4 +341,11 @@ input[type='checkbox'] {
     background-clip: text;
     -webkit-text-fill-color: transparent;
   }
+
+  /* Social buttons: darken backgrounds so the (now light) text stays readable */
+  .bg-gray-100,
+  .bg-gray-200,
+  .bg-gray-400 {
+    background-color: rgba(15, 23, 42, 0.5) !important;
+  }
 }

@@ -170,7 +170,7 @@
         <!-- Item Image (Cloudinary) -->
         <div class="relative h-48 bg-gray-200">
           <img
-            [src]="item.images && item.images.length > 0 ? item.images[0] : 'https://res.cloudinary.com/demo/image/upload/v1699999999/no-image-placeholder.png'"
+            [src]="getImageUrl(item)"
             [alt]="item.title"
             class="w-full h-full object-cover"
             loading="lazy"

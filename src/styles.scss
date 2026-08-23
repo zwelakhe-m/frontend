@@ -139,9 +139,6 @@
       ),
       radial-gradient(circle at 75px 75px, rgba(0, 184, 148, 0.2) 2%, transparent 50%);
     background-size: 100px 100px;
-      @media (prefers-color-scheme: dark) {
-        /* Improve contrast for cards, modals and inputs in dark mode */
-        .card,
   }
 
   .scrollbar-hide {
@@ -308,16 +305,17 @@
     border: 1px solid var(--border) !important;
   }
 
-  /* Make form backgrounds and labels more legible in dark mode */
+  /* Make form/modal backgrounds dark, so light text stays readable */
   .contact-form,
   .glass-strong,
   .booking-modal .modal,
   .modal,
+  .modal-content,
   form,
   .card {
-    background: white; /* make form/card background contrast strongly */
+    background: var(--card-bg) !important;
     color: var(--neutral-900) !important;
-    border: 1px solid rgba(255,255,255,0.06) !important;
+    border: 1px solid var(--border) !important;
   }
 
   .form-label,
@@ -337,5 +335,290 @@
 
   .btn-primary {
     box-shadow: 0 6px 20px rgba(109,40,217,0.35);
+  }
+}
+/* Global dark mode system: dark surfaces with light text everywhere,
+   keeping small white accent chips/buttons readable as "inverted" accents */
+@media (prefers-color-scheme: dark) {
+  /* 1) Page backgrounds: convert light gradient pages into dark gradients */
+  .from-purple-50,
+  .from-primary-50,
+  .from-slate-50 {
+    --tw-gradient-from: #0e1426 !important;
+  }
+
+  .to-emerald-50 {
+    --tw-gradient-to: #0d1b16 !important;
+  }
+
+  .to-accent-50 {
+    --tw-gradient-to: #0c1d28 !important;
+  }
+
+  .to-pink-50 {
+    --tw-gradient-to: #221224 !important;
+  }
+
+  .via-white {
+    --tw-gradient-stops: var(--tw-gradient-from), rgba(255, 255, 255, 0.04), var(--tw-gradient-to) !important;
+  }
+
+  .bg-slate-100 {
+    background-color: #0f1526 !important;
+  }
+
+  /* 2) Dashboard-style surfaces defined in component SCSS -> dark */
+  .metric-card,
+  .section-shell,
+  .request-card,
+  .listing-card,
+  .action-card,
+  .profile-card {
+    background: var(--card-bg) !important;
+    color: var(--neutral-900) !important;
+    border: 1px solid var(--border) !important;
+  }
+
+  .listing-image,
+  .listing-image-empty {
+    background: rgba(255, 255, 255, 0.06) !important;
+  }
+
+  .listing-image-empty {
+    color: var(--muted) !important;
+  }
+
+  .empty-state {
+    background: rgba(15, 23, 42, 0.45) !important;
+  }
+
+  /* 3) White translucent container utilities -> dark */
+  .bg-white,
+  .bg-white\/30,
+  .bg-white\/40,
+  .bg-white\/50,
+  .bg-white\/60,
+  .bg-white\/70,
+  .bg-white\/80,
+  .bg-white\/90 {
+    background-color: rgba(15, 23, 42, 0.62) !important;
+    color: var(--neutral-900) !important;
+  }
+
+  /* 4) Force light text for dark-on-light utility classes */
+  .text-gray-400,
+  .text-gray-500,
+  .text-gray-600,
+  .text-gray-700,
+  .text-gray-800,
+  .text-gray-900,
+  .text-slate-500,
+  .text-slate-600,
+  .text-slate-700,
+  .text-slate-800,
+  .text-slate-900,
+  .text-primary-600,
+  .text-primary-700,
+  .text-primary-800,
+  .text-violet-700,
+  .text-violet-800,
+  .text-purple-600,
+  .text-purple-700,
+  .text-purple-800,
+  .text-blue-700,
+  .text-blue-800,
+  .text-green-700,
+  .text-green-800,
+  .text-red-700,
+  .text-red-800,
+  .text-amber-600,
+  .text-amber-700,
+  .text-amber-800 {
+    color: var(--neutral-900) !important;
+  }
+
+  /* 5) Small white accents stay white with dark text (active tabs,
+        "List an item" CTA, category chips, divider pill, carousel arrows) */
+  .bg-white.text-purple-600 {
+    background-color: #ffffff !important;
+    color: rgb(124, 58, 237) !important;
+  }
+
+  .bg-white.text-purple-700 {
+    background-color: #ffffff !important;
+    color: rgb(126, 34, 206) !important;
+  }
+
+  .bg-white.text-violet-900,
+  .bg-white.text-violet-700 {
+    background-color: #ffffff !important;
+    color: rgb(76, 29, 149) !important;
+  }
+
+  .bg-white\/90.text-gray-800,
+  .bg-white\/90.text-gray-900 {
+    background-color: rgba(255, 255, 255, 0.92) !important;
+    color: rgb(31, 41, 55) !important;
+  }
+
+  .bg-white\/80.text-gray-500 {
+    background-color: rgba(255, 255, 255, 0.85) !important;
+    color: rgb(75, 85, 99) !important;
+  }
+
+  .bg-white\/50.text-purple-600 {
+    background-color: rgba(255, 255, 255, 0.5) !important;
+    color: rgb(124, 58, 237) !important;
+  }
+
+  /* outline buttons readable on dark backgrounds */
+  .btn-outline,
+  .back-button {
+    color: var(--neutral-900) !important;
+    background-color: rgba(255, 255, 255, 0.06) !important;
+    border-color: var(--border) !important;
+  }
+
+  /* neutral hover states: subtle, never a bright white flash */
+  .hover\:bg-gray-50:hover,
+  .hover\:bg-gray-100:hover {
+    background-color: rgba(255, 255, 255, 0.08) !important;
+  }
+
+  .hover\:bg-purple-50:hover,
+  .hover\:bg-primary-50:hover {
+    background-color: rgba(109, 40, 217, 0.16) !important;
+  }
+
+  /* 6) Muted chip tones for status/notification/empty-state backgrounds */
+  .bg-gray-50,
+  .bg-gray-100,
+  .bg-gray-200,
+  .bg-slate-50,
+  .bg-slate-100,
+  .bg-slate-200,
+  .bg-blue-50,
+  .bg-green-50,
+  .bg-red-50,
+  .bg-yellow-50,
+  .bg-amber-50,
+  .bg-emerald-50,
+  .bg-indigo-50,
+  .bg-pink-50,
+  .bg-orange-50,
+  .bg-cyan-50,
+  .bg-purple-50,
+  .bg-blue-100,
+  .bg-green-100,
+  .bg-red-100,
+  .bg-yellow-100,
+  .bg-emerald-100,
+  .bg-purple-100,
+  .bg-indigo-100,
+  .bg-pink-100,
+  .bg-purple-50\/90,
+  .bg-emerald-50\/90,
+  .bg-red-50\/90,
+  .bg-yellow-50\/90 {
+    background-color: rgba(15, 23, 42, 0.45) !important;
+  }
+
+  /* icon strokes (e.g., hamburger menu bars) become light so they stay visible */
+  .bg-gray-600,
+  .bg-gray-700 {
+    background-color: #cbd5e1 !important;
+  }
+
+  /* 7) Loading skeleton shimmer visible on dark backgrounds */
+  .bg-gray-300 {
+    background: linear-gradient(
+      90deg,
+      rgba(30, 41, 59, 0.4) 0%,
+      rgba(51, 65, 85, 0.55) 40%,
+      rgba(100, 116, 139, 0.35) 60%,
+      rgba(30, 41, 59, 0.4) 100%
+    ) !important;
+  }
+
+  /* 8) Muted borders for dark mode */
+  .border-gray-200,
+  .border-gray-300,
+  .border-gray-400 {
+    border-color: var(--border) !important;
+  }
+
+  /* 9) Accent text colors: lighter same-hue tints for dark surfaces
+        so status colors remain distinguishable and readable */
+  .text-emerald-600,
+  .text-emerald-700,
+  .text-emerald-800 {
+    color: #6ee7b7 !important;
+  }
+
+  .text-green-600,
+  .text-green-700,
+  .text-green-800 {
+    color: #86efac !important;
+  }
+
+  .text-blue-600,
+  .text-blue-700,
+  .text-blue-800 {
+    color: #93c5fd !important;
+  }
+
+  .text-indigo-600,
+  .text-indigo-700,
+  .text-indigo-800 {
+    color: #a5b4fc !important;
+  }
+
+  .text-violet-600,
+  .text-violet-700,
+  .text-violet-800 {
+    color: #a5b4fc !important;
+  }
+
+  .text-purple-600,
+  .text-purple-700,
+  .text-purple-800 {
+    color: #c4b5fd !important;
+  }
+
+  .text-yellow-600,
+  .text-yellow-700,
+  .text-yellow-800 {
+    color: #fde047 !important;
+  }
+
+  .text-orange-600,
+  .text-orange-700,
+  .text-orange-800 {
+    color: #fdba74 !important;
+  }
+
+  .text-red-600,
+  .text-red-700,
+  .text-red-800 {
+    color: #fca5a5 !important;
+  }
+
+  .text-pink-600,
+  .text-pink-700,
+  .text-pink-800 {
+    color: #f9a8d4 !important;
+  }
+
+  .text-cyan-600,
+  .text-cyan-700,
+  .text-cyan-800 {
+    color: #67e8f9 !important;
+  }
+
+  /* 10) Native select options need a dark palette too */
+  select option,
+  select optgroup {
+    background-color: #0b1220;
+    color: var(--neutral-900);
   }
 }
