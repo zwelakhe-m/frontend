@@ -297,22 +297,22 @@ input[type='checkbox'] {
 // Dark mode support (if needed later)
 @media (prefers-color-scheme: dark) {
   .glass-strong {
-    background-color: rgba(17, 24, 39, 0.8);
-    border-color: rgba(75, 85, 99, 0.5);
+    background-color: rgba(255,255,255,0.06);
+    border-color: rgba(255,255,255,0.08);
   }
 
   .form-input {
-    background-color: rgba(31, 41, 55, 0.6);
-    border-color: var(--muted);
-    color: white;
+    background-color: rgba(255,255,255,0.04);
+    border-color: rgba(255,255,255,0.08);
+    color: rgba(255,255,255,0.95);
 
     &::placeholder {
-      color: var(--muted);
+      color: rgba(255,255,255,0.6);
     }
   }
 
   .form-label {
-    color: var(--border);
+    color: rgba(255,255,255,0.6);
   }
 
   .text-gradient {
