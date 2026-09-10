@@ -34,7 +34,7 @@
         <div class="flex-1">
           <h3 class="text-lg font-semibold text-white">{{ item()?.title }}</h3>
           <p class="text-purple-200 text-sm mb-2">{{ item()?.description }}</p>
-          <p class="text-emerald-400 font-bold">R{{ item()?.pricePerDay }}/day</p>
+          <p class="text-emerald-400 font-bold">{{ currencyService.format(item()?.pricePerDay) }}/day</p>
         </div>
       </div>
     </div>
@@ -102,20 +102,20 @@
         <div class="space-y-2 text-sm">
           <div class="flex justify-between text-purple-200">
             <span>Days: {{ rentalDays() }}</span>
-            <span>R{{ item()?.pricePerDay }}/day</span>
+            <span>{{ currencyService.format(item()?.pricePerDay) }}/day</span>
           </div>
           <div class="flex justify-between text-purple-200">
             <span>Subtotal:</span>
-            <span>R{{ subtotal() }}</span>
+            <span>{{ currencyService.format(subtotal()) }}</span>
           </div>
           <div class="flex justify-between text-purple-200">
             <span>Service Fee (10%):</span>
-            <span>R{{ serviceFee() }}</span>
+            <span>{{ currencyService.format(serviceFee()) }}</span>
           </div>
           <hr class="border-white/20" />
           <div class="flex justify-between text-lg font-bold text-white">
             <span>Total:</span>
-            <span class="text-emerald-400">${{ totalCost() }}</span>
+            <span class="text-emerald-400">{{ currencyService.format(totalCost()) }}</span>
           </div>
         </div>
       </div>

@@ -7,6 +7,7 @@ import { ItemsService, RentalItem } from '../../services/items.service';
 import { NotificationsService } from '../../services/notifications.service';
 import { ToastService } from '../../services/shared/toast.service';
 import { UserService, AnalyticsData } from '../../services/user.service';
+import { CurrencyService } from '../../services/currency.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -22,6 +23,7 @@ export class DashboardComponent implements OnInit {
   protected notificationsService = inject(NotificationsService);
   private readonly router = inject(Router);
   private readonly toastService = inject(ToastService);
+  private readonly currencyService = inject(CurrencyService);
 
   private readonly userService = inject(UserService);
 
@@ -32,6 +34,7 @@ export class DashboardComponent implements OnInit {
   protected myItems = signal<RentalItem[]>([]);
   // protected activeBookingsCount = signal(0); // No longer used for dashboard card
   protected myItemsCount = signal(0);
+  protected processingRequest = signal<number | null>(null);
 
   // Analytics state for dashboard
   protected dashboardAnalytics = signal<AnalyticsData | null>(null);
@@ -121,11 +124,7 @@ export class DashboardComponent implements OnInit {
   }
 
   protected formatCurrency(value: number): string {
-    return new Intl.NumberFormat('en-ZA', {
-      style: 'currency',
-      currency: 'ZAR',
-      maximumFractionDigits: 0,
-    }).format(value || 0);
+    return this.currencyService.format(value, 0);
   }
 
   protected getItemStatusClass(item: RentalItem): string {
@@ -199,6 +198,7 @@ export class DashboardComponent implements OnInit {
 
   // Booking management methods
   protected approveBooking(bookingId: number): void {
+    this.processingRequest.set(bookingId);
     this.bookingsService.approveBooking(bookingId).subscribe({
       next: (response) => {
         console.log('Booking approved:', response);
@@ -207,6 +207,7 @@ export class DashboardComponent implements OnInit {
           'The booking request has been approved successfully.'
         );
         this.loadDashboardData(); // Refresh data
+        this.processingRequest.set(null);
       },
       error: (error) => {
         console.error('Error approving booking:', error);
@@ -214,17 +215,20 @@ export class DashboardComponent implements OnInit {
           'Failed to approve booking',
           'Please try again or contact support if the issue persists.'
         );
+        this.processingRequest.set(null);
       },
     });
   }
 
   protected denyBooking(bookingId: number): void {
+    this.processingRequest.set(bookingId);
     const reason = prompt('Please provide a reason for denying this booking (optional):');
     this.bookingsService.denyBooking(bookingId, reason || undefined).subscribe({
       next: (response) => {
         console.log('Booking denied:', response);
         this.toastService.warning('Booking Denied', 'The booking request has been denied.');
         this.loadDashboardData(); // Refresh data
+        this.processingRequest.set(null);
       },
       error: (error) => {
         console.error('Error denying booking:', error);
@@ -232,6 +236,7 @@ export class DashboardComponent implements OnInit {
           'Failed to deny booking',
           'Please try again or contact support if the issue persists.'
         );
+        this.processingRequest.set(null);
       },
     });
   }

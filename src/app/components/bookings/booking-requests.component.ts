@@ -4,6 +4,7 @@ import { Router, RouterModule } from '@angular/router';
 import { BookingsService, Booking, BookingStatus } from '../../services/bookings.service';
 import { AuthService } from '../../services/auth.service';
 import { ToastService } from '../../services/shared/toast.service';
+import { CurrencyService } from '../../services/currency.service';
 
 @Component({
   selector: 'app-booking-requests',
@@ -17,6 +18,7 @@ export class BookingRequestsComponent implements OnInit {
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
   private readonly toastService = inject(ToastService);
+  protected readonly currencyService = inject(CurrencyService);
 
   // State
   protected allRequests = signal<Booking[]>([]);

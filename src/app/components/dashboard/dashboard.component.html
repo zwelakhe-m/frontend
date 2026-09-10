@@ -1,44 +1,36 @@
 <div class="min-h-screen bg-slate-100">
-  <main class="mx-auto max-w-7xl px-4 py-8 md:px-6">
-    <section class="mb-8 overflow-hidden rounded-[28px] bg-gradient-to-br from-violet-900 via-purple-800 to-emerald-600 p-6 text-white shadow-[0_20px_60px_rgba(76,29,149,0.25)] md:p-8">
-      <div class="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-        <div>
-          <div class="mb-3 inline-flex items-center rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-violet-100">
-            Host dashboard
-          </div>
-          <h1 class="text-3xl font-bold md:text-4xl">
-            Welcome back, {{ currentUser()?.name || 'there' }} 👋
-          </h1>
-          <p class="mt-2 max-w-xl text-sm text-violet-100 md:text-base">
-            Your listings, bookings, and payouts are all in one place. Keep momentum going and turn your inventory into revenue.
-          </p>
-        </div>
+  <main class="dashboard-page mx-auto max-w-7xl px-4 py-6 md:px-6 md:py-8">
+    <section class="dashboard-hero mb-8">
+      <div class="hero-copy">
+        <p class="hero-eyebrow">RentHub overview</p>
+        <h1>Welcome back, {{ currentUser()?.name || 'there' }}</h1>
+        <p class="hero-summary">A clear view of what needs your attention and what is earning its keep.</p>
+      </div>
 
-        <div class="flex flex-col gap-3 sm:flex-row">
+      <div class="hero-actions">
           <button
             (click)="navigateToCreateItem()"
-            class="rounded-2xl bg-white px-5 py-3 text-sm font-semibold text-violet-900 transition hover:-translate-y-0.5 hover:bg-violet-50"
+            class="hero-button primary"
           >
-            + List an item
+            <span aria-hidden="true">+</span> List an item
           </button>
           <button
             (click)="navigateToBrowse()"
-            class="rounded-2xl border border-white/30 bg-white/10 px-5 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-white/15"
+            class="hero-button secondary"
           >
             Browse rentals
           </button>
-        </div>
       </div>
     </section>
 
-    <section class="mb-8 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+    <section class="mb-8 grid gap-3 md:grid-cols-2 xl:grid-cols-4" aria-label="Account overview">
       <div
         class="metric-card cursor-pointer"
         (click)="navigateToBookings()"
         tabindex="0"
         (keydown.enter)="navigateToBookings()"
       >
-        <div class="metric-icon blue">
+        <div class="metric-icon blue" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
           </svg>
@@ -55,7 +47,7 @@
         tabindex="0"
         (keydown.enter)="navigateToMyItems()"
       >
-        <div class="metric-icon green">
+        <div class="metric-icon green" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
           </svg>
@@ -72,7 +64,7 @@
         tabindex="0"
         (keydown.enter)="navigateToPendingRequests()"
       >
-        <div class="metric-icon amber">
+        <div class="metric-icon amber" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
           </svg>
@@ -89,13 +81,13 @@
         tabindex="0"
         (keydown.enter)="navigateToAnalytics()"
       >
-        <div class="metric-icon violet">
+        <div class="metric-icon violet" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"/>
           </svg>
         </div>
         <div>
-          <p class="metric-label">Monthly earning</p>
+          <p class="metric-label">This month</p>
           <p class="metric-value">{{ formatCurrency(getMonthlyEarnings()) }}</p>
           <p class="metric-trend" [ngClass]="{ 'positive': getMonthlyGrowth() > 0, 'negative': getMonthlyGrowth() < 0, 'neutral': getMonthlyGrowth() === 0 }">
             {{ getMonthlyGrowth() > 0 ? '+' : '' }}{{ getMonthlyGrowth() | number : '1.0-0' }}% vs last month
@@ -104,8 +96,8 @@
       </div>
     </section>
 
-    <section class="mb-8 grid gap-6 xl:grid-cols-[1.5fr_1fr]">
-      <div class="section-shell">
+    <section class="mb-8 grid gap-6 xl:grid-cols-[minmax(0,1.6fr)_minmax(20rem,0.9fr)]">
+      <div class="section-shell priority-panel">
         <div class="mb-5 flex items-center justify-between">
           <div>
             <p class="section-kicker">Incoming requests</p>
@@ -157,8 +149,16 @@
                 <div class="flex flex-col items-end gap-2">
                   <p class="text-lg font-bold text-slate-900">{{ formatCurrency(request.total_price) }}</p>
                   <div class="flex gap-2">
-                    <button (click)="approveBooking(request.id)" class="request-action approve">Approve</button>
-                    <button (click)="denyBooking(request.id)" class="request-action deny">Deny</button>
+                    <button
+                      (click)="approveBooking(request.id)"
+                      [disabled]="processingRequest() !== null"
+                      class="request-action approve"
+                    >Approve</button>
+                    <button
+                      (click)="denyBooking(request.id)"
+                      [disabled]="processingRequest() !== null"
+                      class="request-action deny"
+                    >Deny</button>
                   </div>
                 </div>
               </div>
@@ -177,7 +177,7 @@
         }
       </div>
 
-      <div class="section-shell">
+      <div class="section-shell quick-panel">
         <div class="mb-5">
           <p class="section-kicker">Quick actions</p>
           <h2 class="section-title">Get moving</h2>
@@ -219,7 +219,7 @@
       </div>
     </section>
 
-    <section class="section-shell">
+    <section class="section-shell listings-panel">
       <div class="mb-5 flex items-center justify-between">
         <div>
           <p class="section-kicker">Your inventory</p>

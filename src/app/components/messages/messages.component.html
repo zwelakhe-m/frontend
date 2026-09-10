@@ -94,7 +94,7 @@
                   with <span class="font-medium">{{ conversation.other_user_name }}</span>
                 </p>
                 <p class="text-sm font-medium text-emerald-600">
-                  ${{ conversation.price_per_day }}/day
+                  {{ currencyService.format(conversation.price_per_day) }}/day
                 </p>
               </div>
 

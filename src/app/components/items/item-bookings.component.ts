@@ -4,6 +4,7 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { BookingsService, Booking, BookingStatus } from '../../services/bookings.service';
 import { ItemsService, RentalItem } from '../../services/items.service';
 import { ToastService } from '../../services/shared/toast.service';
+import { CurrencyService } from '../../services/currency.service';
 
 @Component({
   selector: 'app-item-bookings',
@@ -18,6 +19,7 @@ export class ItemBookingsComponent implements OnInit {
   private readonly bookingsService = inject(BookingsService);
   private readonly itemsService = inject(ItemsService);
   private readonly toastService = inject(ToastService);
+  protected readonly currencyService = inject(CurrencyService);
 
   // State
   protected item = signal<RentalItem | null>(null);

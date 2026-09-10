@@ -5,6 +5,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { ItemsService, CreateItemRequest, RentalItem } from '../../services/items.service';
 import { AuthService, User } from '../../services/auth.service';
 import { ToastService } from '../../services/shared/toast.service';
+import { CurrencyService } from '../../services/currency.service';
 
 @Component({
   selector: 'app-item-create',
@@ -16,6 +17,7 @@ import { ToastService } from '../../services/shared/toast.service';
 export class ItemCreateComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly itemsService = inject(ItemsService);
+  protected readonly currencyService = inject(CurrencyService);
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);

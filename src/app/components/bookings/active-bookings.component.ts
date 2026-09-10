@@ -4,6 +4,7 @@ import { Router, RouterModule } from '@angular/router';
 import { BookingsService, Booking, BookingStatus } from '../../services/bookings.service';
 import { AuthService } from '../../services/auth.service';
 import { ToastService } from '../../services/shared/toast.service';
+import { CurrencyService } from '../../services/currency.service';
 
 @Component({
   selector: 'app-active-bookings',
@@ -14,6 +15,7 @@ import { ToastService } from '../../services/shared/toast.service';
 })
 export class ActiveBookingsComponent implements OnInit {
   protected bookingsService = inject(BookingsService);
+  private readonly currencyService = inject(CurrencyService);
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
   private readonly toastService = inject(ToastService);
@@ -243,10 +245,7 @@ export class ActiveBookingsComponent implements OnInit {
   }
 
   protected formatPrice(price: number): string {
-    return new Intl.NumberFormat('en-ZA', {
-      style: 'currency',
-      currency: 'ZAR',
-    }).format(price);
+    return this.currencyService.format(price);
   }
 
   protected goBack(): void {

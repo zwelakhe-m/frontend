@@ -6,6 +6,7 @@ import { Location } from '@angular/common';
 import { MessageService, Conversation } from '../../services/message.service';
 import { AuthService } from '../../services/auth.service';
 import { ToastService } from '../../services/shared/toast.service';
+import { CurrencyService } from '../../services/currency.service';
 
 @Component({
   selector: 'app-messages',
@@ -20,6 +21,7 @@ export class MessagesComponent implements OnInit {
   private router = inject(Router);
   private location = inject(Location);
   private toastService = inject(ToastService);
+  protected readonly currencyService = inject(CurrencyService);
 
   conversations: Conversation[] = [];
   isLoading = true;

@@ -5,6 +5,7 @@ import { Router, RouterModule } from '@angular/router';
 import { ItemsService, RentalItem } from '../../services/items.service';
 import { AuthService } from '../../services/auth.service';
 import { ToastService } from '../../services/shared/toast.service';
+import { CurrencyService } from '../../services/currency.service';
 
 @Component({
   selector: 'app-my-items',
@@ -15,6 +16,7 @@ import { ToastService } from '../../services/shared/toast.service';
 })
 export class MyItemsComponent implements OnInit {
   private itemsService = inject(ItemsService);
+  private readonly currencyService = inject(CurrencyService);
   private authService = inject(AuthService);
   private router = inject(Router);
   private toastService = inject(ToastService);
@@ -242,10 +244,7 @@ export class MyItemsComponent implements OnInit {
   }
 
   formatPrice(price: number): string {
-    return new Intl.NumberFormat('en-ZA', {
-      style: 'currency',
-      currency: 'ZAR',
-    }).format(price);
+    return this.currencyService.format(price);
   }
 
   getImageUrl(item: RentalItem): string {

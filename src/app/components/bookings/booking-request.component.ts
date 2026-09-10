@@ -6,6 +6,7 @@ import { BookingsService, CreateBookingRequest } from '../../services/bookings.s
 import { ItemsService, RentalItem } from '../../services/items.service';
 import { AuthService } from '../../services/auth.service';
 import { ToastService } from '../../services/shared/toast.service';
+import { CurrencyService } from '../../services/currency.service';
 
 @Component({
   selector: 'app-booking-request',
@@ -23,6 +24,7 @@ export class BookingRequestComponent implements OnInit {
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
   private readonly toastService = inject(ToastService);
+  protected readonly currencyService = inject(CurrencyService);
 
   item = signal<RentalItem | null>(null);
   loading = signal(false);
@@ -207,10 +209,7 @@ export class BookingRequestComponent implements OnInit {
   }
 
   formatPrice(price: number): string {
-    return new Intl.NumberFormat('en-ZA', {
-      style: 'currency',
-      currency: 'ZAR',
-    }).format(price);
+    return this.currencyService.format(price);
   }
 
   formatDate(date: string): string {

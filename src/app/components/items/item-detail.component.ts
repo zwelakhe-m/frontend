@@ -8,6 +8,7 @@ import { AuthService } from '../../services/auth.service';
 import { BookingsService, CreateBookingRequest } from '../../services/bookings.service';
 import { ToastService } from '../../services/shared/toast.service';
 import { ContactOwnerComponent } from '../messages/contact-owner.component';
+import { CurrencyService } from '../../services/currency.service';
 
 @Component({
   selector: 'app-item-detail',
@@ -23,6 +24,7 @@ export class ItemDetailComponent implements OnInit {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private toastService = inject(ToastService);
+  private readonly currencyService = inject(CurrencyService);
 
   // State
   item = signal<RentalItem | null>(null);
@@ -197,10 +199,7 @@ export class ItemDetailComponent implements OnInit {
 
   // Utility methods
   formatPrice(price: number): string {
-    return new Intl.NumberFormat('en-ZA', {
-      style: 'currency',
-      currency: 'ZAR',
-    }).format(price);
+    return this.currencyService.format(price);
   }
 
   formatDate(date: string): string {

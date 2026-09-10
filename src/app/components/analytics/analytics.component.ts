@@ -13,6 +13,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService, User } from '../../services/auth.service';
 import { UserService, AnalyticsData } from '../../services/user.service';
 import { ToastService } from '../../services/shared/toast.service';
+import { CurrencyService } from '../../services/currency.service';
 
 @Component({
   selector: 'app-analytics',
@@ -22,6 +23,7 @@ import { ToastService } from '../../services/shared/toast.service';
   styleUrls: ['./analytics.component.scss'],
 })
 export class AnalyticsComponent implements OnInit {
+  private readonly currencyService = inject(CurrencyService);
   private readonly authService = inject(AuthService);
   private readonly userService = inject(UserService);
   private readonly toastService = inject(ToastService);
@@ -227,10 +229,7 @@ export class AnalyticsComponent implements OnInit {
   }
 
   protected formatCurrency(amount: number): string {
-    return new Intl.NumberFormat('en-ZA', {
-      style: 'currency',
-      currency: 'ZAR',
-    }).format(amount);
+    return this.currencyService.format(amount);
   }
 
   protected formatDate(dateString: string): string {

@@ -7,6 +7,7 @@ import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ItemsService, RentalItem } from '../../services/items.service';
 import { AuthService } from '../../services/auth.service';
+import { CurrencyService } from '../../services/currency.service';
 
 export interface FilterOptions {
   category: string;
@@ -25,6 +26,7 @@ export interface FilterOptions {
   styleUrls: ['./items-browse.component.scss'],
 })
 export class ItemsBrowseComponent implements OnInit, OnDestroy {
+  private readonly currencyService = inject(CurrencyService);
   // Cache for geocoded addresses
   private geocodeCache: { [address: string]: { latitude: number; longitude: number } | null } = {};
   private http = inject(HttpClient);
@@ -394,10 +396,7 @@ export class ItemsBrowseComponent implements OnInit, OnDestroy {
   }
 
   formatPrice(price: number): string {
-    return new Intl.NumberFormat('en-ZA', {
-      style: 'currency',
-      currency: 'ZAR',
-    }).format(price);
+    return this.currencyService.format(price);
   }
 
   getImageUrl(item: RentalItem): string {
