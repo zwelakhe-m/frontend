@@ -3,6 +3,7 @@ import { isPlatformBrowser, CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-login',
@@ -13,9 +14,13 @@ import { AuthService } from '../../services/auth.service';
 })
 export class LoginComponent implements OnInit {
   // Facebook OAuth
-  public facebookAppId = 'YOUR_FACEBOOK_APP_ID'; // TODO: Replace with your actual Facebook App ID
+  public facebookAppId = environment.facebookAppId;
 
   onFacebookSignIn(): void {
+    if (!this.facebookAppId) {
+      this.errorMessage.set('Facebook sign-in is not configured yet.');
+      return;
+    }
     // Load Facebook SDK if not already loaded
     if (!(window as any).FB) {
       const script = document.createElement('script');
@@ -63,9 +68,13 @@ export class LoginComponent implements OnInit {
     });
   }
   // Google OAuth
-  public googleClientId = '547425240105-drc54prgr1cmern62j23iivrn9lsg53a.apps.googleusercontent.com';
+  public googleClientId = environment.googleClientId;
 
   onGoogleSignIn(): void {
+    if (!this.googleClientId) {
+      this.errorMessage.set('Google sign-in is not configured yet.');
+      return;
+    }
     // Load Google Identity Services SDK if not already loaded
     if (!(window as any).google) {
       const script = document.createElement('script');

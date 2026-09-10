@@ -4,4 +4,6 @@ export const environment = {
   apiUrl: 'http://localhost:8081/api',
   defaultCurrency: 'ZAR',
   defaultLocale: 'en-ZA',
+  googleClientId: '',
+  facebookAppId: '',
 };

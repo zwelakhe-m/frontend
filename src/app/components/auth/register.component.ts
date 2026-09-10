@@ -9,6 +9,7 @@ import {
 } from '@angular/forms';
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { environment } from '../../../environments/environment';
 
 // Custom validator for password confirmation
 function passwordMatchValidator(control: AbstractControl) {
@@ -33,6 +34,18 @@ export class RegisterComponent implements OnInit {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private fb = inject(FormBuilder);
+  public googleClientId = environment.googleClientId;
+  public facebookAppId = environment.facebookAppId;
+
+  onGoogleSignIn(): void {
+    this.errorMessage.set('Use the Google sign-in button on the login page after Google OAuth is configured.');
+    this.router.navigate(['/login']);
+  }
+
+  onFacebookSignIn(): void {
+    this.errorMessage.set('Use the Facebook sign-in button on the login page after Facebook OAuth is configured.');
+    this.router.navigate(['/login']);
+  }
 
   // Reactive state
   public isLoading = signal(false);

@@ -43,16 +43,6 @@
               "budgets": [
                 {
                   "type": "initial",
-              "staging": {
-                "optimization": true,
-                "outputHashing": "all",
-                "fileReplacements": [
-                  {
-                    "replace": "src/environments/environment.ts",
-                    "with": "src/environments/environment.staging.ts"
-                  }
-                ]
-              },
                   "maximumWarning": "500kB",
                   "maximumError": "1MB"
                 },
@@ -67,6 +57,16 @@
                 {
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.prod.ts"
+                }
+              ]
+            },
+            "staging": {
+              "optimization": true,
+              "outputHashing": "all",
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.staging.ts"
                 }
               ]
             },

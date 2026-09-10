@@ -4,4 +4,6 @@ export const environment = {
   apiUrl: 'https://backend-production-08a24.up.railway.app/api',
   defaultCurrency: 'ZAR',
   defaultLocale: 'en-ZA',
+  googleClientId: '',
+  facebookAppId: '',
 };
