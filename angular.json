@@ -43,6 +43,16 @@
               "budgets": [
                 {
                   "type": "initial",
+              "staging": {
+                "optimization": true,
+                "outputHashing": "all",
+                "fileReplacements": [
+                  {
+                    "replace": "src/environments/environment.ts",
+                    "with": "src/environments/environment.staging.ts"
+                  }
+                ]
+              },
                   "maximumWarning": "500kB",
                   "maximumError": "1MB"
                 },
@@ -73,6 +83,9 @@
           "configurations": {
             "production": {
               "buildTarget": "frontend:build:production"
+            },
+            "staging": {
+              "buildTarget": "frontend:build:staging"
             },
             "development": {
               "buildTarget": "frontend:build:development"
