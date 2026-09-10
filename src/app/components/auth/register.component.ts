@@ -38,13 +38,53 @@ export class RegisterComponent implements OnInit {
   public facebookAppId = environment.facebookAppId;
 
   onGoogleSignIn(): void {
-    this.errorMessage.set('Use the Google sign-in button on the login page after Google OAuth is configured.');
-    this.router.navigate(['/login']);
+    if (!this.googleClientId) {
+      this.errorMessage.set('Google sign-in is not configured for this environment.');
+      return;
+    }
+
+    const startGoogleLogin = () => {
+      const google = (window as any).google;
+      if (!google?.accounts?.id) {
+        this.errorMessage.set('Google sign-in could not be loaded. Please try again.');
+        return;
+      }
+
+      google.accounts.id.initialize({
+        client_id: this.googleClientId,
+        callback: (response: any) => {
+          this.isLoading.set(true);
+          this.authService.loginWithGoogle(response.credential).subscribe({
+            next: () => {
+              this.isLoading.set(false);
+              this.router.navigate(['/dashboard']);
+            },
+            error: (error: any) => {
+              this.isLoading.set(false);
+              this.errorMessage.set(error.message || 'Google sign-in failed.');
+            },
+          });
+        },
+      });
+      google.accounts.id.prompt();
+    };
+
+    if ((window as any).google) {
+      startGoogleLogin();
+      return;
+    }
+
+    const script = document.createElement('script');
+    script.src = 'https://accounts.google.com/gsi/client';
+    script.async = true;
+    script.defer = true;
+    script.onload = startGoogleLogin;
+    script.onerror = () => this.errorMessage.set('Google sign-in could not be loaded.');
+    document.body.appendChild(script);
   }
 
   onFacebookSignIn(): void {
-    this.errorMessage.set('Use the Facebook sign-in button on the login page after Facebook OAuth is configured.');
-    this.router.navigate(['/login']);
+    this.errorMessage.set('Facebook sign-in is not configured for this environment.');
   }
 
   // Reactive state
