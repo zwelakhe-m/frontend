@@ -13,6 +13,11 @@
 
       <h1 class="page-title">Browse Items</h1>
       <p class="page-subtitle">Find the perfect item to rent</p>
+      @if (locationStatus() === 'denied') {
+      <p class="mt-2 text-sm text-amber-100">Location is blocked, so showing newest items. Enable location to sort by distance.</p>
+      } @else if (locationStatus() === 'unavailable') {
+      <p class="mt-2 text-sm text-amber-100">Location is unavailable, so showing newest items.</p>
+      }
 
       <!-- Search Bar -->
       <div class="relative max-w-2xl">

@@ -16,6 +16,8 @@ export interface FilterOptions {
   location: string;
   radius: number;
   availability: 'available' | 'all';
+  latitude?: number;
+  longitude?: number;
 }
 
 @Component({
@@ -71,12 +73,13 @@ export class ItemsBrowseComponent implements OnInit, OnDestroy {
   ];
 
   currentSort = signal('distance_asc');
+  locationStatus = signal<'pending' | 'granted' | 'denied' | 'unavailable'>('pending');
   userLocation: { latitude: number; longitude: number } | null = null;
   // (Removed duplicate geocodeCache and http declarations)
 
   async ngOnInit() {
-    // Try to get user geolocation for default sorting
-    if (navigator.geolocation) {
+    // Request location before the first item load so the default distance sort is real.
+    if (typeof navigator !== 'undefined' && navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           this.userLocation = {
@@ -89,16 +92,23 @@ export class ItemsBrowseComponent implements OnInit, OnDestroy {
             latitude: this.userLocation!.latitude,
             longitude: this.userLocation!.longitude,
           }));
+          this.locationStatus.set('granted');
           this.currentSort.set('distance_asc');
           this.loadItems();
         },
         (error) => {
-          // If denied, fallback to default sort
+          this.locationStatus.set(
+            error.code === error.PERMISSION_DENIED ? 'denied' : 'unavailable',
+          );
           this.currentSort.set('created_desc');
+          this.loadItems();
         },
+        { enableHighAccuracy: false, timeout: 10000, maximumAge: 300000 },
       );
     } else {
+      this.locationStatus.set('unavailable');
       this.currentSort.set('created_desc');
+      this.loadItems();
     }
     // Read query parameters from URL
     this.route.queryParams.subscribe((params) => {
@@ -118,7 +128,6 @@ export class ItemsBrowseComponent implements OnInit, OnDestroy {
       this.filters.update((filters) => ({ ...filters, category: selectedCategory }));
       this.browseFilterService.clearCategory();
     }
-    this.loadItems();
     this.loadCategories();
   }
 
@@ -145,6 +154,36 @@ export class ItemsBrowseComponent implements OnInit, OnDestroy {
   async loadItems() {
     this.loading.set(true);
     try {
+      if (this.userLocation) {
+        const filterState = this.filters();
+        this.itemsService
+          .searchItems({
+            query: this.searchQuery || undefined,
+            category: filterState.category || undefined,
+            minPrice: filterState.priceMin > 0 ? filterState.priceMin : undefined,
+            maxPrice: filterState.priceMax < 1000 ? filterState.priceMax : undefined,
+            latitude: this.userLocation.latitude,
+            longitude: this.userLocation.longitude,
+            radius: filterState.radius,
+            isAvailable: filterState.availability === 'available',
+            sortBy: 'distance',
+            sortOrder: 'asc',
+          })
+          .subscribe({
+            next: (response) => {
+              const startIndex = (this.currentPage() - 1) * this.itemsPerPage;
+              this.items.set(response.items.slice(startIndex, startIndex + this.itemsPerPage));
+              this.totalItems.set(response.total);
+              this.loading.set(false);
+            },
+            error: (error) => {
+              console.error('Error loading nearby items:', error);
+              this.loading.set(false);
+            },
+          });
+        return;
+      }
+
       // Check if we have any active filters
       const hasActiveFilters =
         (this.searchQuery && this.searchQuery.trim()) ||
