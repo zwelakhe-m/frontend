@@ -1,4 +1,4 @@
-import { Component, inject, signal, OnInit, PLATFORM_ID } from '@angular/core';
+import { Component, ElementRef, inject, signal, OnInit, AfterViewInit, PLATFORM_ID, ViewChild } from '@angular/core';
 import { isPlatformBrowser, CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
@@ -12,7 +12,9 @@ import { environment } from '../../../environments/environment';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, AfterViewInit {
+  @ViewChild('googleButton') private googleButton?: ElementRef<HTMLDivElement>;
+  private googleInitialized = false;
   // Facebook OAuth
   public facebookAppId = environment.facebookAppId;
 
@@ -75,13 +77,18 @@ export class LoginComponent implements OnInit {
       this.errorMessage.set('Google sign-in is not configured yet.');
       return;
     }
-    // Load Google Identity Services SDK if not already loaded
+
+    this.loadGoogleButton();
+  }
+
+  private loadGoogleButton(): void {
     if (!(window as any).google) {
       const script = document.createElement('script');
       script.src = 'https://accounts.google.com/gsi/client';
       script.async = true;
       script.defer = true;
       script.onload = () => this.renderGoogleButton();
+      script.onerror = () => this.errorMessage.set('Google sign-in could not be loaded.');
       document.body.appendChild(script);
     } else {
       this.renderGoogleButton();
@@ -89,11 +96,21 @@ export class LoginComponent implements OnInit {
   }
 
   renderGoogleButton(): void {
-    (window as any).google.accounts.id.initialize({
+    if (this.googleInitialized || !this.googleButton?.nativeElement) return;
+
+    const google = (window as any).google;
+    google.accounts.id.initialize({
       client_id: this.googleClientId,
       callback: (response: any) => this.handleGoogleCredential(response),
     });
-    (window as any).google.accounts.id.prompt();
+    google.accounts.id.renderButton(this.googleButton.nativeElement, {
+      type: 'standard',
+      theme: 'outline',
+      size: 'large',
+      text: 'signin_with',
+      width: 240,
+    });
+    this.googleInitialized = true;
   }
 
   handleGoogleCredential(response: any): void {
@@ -142,6 +159,12 @@ export class LoginComponent implements OnInit {
   ngOnInit(): void {
     // Get return URL from query params
     this.returnUrl.set(this.route.snapshot.queryParams['returnUrl'] || '/dashboard');
+  }
+
+  ngAfterViewInit(): void {
+    if (isPlatformBrowser(this.platformId) && this.googleClientId) {
+      this.loadGoogleButton();
+    }
   }
 
   onSubmit(): void {
