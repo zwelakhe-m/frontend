@@ -103,13 +103,11 @@ export class LoginComponent implements OnInit, AfterViewInit {
       client_id: this.googleClientId,
       callback: (response: any) => this.handleGoogleCredential(response),
     });
-    const buttonWidth = Math.min(300, Math.max(200, this.googleButton.nativeElement.clientWidth));
     google.accounts.id.renderButton(this.googleButton.nativeElement, {
-      type: 'standard',
+      type: 'icon',
       theme: 'outline',
       size: 'large',
-      text: 'signin_with',
-      width: buttonWidth,
+      width: 40,
     });
     this.googleInitialized = true;
   }
