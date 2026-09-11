@@ -1,6 +1,7 @@
 {
   "version": 2,
   "buildCommand": "npm install && npm run build",
+  "outputDirectory": "dist/frontend/browser",
   "rewrites": [
     {
       "source": "/((?!.*\\.).*)",
