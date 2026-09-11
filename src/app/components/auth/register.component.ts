@@ -74,7 +74,7 @@ export class RegisterComponent implements OnInit, AfterViewInit {
         theme: 'outline',
         size: 'large',
         text: 'signup_with',
-        width: 240,
+        width: 300,
       });
       this.googleInitialized = true;
     };

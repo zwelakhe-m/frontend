@@ -108,7 +108,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
       theme: 'outline',
       size: 'large',
       text: 'signin_with',
-      width: 240,
+      width: 300,
     });
     this.googleInitialized = true;
   }
