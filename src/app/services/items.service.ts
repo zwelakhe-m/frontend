@@ -545,13 +545,6 @@ export class ItemsService {
       }
     });
 
-    // Always provide default coordinates for location-based search
-    // Use a central location (Johannesburg) as default
-    if (!params.has('lat') || !params.has('lon')) {
-      params = params.set('lat', '-26.204100'); // Johannesburg latitude
-      params = params.set('lon', '28.047300'); // Johannesburg longitude
-    }
-
     // Set default radius if not provided
     if (!params.has('radius')) {
       params = params.set('radius', '50'); // 50km default radius

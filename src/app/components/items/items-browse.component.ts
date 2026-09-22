@@ -82,10 +82,35 @@ export class ItemsBrowseComponent implements OnInit, OnDestroy {
     if (typeof navigator !== 'undefined' && navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          this.userLocation = {
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude,
+          const lat = position.coords.latitude;
+          const lon = position.coords.longitude;
+
+          // Validate coordinates: reject (0,0) or coordinates in the ocean/invalid areas.
+          // The most common invalid return from browsers is (0,0) in the Atlantic Ocean.
+          // We accept any coordinate that is clearly not a default/invalid value.
+          const isValidCoord = (v: number) => !isNaN(v) && isFinite(v) && Math.abs(v) > 0.01;
+          const isReasonable = (lat: number, lon: number) => {
+            // Reject NaN, Infinity, or coordinates too close to (0,0)
+            if (!isValidCoord(lat) || !isValidCoord(lon)) return false;
+            // Geolocation validity ranges: lat -90..90, lon -180..180
+            if (lat < -90 || lat > 90 || lon < -180 || lon > 180) return false;
+            // Reject the "null island" default zone (within ~1° of 0,0)
+            // This catches browsers that return (0,0) or near-zero defaults
+            if (Math.abs(lat) < 1 && Math.abs(lon) < 1) return false;
+            // Accept everything else — works for USA, Europe, SA, anywhere
+            return true;
           };
+
+          if (!isReasonable(lat, lon)) {
+            // Coordinates look invalid (e.g., 0,0 or ocean default) — treat as denied
+            console.warn('Geolocation returned invalid coordinates:', { lat, lon });
+            this.locationStatus.set('unavailable');
+            this.currentSort.set('created_desc');
+            this.loadItems();
+            return;
+          }
+
+          this.userLocation = { latitude: lat, longitude: lon };
           // Set filters for location-based search
           this.filters.update((filters) => ({
             ...filters,
@@ -171,6 +196,35 @@ export class ItemsBrowseComponent implements OnInit, OnDestroy {
           })
           .subscribe({
             next: (response) => {
+              // If the location-based search returns very few results (e.g. user's
+              // coordinates are stale or there are no nearby items), fall back to
+              // showing all items so the browse page is never nearly empty.
+              if (response.total <= 1 && this.userLocation) {
+                console.warn(
+                  'Location search returned very few results, falling back to all items',
+                  { total: response.total, lat: this.userLocation.latitude, lon: this.userLocation.longitude }
+                );
+                this.itemsService.getAllItems().subscribe({
+                  next: (allItems) => {
+                    const sortedItems = this.applySorting(allItems);
+                    const startIndex = (this.currentPage() - 1) * this.itemsPerPage;
+                    const paginatedItems = sortedItems.slice(startIndex, startIndex + this.itemsPerPage);
+                    this.items.set(paginatedItems);
+                    this.totalItems.set(sortedItems.length);
+                    this.loading.set(false);
+                  },
+                  error: (fallbackError) => {
+                    console.error('Error loading fallback items:', fallbackError);
+                    // Use the original sparse results as a last resort
+                    const startIndex = (this.currentPage() - 1) * this.itemsPerPage;
+                    this.items.set(response.items.slice(startIndex, startIndex + this.itemsPerPage));
+                    this.totalItems.set(response.total);
+                    this.loading.set(false);
+                  },
+                });
+                return;
+              }
+
               const startIndex = (this.currentPage() - 1) * this.itemsPerPage;
               this.items.set(response.items.slice(startIndex, startIndex + this.itemsPerPage));
               this.totalItems.set(response.total);
