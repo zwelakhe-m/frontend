@@ -305,17 +305,24 @@
     border: 1px solid var(--border) !important;
   }
 
-  /* Make form/modal backgrounds dark, so light text stays readable */
+  /* Make form/card backgrounds dark, so light text stays readable */
   .contact-form,
   .glass-strong,
   .booking-modal .modal,
-  .modal,
-  .modal-content,
   form,
   .card {
     background: var(--card-bg) !important;
     color: var(--neutral-900) !important;
     border: 1px solid var(--border) !important;
+  }
+
+  /* Modals must be solid dark in dark mode for clean contrast and readability */
+  .modal,
+  .modal-content {
+    background: #0f172a !important;
+    color: var(--neutral-900) !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.75) !important;
   }
 
   .form-label,

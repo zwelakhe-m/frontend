@@ -1,37 +1,38 @@
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: var(--glass-bg);
-  backdrop-filter: blur(2px);
+  background: rgba(10, 15, 26, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   z-index: 1000;
   display: flex;
   align-items: center;
   justify-content: center;
-  animation: fadeIn 0.2s;
+  animation: fadeIn 0.2s ease-out;
+  padding: 1rem;
 }
 
 .modal-content {
-  background: white;
+  background: #ffffff;
+  color: #0f172a;
   border-radius: 1.5rem;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
-  padding: 2rem 1.5rem 1.5rem 1.5rem;
-  max-width: 420px;
-  width: 95vw;
-  min-width: 320px;
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
+  padding: 2rem 1.75rem 1.75rem 1.75rem;
+  max-width: 540px;
+  width: 100%;
   max-height: 90vh;
   overflow-y: auto;
   position: relative;
-  animation: popIn 0.2s;
+  animation: popIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-@media (min-width: 640px) {
+@media (prefers-color-scheme: dark) {
   .modal-content {
-    max-width: 300px;
-  }
-}
-@media (min-width: 1024px) {
-  .modal-content {
-    max-width: 300px;
+    background: #0f172a !important;
+    color: #f8fafc !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8) !important;
   }
 }
 
@@ -39,16 +40,36 @@
   position: absolute;
   top: 1rem;
   right: 1rem;
-  background: transparent;
+  background: rgba(0, 0, 0, 0.05);
   border: none;
-  font-size: 2rem;
-  color: var(--color-primary);
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  line-height: 1;
+  color: #64748b;
   cursor: pointer;
   z-index: 10;
-  transition: color 0.2s;
+  transition: all 0.2s ease;
 }
+
 .modal-close:hover {
-  color: var(--color-accent);
+  background: rgba(109, 40, 217, 0.15);
+  color: #6d28d9;
+}
+
+@media (prefers-color-scheme: dark) {
+  .modal-close {
+    background: rgba(255, 255, 255, 0.1);
+    color: #94a3b8;
+  }
+  .modal-close:hover {
+    background: rgba(167, 139, 250, 0.25);
+    color: #f8fafc;
+  }
 }
 
 @keyframes fadeIn {

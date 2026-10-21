@@ -141,10 +141,15 @@
       <div class="grid md:grid-cols-3 gap-8">
         <!-- Feature 1 -->
         <div
-          class="card-glass p-8 text-center animate-fade-in-up block cursor-pointer hover:shadow-xl transition-shadow duration-200 focus:ring-2 focus:ring-primary-500"
+          tabindex="0"
+          role="button"
+          (click)="openFeatureModal('secure')"
+          (keydown.enter)="openFeatureModal('secure')"
+          (keydown.space)="openFeatureModal('secure')"
+          class="card-glass p-8 text-center animate-fade-in-up block cursor-pointer hover:shadow-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500"
         >
           <div
-            class="w-16 h-16 bg-gradient-to-r from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-6"
+            class="w-16 h-16 bg-gradient-to-r from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-md"
           >
             <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
@@ -155,20 +160,25 @@
               />
             </svg>
           </div>
-          <h4 class="text-2xl font-bold text-gray-900 mb-4">Secure & Safe</h4>
-          <p class="text-gray-600 mb-4">
+          <h4 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">Secure & Safe</h4>
+          <p class="text-gray-600 dark:text-gray-300 mb-4">
             All rentals are protected with insurance and verified user profiles.
           </p>
-          <button class="btn-primary px-6 py-2 mt-2" (click)="openFeatureModal('secure')">
+          <button class="btn-primary px-6 py-2 mt-2" (click)="openFeatureModal('secure'); $event.stopPropagation()">
             Read More
           </button>
         </div>
         <!-- Feature 2 -->
         <div
-          class="card-glass p-8 text-center animate-fade-in-up animate-delay-100 block cursor-pointer hover:shadow-xl transition-shadow duration-200 focus:ring-2 focus:ring-primary-500"
+          tabindex="0"
+          role="button"
+          (click)="openFeatureModal('instant')"
+          (keydown.enter)="openFeatureModal('instant')"
+          (keydown.space)="openFeatureModal('instant')"
+          class="card-glass p-8 text-center animate-fade-in-up animate-delay-100 block cursor-pointer hover:shadow-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500"
         >
           <div
-            class="w-16 h-16 bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-2xl flex items-center justify-center mx-auto mb-6"
+            class="w-16 h-16 bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-md"
           >
             <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
@@ -179,20 +189,25 @@
               />
             </svg>
           </div>
-          <h4 class="text-2xl font-bold text-gray-900 mb-4">Instant Booking</h4>
-          <p class="text-gray-600 mb-4">
+          <h4 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">Instant Booking</h4>
+          <p class="text-gray-600 dark:text-gray-300 mb-4">
             Find and book items instantly with our smart matching algorithm.
           </p>
-          <button class="btn-primary px-6 py-2 mt-2" (click)="openFeatureModal('instant')">
+          <button class="btn-primary px-6 py-2 mt-2" (click)="openFeatureModal('instant'); $event.stopPropagation()">
             Read More
           </button>
         </div>
         <!-- Feature 3 -->
         <div
-          class="card-glass p-8 text-center animate-fade-in-up animate-delay-200 block cursor-pointer hover:shadow-xl transition-shadow duration-200 focus:ring-2 focus:ring-primary-500"
+          tabindex="0"
+          role="button"
+          (click)="openFeatureModal('earn')"
+          (keydown.enter)="openFeatureModal('earn')"
+          (keydown.space)="openFeatureModal('earn')"
+          class="card-glass p-8 text-center animate-fade-in-up animate-delay-200 block cursor-pointer hover:shadow-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500"
         >
           <div
-            class="w-16 h-16 bg-gradient-to-r from-pink-500 to-pink-600 rounded-2xl flex items-center justify-center mx-auto mb-6"
+            class="w-16 h-16 bg-gradient-to-r from-pink-500 to-pink-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-md"
           >
             <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
@@ -203,21 +218,21 @@
               />
             </svg>
           </div>
-          <h4 class="text-2xl font-bold text-gray-900 mb-4">Earn Money</h4>
-          <p class="text-gray-600 mb-4">
+          <h4 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">Earn Money</h4>
+          <p class="text-gray-600 dark:text-gray-300 mb-4">
             Turn your unused items into income with competitive rates.
           </p>
-          <button class="btn-primary px-6 py-2 mt-2" (click)="openFeatureModal('earn')">
+          <button class="btn-primary px-6 py-2 mt-2" (click)="openFeatureModal('earn'); $event.stopPropagation()">
             Read More
           </button>
         </div>
       </div>
       <!-- Modal Popup for Feature Info -->
       <app-modal *ngIf="modalOpen" [open]="modalOpen" (close)="closeFeatureModal()">
-        <div class="text-center p-4">
+        <div class="text-center p-2 sm:p-4">
           @if (featureContent?.title === 'Secure & Safe') {
           <div
-            class="w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center bg-gradient-to-r from-purple-500 to-purple-600"
+            class="w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center bg-gradient-to-r from-purple-500 to-purple-600 shadow-md"
           >
             <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
@@ -230,7 +245,7 @@
           </div>
           } @else if (featureContent?.title === 'Instant Booking') {
           <div
-            class="w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center bg-gradient-to-r from-emerald-500 to-emerald-600"
+            class="w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center bg-gradient-to-r from-emerald-500 to-emerald-600 shadow-md"
           >
             <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
@@ -243,7 +258,7 @@
           </div>
           } @else if (featureContent?.title === 'Earn Money') {
           <div
-            class="w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center bg-gradient-to-r from-pink-500 to-pink-600"
+            class="w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center bg-gradient-to-r from-pink-500 to-pink-600 shadow-md"
           >
             <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
@@ -255,12 +270,30 @@
             </svg>
           </div>
           }
-          <h2 class="text-3xl font-bold mb-2 text-primary-700">{{ featureContent?.title }}</h2>
-          <p class="text-lg text-gray-700 mb-2">{{ featureContent?.subtitle }}</p>
-          <p *ngIf="featureContent?.future" class="text-sm text-purple-400 italic mb-2">
-            {{ featureContent?.future }}
+          <h2 class="text-2xl sm:text-3xl font-bold mb-2 text-purple-600 dark:text-purple-300">
+            {{ featureContent?.title }}
+          </h2>
+          <p class="text-base sm:text-lg font-medium text-gray-800 dark:text-gray-100 mb-3">
+            {{ featureContent?.subtitle }}
           </p>
-          <p class="text-base text-gray-600 mt-4">{{ featureContent?.description }}</p>
+          <div
+            *ngIf="featureContent?.future"
+            class="inline-block bg-purple-100 dark:bg-purple-900/60 text-purple-800 dark:text-purple-200 text-xs sm:text-sm px-3 py-1.5 rounded-full font-medium italic mb-3 border border-purple-200 dark:border-purple-700/50"
+          >
+            {{ featureContent?.future }}
+          </div>
+          <p class="text-sm sm:text-base text-gray-600 dark:text-gray-300 leading-relaxed mt-2 mb-6">
+            {{ featureContent?.description }}
+          </p>
+          <div class="pt-2 border-t border-gray-100 dark:border-gray-800">
+            <button
+              type="button"
+              (click)="closeFeatureModal()"
+              class="btn-primary w-full sm:w-auto px-8 py-2.5 rounded-xl text-sm font-semibold shadow-md transition-transform active:scale-95"
+            >
+              Got it
+            </button>
+          </div>
         </div>
       </app-modal>
     </div>
