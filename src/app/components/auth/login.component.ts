@@ -61,7 +61,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
     this.authService.loginWithFacebook(accessToken).subscribe({
       next: () => {
         this.isLoading.set(false);
-        this.router.navigate(['/dashboard']);
+        this.navigateAfterAuth();
       },
       error: (error: any) => {
         this.isLoading.set(false);
@@ -119,7 +119,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
     this.authService.loginWithGoogle(response.credential).subscribe({
       next: () => {
         this.isLoading.set(false);
-        this.router.navigate(['/dashboard']);
+        this.navigateAfterAuth();
       },
       error: (error: any) => {
         this.isLoading.set(false);
@@ -177,14 +177,13 @@ export class LoginComponent implements OnInit, AfterViewInit {
       };
 
       this.authService.login(loginData).subscribe({
-        next: (response) => {
+        next: () => {
           this.isLoading.set(false);
           // Store remember me preference
           if (this.loginForm.get('rememberMe')?.value && isPlatformBrowser(this.platformId)) {
             localStorage.setItem('rememberMe', 'true');
           }
-          // Navigate to dashboard
-          this.router.navigate(['/dashboard']);
+          this.navigateAfterAuth();
         },
         error: (error) => {
           this.isLoading.set(false);
@@ -204,7 +203,18 @@ export class LoginComponent implements OnInit, AfterViewInit {
   }
 
   switchToRegister(): void {
-    this.router.navigate(['/register']);
+    this.router.navigate(['/register'], {
+      queryParams: { returnUrl: this.returnUrl() },
+    });
+  }
+
+  private navigateAfterAuth(): void {
+    const returnUrl = this.returnUrl();
+    const safeReturnUrl =
+      returnUrl.startsWith('/') && !returnUrl.startsWith('//') && !returnUrl.includes('\\')
+        ? returnUrl
+        : '/dashboard';
+    this.router.navigateByUrl(safeReturnUrl);
   }
 
   closeModal(): void {

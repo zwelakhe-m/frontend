@@ -60,7 +60,7 @@ export class RegisterComponent implements OnInit, AfterViewInit {
           this.authService.loginWithGoogle(response.credential).subscribe({
             next: () => {
               this.isLoading.set(false);
-              this.router.navigate(['/dashboard']);
+              this.navigateAfterAuth();
             },
             error: (error: any) => {
               this.isLoading.set(false);
@@ -150,10 +150,9 @@ export class RegisterComponent implements OnInit, AfterViewInit {
       };
 
       this.authService.register(registerData).subscribe({
-        next: (response) => {
+        next: () => {
           this.isLoading.set(false);
-          // Navigate to dashboard
-          this.router.navigate(['/dashboard']);
+          this.navigateAfterAuth();
         },
         error: (error) => {
           this.isLoading.set(false);
@@ -215,7 +214,18 @@ export class RegisterComponent implements OnInit, AfterViewInit {
   }
 
   switchToLogin(): void {
-    this.router.navigate(['/login']);
+    this.router.navigate(['/login'], {
+      queryParams: { returnUrl: this.returnUrl() },
+    });
+  }
+
+  private navigateAfterAuth(): void {
+    const returnUrl = this.returnUrl();
+    const safeReturnUrl =
+      returnUrl.startsWith('/') && !returnUrl.startsWith('//') && !returnUrl.includes('\\')
+        ? returnUrl
+        : '/dashboard';
+    this.router.navigateByUrl(safeReturnUrl);
   }
 
   closeModal(): void {
