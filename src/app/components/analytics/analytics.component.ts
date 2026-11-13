@@ -4,7 +4,6 @@ type EarningsBreakdownRow = {
   item: string;
   renter: string;
   amount: number;
-  commission: number;
 };
 
 import { Component, inject, signal, OnInit } from '@angular/core';
@@ -254,11 +253,7 @@ export class AnalyticsComponent implements OnInit {
     this.toastService.info('Export', 'Export functionality coming soon!');
   }
 
-  /**
-   * Returns a detailed breakdown of earnings for the table:
-   * Each row: { date, item, renter, amount, commission }
-   * Commission is calculated as 10% of amount (customize as needed)
-   */
+  /** Returns completed booking totals for the earnings table. */
   protected getEarningsBreakdown(): EarningsBreakdownRow[] {
     const analytics = this.analytics();
     if (!analytics?.recentBookings) return [];
@@ -270,7 +265,6 @@ export class AnalyticsComponent implements OnInit {
         item: b.item_name,
         renter: b.renter_name,
         amount: b.total_price,
-        commission: Math.round(b.total_price * 0.1 * 100) / 100, // 10% commission, rounded to 2 decimals
       }));
   }
 }

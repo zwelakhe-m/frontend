@@ -336,12 +336,7 @@
               <th
                 class="px-4 py-2 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
               >
-                Amount
-              </th>
-              <th
-                class="px-4 py-2 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
-              >
-                Commission
+                Booking Total
               </th>
             </tr>
           </thead>
@@ -355,13 +350,10 @@
               <td class="px-4 py-2 whitespace-nowrap text-sm text-right">
                 {{ formatCurrency(row.amount) }}
               </td>
-              <td class="px-4 py-2 whitespace-nowrap text-sm text-right">
-                {{ formatCurrency(row.commission) }}
-              </td>
             </tr>
             } } @else {
             <tr>
-              <td colspan="5" class="px-4 py-8 text-center text-gray-400">
+              <td colspan="4" class="px-4 py-8 text-center text-gray-400">
                 No earnings data for this period.
               </td>
             </tr>
@@ -369,6 +361,9 @@
           </tbody>
         </table>
       </div>
+      <p class="mt-2 text-xs text-gray-500">
+        Booking totals are estimates; RentHub does not currently collect or distribute payments.
+      </p>
     </div>
 
     <!-- Insights -->
