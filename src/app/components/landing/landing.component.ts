@@ -35,6 +35,7 @@ interface CategoryCard {
 })
 export class LandingComponent implements AfterViewInit, OnDestroy {
   modalOpen = false;
+  protected mobileMenuOpen = false;
   featureContent: {
     icon: string;
     title: string;
@@ -77,6 +78,15 @@ export class LandingComponent implements AfterViewInit, OnDestroy {
     this.modalOpen = false;
     this.featureContent = null;
   }
+
+  protected toggleMobileMenu(): void {
+    this.mobileMenuOpen = !this.mobileMenuOpen;
+  }
+
+  protected closeMobileMenu(): void {
+    this.mobileMenuOpen = false;
+  }
+
   private readonly browseFilterService = inject(BrowseFilterService);
   private readonly platformId = inject(PLATFORM_ID);
   @ViewChild('carousel', { static: false }) carouselRef!: ElementRef<HTMLDivElement>;
