@@ -44,6 +44,8 @@ export interface ApiRentalItem {
   };
   image_urls?: string[];
   distance_km?: string;
+  average_rating?: number;
+  total_reviews?: number;
   owner?: {
     name: string;
     email: string;
@@ -614,6 +616,8 @@ export class ItemsService {
         backendItem.distance_km !== undefined && backendItem.distance_km !== null
           ? Number.parseFloat(backendItem.distance_km)
           : undefined,
+      averageRating: Number.parseFloat(backendItem.average_rating) || 0,
+      totalReviews: Number.parseInt(backendItem.total_reviews, 10) || 0,
     };
   }
 

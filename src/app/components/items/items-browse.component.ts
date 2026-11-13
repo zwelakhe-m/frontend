@@ -44,6 +44,7 @@ export class ItemsBrowseComponent implements OnInit, OnDestroy {
   // Signals for reactive state management
   items = signal<RentalItem[]>([]);
   loading = signal(false);
+  loadError = signal<string | null>(null);
   searchQuery = '';
   totalItems = signal(0);
   currentPage = signal(1);
@@ -178,9 +179,11 @@ export class ItemsBrowseComponent implements OnInit, OnDestroy {
 
   async loadItems() {
     this.loading.set(true);
+    this.loadError.set(null);
     try {
       if (this.userLocation) {
         const filterState = this.filters();
+        const selectedSort = this.getSortField();
         this.itemsService
           .searchItems({
             query: this.searchQuery || undefined,
@@ -197,8 +200,8 @@ export class ItemsBrowseComponent implements OnInit, OnDestroy {
             radius: filterState.radius,
             location: filterState.location.trim() || undefined,
             isAvailable: filterState.availability === 'available',
-            sortBy: 'distance',
-            sortOrder: 'asc',
+            sortBy: selectedSort === 'created' ? 'newest' : selectedSort,
+            sortOrder: this.getSortOrder(),
           })
           .subscribe({
             next: (response) => {
@@ -210,6 +213,7 @@ export class ItemsBrowseComponent implements OnInit, OnDestroy {
             },
             error: (error) => {
               console.error('Error loading nearby items:', error);
+              this.loadError.set('Listings could not be loaded. Check your connection and try again.');
               this.loading.set(false);
             },
           });
@@ -229,7 +233,12 @@ export class ItemsBrowseComponent implements OnInit, OnDestroy {
             minPrice: filterState.priceMin > 0 ? filterState.priceMin : undefined,
             maxPrice: filterState.priceMax < 1000 ? filterState.priceMax : undefined,
             location: filterState.location.trim() || undefined,
-            sortBy: this.getSortField() === 'price' ? 'price' : 'newest',
+            sortBy:
+              this.getSortField() === 'price'
+                ? 'price'
+                : this.getSortField() === 'rating'
+                  ? 'rating'
+                  : 'newest',
             sortOrder: this.getSortOrder(),
           },
           this.currentPage(),
@@ -243,11 +252,13 @@ export class ItemsBrowseComponent implements OnInit, OnDestroy {
           },
           error: (error) => {
             console.error('Error loading items:', error);
+            this.loadError.set('Listings could not be loaded. Check your connection and try again.');
             this.loading.set(false);
           },
         });
     } catch (error) {
       console.error('Error loading items:', error);
+      this.loadError.set('Listings could not be loaded. Check your connection and try again.');
       this.loading.set(false);
     }
   }
@@ -265,6 +276,7 @@ export class ItemsBrowseComponent implements OnInit, OnDestroy {
       },
       error: (fallbackError) => {
         console.error('Error loading fallback items:', fallbackError);
+        this.loadError.set('Listings could not be loaded. Check your connection and try again.');
         this.loading.set(false);
       },
     });
@@ -372,7 +384,7 @@ export class ItemsBrowseComponent implements OnInit, OnDestroy {
     this.loadItems();
   }
 
-  private getSortField(): string {
+  private getSortField(): 'distance' | 'price' | 'rating' | 'created' {
     const sort = this.currentSort();
     if (sort.includes('distance')) return 'distance';
     if (sort.includes('price')) return 'price';

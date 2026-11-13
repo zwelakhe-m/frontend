@@ -164,7 +164,7 @@
     }
 
     <!-- Items Grid -->
-    @if (!loading() && items().length > 0) {
+    @if (!loading() && !loadError() && items().length > 0) {
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">
       @for (item of items(); track item.id) {
       <div
@@ -288,7 +288,17 @@
     } }
 
     <!-- Empty State -->
-    @if (!loading() && items().length === 0) {
+    @if (!loading() && loadError()) {
+    <div class="text-center py-16" role="alert">
+      <h3 class="text-xl font-semibold text-gray-900 mb-2">We couldn't load listings</h3>
+      <p class="text-gray-600 mb-6">{{ loadError() }}</p>
+      <button (click)="loadItems()" class="btn-primary font-semibold px-6 py-3 rounded-xl transition">
+        Try Again
+      </button>
+    </div>
+    }
+
+    @if (!loading() && !loadError() && items().length === 0) {
     <div class="text-center py-16">
       <div class="w-24 h-24 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-6">
         <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
