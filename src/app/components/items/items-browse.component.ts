@@ -195,6 +195,7 @@ export class ItemsBrowseComponent implements OnInit, OnDestroy {
             latitude: this.userLocation.latitude,
             longitude: this.userLocation.longitude,
             radius: filterState.radius,
+            location: filterState.location.trim() || undefined,
             isAvailable: filterState.availability === 'available',
             sortBy: 'distance',
             sortOrder: 'asc',

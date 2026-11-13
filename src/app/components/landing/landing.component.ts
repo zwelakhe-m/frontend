@@ -7,14 +7,18 @@ import {
   HostListener,
   inject,
   PLATFORM_ID,
+  signal,
 } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { ModalComponent } from '../shared/modal/modal.component';
 
 import { BrowseFilterService } from '../../services/browse-filter.service';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { ItemsService } from '../../services/items.service';
+import { Subscription } from 'rxjs';
 
 // Category type for clarity
 interface CategoryCard {
@@ -25,7 +29,7 @@ interface CategoryCard {
 @Component({
   selector: 'app-landing',
   standalone: true,
-  imports: [CommonModule, ModalComponent],
+  imports: [CommonModule, FormsModule, ModalComponent],
   templateUrl: './landing.component.html',
   styleUrls: ['./landing.component.scss'],
 })
@@ -96,6 +100,11 @@ export class LandingComponent implements AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    Object.values(this.suggestionTimeouts).forEach((timeout) => {
+      if (timeout) clearTimeout(timeout);
+    });
+    this.itemSuggestionSubscription?.unsubscribe();
+    this.locationSuggestionSubscription?.unsubscribe();
     if (typeof window !== 'undefined') {
       window.removeEventListener('resize', this.handleResize);
     }
@@ -151,6 +160,16 @@ export class LandingComponent implements AfterViewInit, OnDestroy {
   }
   private readonly router = inject(Router);
   private readonly authService = inject(AuthService);
+  private readonly itemsService = inject(ItemsService);
+  protected searchTerm = '';
+  protected locationTerm = '';
+  protected itemSuggestions = signal<string[]>([]);
+  protected locationSuggestions = signal<string[]>([]);
+  protected activeSuggestion = signal<'item' | 'location' | null>(null);
+  protected activeSuggestionIndex = signal(-1);
+  private suggestionTimeouts: Partial<Record<'item' | 'location', ReturnType<typeof setTimeout>>> = {};
+  private itemSuggestionSubscription?: Subscription;
+  private locationSuggestionSubscription?: Subscription;
 
   // Popular categories (add more as needed)
   protected categories: CategoryCard[] = [
@@ -210,11 +229,101 @@ export class LandingComponent implements AfterViewInit, OnDestroy {
     }
   }
 
+  protected onSuggestionQueryChange(type: 'item' | 'location', query: string): void {
+    const timeout = this.suggestionTimeouts[type];
+    if (timeout) clearTimeout(timeout);
+    if (type === 'item') {
+      this.itemSuggestionSubscription?.unsubscribe();
+      this.itemSuggestions.set([]);
+    } else {
+      this.locationSuggestionSubscription?.unsubscribe();
+      this.locationSuggestions.set([]);
+    }
+
+    this.activeSuggestionIndex.set(-1);
+    this.activeSuggestion.set(type);
+    const searchQuery = query.trim();
+    if (searchQuery.length < 2) return;
+
+    this.suggestionTimeouts[type] = setTimeout(() => {
+      const subscription = this.itemsService.getSearchSuggestions(type, searchQuery).subscribe({
+        next: (suggestions) => {
+          if (type === 'item') {
+            this.itemSuggestions.set(suggestions);
+          } else {
+            this.locationSuggestions.set(suggestions);
+          }
+          this.activeSuggestionIndex.set(-1);
+        },
+        error: (error) => {
+          console.error(`Failed to load ${type} search suggestions:`, error);
+          if (type === 'item') {
+            this.itemSuggestions.set([]);
+          } else {
+            this.locationSuggestions.set([]);
+          }
+        },
+      });
+
+      if (type === 'item') {
+        this.itemSuggestionSubscription = subscription;
+      } else {
+        this.locationSuggestionSubscription = subscription;
+      }
+    }, 250);
+  }
+
+  protected selectSuggestion(type: 'item' | 'location', suggestion: string): void {
+    if (type === 'item') {
+      this.searchTerm = suggestion;
+      this.itemSuggestions.set([]);
+    } else {
+      this.locationTerm = suggestion;
+      this.locationSuggestions.set([]);
+    }
+    this.activeSuggestion.set(null);
+    this.activeSuggestionIndex.set(-1);
+  }
+
+  protected onSuggestionKeydown(type: 'item' | 'location', event: KeyboardEvent): void {
+    const suggestions = type === 'item' ? this.itemSuggestions() : this.locationSuggestions();
+    if (!suggestions.length) return;
+
+    if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+      event.preventDefault();
+      this.activeSuggestion.set(type);
+      const direction = event.key === 'ArrowDown' ? 1 : -1;
+      const currentIndex = this.activeSuggestionIndex();
+      const nextIndex =
+        currentIndex === -1
+          ? direction === 1
+            ? 0
+            : suggestions.length - 1
+          : (currentIndex + direction + suggestions.length) % suggestions.length;
+      this.activeSuggestionIndex.set(nextIndex);
+    } else if (event.key === 'Escape') {
+      this.activeSuggestion.set(null);
+      this.activeSuggestionIndex.set(-1);
+    } else if (event.key === 'Enter' && this.activeSuggestion() === type) {
+      const selectedSuggestion = suggestions[this.activeSuggestionIndex()];
+      if (selectedSuggestion) {
+        event.preventDefault();
+        this.selectSuggestion(type, selectedSuggestion);
+      }
+    }
+  }
+
+  @HostListener('document:click')
+  protected closeSuggestions(): void {
+    this.activeSuggestion.set(null);
+    this.activeSuggestionIndex.set(-1);
+  }
+
   protected searchItems(searchTerm: string, location: string): void {
     this.router.navigate(['/browse'], {
       queryParams: {
-        search: searchTerm || undefined,
-        location: location || undefined,
+        search: searchTerm.trim() || undefined,
+        location: location.trim() || undefined,
       },
     });
   }

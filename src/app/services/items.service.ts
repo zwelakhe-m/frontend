@@ -493,6 +493,13 @@ export class ItemsService {
       .pipe(catchError((error) => this.handleError(error)));
   }
 
+  getSearchSuggestions(type: 'item' | 'location', query: string): Observable<string[]> {
+    const params = new HttpParams().set('type', type).set('query', query);
+    return this.http
+      .get<string[]>(`${this.baseUrl}/suggestions`, { params })
+      .pipe(catchError((error) => this.handleError(error)));
+  }
+
   /**
    * Get user's location using browser geolocation
    */
