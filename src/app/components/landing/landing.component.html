@@ -1,7 +1,7 @@
 <!-- Premium Rental Marketplace Landing Page -->
 <div class="min-h-screen bg-gradient-to-br from-purple-50 via-white to-emerald-50">
   <!-- Navigation -->
-  <nav class="glass fixed top-0 left-0 right-0 z-50 px-6 py-4">
+  <nav class="glass fixed top-0 left-0 right-0 z-50 px-4 py-4 sm:px-6">
     <div class="max-w-7xl mx-auto flex items-center justify-between">
       <!-- Logo -->
       <div class="flex items-center space-x-2 group">
@@ -37,16 +37,16 @@
       </div>
 
       <!-- Auth Buttons -->
-      <div class="flex flex-col xs:flex-row items-center gap-2 xs:gap-4 min-w-[120px]">
+      <div class="flex flex-row items-center gap-2">
         <button
           (click)="navigateToLogin()"
-          class="btn-ghost border border-primary-500 text-primary-700 px-4 py-2 text-sm w-full xs:w-auto"
+          class="btn-ghost whitespace-nowrap border border-primary-500 px-3 py-2 text-xs sm:px-4 sm:text-sm"
         >
           Sign In
         </button>
         <button
           (click)="navigateToRegister()"
-          class="btn-primary px-4 py-2 text-sm w-full xs:w-auto"
+          class="btn-primary whitespace-nowrap px-3 py-2 text-xs sm:px-4 sm:text-sm"
         >
           Get Started
         </button>
@@ -91,9 +91,9 @@
             </div>
             <button
               (click)="searchItems(searchInput.value, locationInput.value)"
-              class="btn-primary px-8 py-4 rounded-xl"
+              class="btn-primary hero-action w-full shrink-0 rounded-xl px-6 py-4 md:w-auto"
             >
-              <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class="h-5 w-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   stroke-linecap="round"
                   stroke-linejoin="round"
@@ -112,9 +112,12 @@
         class="animate-fade-in-up flex flex-col sm:flex-row gap-4 justify-center"
         style="animation-delay: 0.4s"
       >
-        <button (click)="navigateToBrowse()" class="btn-primary px-8 py-4 text-lg">
+        <button
+          (click)="navigateToBrowse()"
+          class="btn-primary hero-action min-w-[190px] px-7 py-4 text-lg"
+        >
           Start Renting
-          <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg class="h-5 w-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
               stroke-linecap="round"
               stroke-linejoin="round"
@@ -123,7 +126,10 @@
             ></path>
           </svg>
         </button>
-        <button (click)="navigateToCreateItemForAuth()" class="btn-outline px-8 py-4 text-lg">
+        <button
+          (click)="navigateToCreateItemForAuth()"
+          class="hero-action hero-action-secondary min-w-[190px] px-7 py-4 text-lg"
+        >
           List Your Items
         </button>
       </div>
