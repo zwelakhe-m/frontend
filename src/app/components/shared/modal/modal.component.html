@@ -1,6 +1,12 @@
 <div *ngIf="open" class="modal-overlay" (click)="onClose()">
-  <div class="modal-content" (click)="$event.stopPropagation()">
-    <button class="modal-close" (click)="onClose()" aria-label="Close">&times;</button>
+  <div
+    class="modal-content"
+    role="dialog"
+    aria-modal="true"
+    aria-label="Feature details"
+    (click)="$event.stopPropagation()"
+  >
+    <button type="button" class="modal-close" (click)="onClose()" aria-label="Close">&times;</button>
     <ng-content></ng-content>
   </div>
 </div>

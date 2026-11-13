@@ -99,6 +99,43 @@ export interface ApiSearchResponse {
   items: ApiRentalItem[];
 }
 
+interface ApiPaginatedItem {
+  id: number;
+  name: string;
+  description: string;
+  category?: string;
+  pricePerDay?: number;
+  price_per_day?: number | string;
+  location?: {
+    lat?: number | string | null;
+    lon?: number | string | null;
+  };
+  location_lat?: number | string | null;
+  location_lon?: number | string | null;
+  address?: {
+    formatted_address?: string;
+  };
+  formatted_address?: string;
+  imageUrls?: string[];
+  image_urls?: string[];
+  isAvailable?: boolean;
+  is_available?: boolean;
+  owner?: {
+    name?: string;
+  };
+  ownerName?: string;
+  owner_name?: string;
+  createdAt?: string;
+  created_at?: string;
+}
+
+interface ApiPaginatedItemsResponse {
+  items: ApiPaginatedItem[];
+  pagination: {
+    total: number;
+  };
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -167,6 +204,37 @@ export class ItemsService {
         return this.handleError(error);
       })
     );
+  }
+
+  searchItemsWithoutLocation(
+    filters: SearchFilters,
+    page: number,
+    limit: number
+  ): Observable<SearchResponse> {
+    this.searchLoading.set(true);
+    this.currentFilters.set(filters);
+
+    const params = this.buildParams(filters)
+      .set('page', page.toString())
+      .set('limit', limit.toString());
+
+    return this.http
+      .get<ApiPaginatedItemsResponse>(`${this.baseUrl}/search`, { params })
+      .pipe(
+        map((response) => ({
+          items: response.items.map((item) => this.transformBackendItem(item)),
+          total: response.pagination.total,
+          hasMore: page * limit < response.pagination.total,
+        })),
+        tap((response) => {
+          this.searchResultsSubject.next(response);
+          this.searchLoading.set(false);
+        }),
+        catchError((error) => {
+          this.searchLoading.set(false);
+          return this.handleError(error);
+        })
+      );
   }
 
   /**
@@ -497,6 +565,7 @@ export class ItemsService {
       location:
         backendItem.address?.formatted_address ||
         backendItem.formatted_address ||
+        backendItem.address?.city ||
         'Location not available',
       latitude:
         parseFloat(backendItem.location_lat ?? backendItem.location?.lat) || 0,
@@ -508,7 +577,11 @@ export class ItemsService {
           ? backendItem.is_available
           : backendItem.isAvailable !== false,
       ownerId: backendItem.owner_id || 0,
-      ownerName: backendItem.owner?.name || backendItem.owner_name || 'Unknown',
+      ownerName:
+        backendItem.owner?.name ||
+        backendItem.owner_name ||
+        backendItem.ownerName ||
+        'Unknown',
       ownerVerified: false,
       createdAt: backendItem.created_at || backendItem.createdAt,
       updatedAt:
