@@ -47,29 +47,27 @@ export class LandingComponent implements AfterViewInit, OnDestroy {
     if (feature === 'secure') {
       this.featureContent = {
         icon: `<svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>`,
-        title: 'Secure & Safe',
-        subtitle: 'All rentals are protected with verified user profiles and secure payments.',
-        future: 'Insurance coverage is a planned feature and will be available soon.',
+        title: 'Transparent & Connected',
+        subtitle: 'Review listings, ratings, and rental details before sending a request.',
+        future: 'Insurance verification and in-app payments are planned, not active yet.',
         description:
-          'We take your safety seriously. Every user is verified before they can rent or list items. Payments are processed securely, and our team is always working to add more protections—including insurance, coming soon!',
+          'RentHub currently supports browsing, booking requests, messaging, and reviews. A policy upload does not prove rental coverage, and no payment is collected through the app.',
       };
     } else if (feature === 'instant') {
       this.featureContent = {
         icon: `<svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>`,
-        title: 'Instant Booking',
-        subtitle:
-          'Find and book items instantly with our smart matching algorithm and real-time availability.',
+        title: 'Owner-approved requests',
+        subtitle: 'Find an item and send a rental request for the owner to review.',
         description:
-          'Our platform connects you with available items in your area, allowing you to book in just a few clicks. No waiting, no hassle—just fast, secure rentals.',
+          'The owner must approve a booking request. RentHub records booking details but does not collect payment or distribute payouts.',
       };
     } else if (feature === 'earn') {
       this.featureContent = {
         icon: `<svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"/></svg>`,
         title: 'Earn Money',
-        subtitle:
-          'Turn your unused items into income with competitive rates and a safe, trusted platform.',
+        subtitle: 'List unused items for free and choose your rental price.',
         description:
-          'Listing is easy and free. You control your prices and availability, and our secure payment system ensures you get paid quickly. We’re building more features to help you earn even more—stay tuned!',
+          'You control your listing price and availability. RentHub does not currently collect rental payments or distribute owner payouts.',
       };
     }
     this.modalOpen = true;

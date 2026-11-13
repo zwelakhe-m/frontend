@@ -220,9 +220,9 @@
               />
             </svg>
           </div>
-          <h4 class="text-2xl font-bold text-gray-900 mb-4">Secure & Safe</h4>
+          <h4 class="text-2xl font-bold text-gray-900 mb-4">Transparent & Connected</h4>
           <p class="text-gray-600 mb-4">
-            All rentals are protected with insurance and verified user profiles.
+            Review listings, ratings, and rental details. Insurance and in-app payments are planned.
           </p>
           <button class="btn-primary px-6 py-2 mt-2" (click)="openFeatureModal('secure')">
             Read More
@@ -244,9 +244,9 @@
               />
             </svg>
           </div>
-          <h4 class="text-2xl font-bold text-gray-900 mb-4">Instant Booking</h4>
+          <h4 class="text-2xl font-bold text-gray-900 mb-4">Owner-approved requests</h4>
           <p class="text-gray-600 mb-4">
-            Find and book items instantly with our smart matching algorithm.
+            Send a rental request and wait for the owner to approve it.
           </p>
           <button class="btn-primary px-6 py-2 mt-2" (click)="openFeatureModal('instant')">
             Read More
@@ -280,7 +280,7 @@
       <!-- Modal Popup for Feature Info -->
       <app-modal *ngIf="modalOpen" [open]="modalOpen" (close)="closeFeatureModal()">
         <div class="text-center p-4">
-          @if (featureContent?.title === 'Secure & Safe') {
+          @if (featureContent?.title === 'Transparent & Connected') {
           <div
             class="w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center bg-gradient-to-r from-purple-500 to-purple-600"
           >
@@ -293,7 +293,7 @@
               />
             </svg>
           </div>
-          } @else if (featureContent?.title === 'Instant Booking') {
+          } @else if (featureContent?.title === 'Owner-approved requests') {
           <div
             class="w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center bg-gradient-to-r from-emerald-500 to-emerald-600"
           >
