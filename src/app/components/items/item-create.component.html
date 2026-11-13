@@ -332,42 +332,100 @@
           @if (locationMethod() === 'manual') {
           <div>
             <label for="manualLocation" class="block text-sm font-medium text-gray-700 mb-2">
-              Address * @if (!currentUser()?.isVerified) {
-              <span class="text-xs text-amber-600">(Will be geocoded automatically)</span>
-              }
+              Pickup area *
             </label>
             <input
               id="manualLocation"
               type="text"
               formControlName="manualLocation"
-              [placeholder]="
-                currentUser()?.isVerified
-                  ? 'Enter any address (e.g., 123 Main St, Sandton, Johannesburg)'
-                  : 'Enter address to search (e.g., Sandton City, Johannesburg)'
-              "
+              (input)="onManualLocationChange()"
+              placeholder="Enter a suburb, town, or place (e.g., Sandton, Johannesburg)"
               class="form-input w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
               [class.error]="isFieldInvalid('manualLocation')"
             />
+            <button
+              type="button"
+              (click)="lookupManualLocation()"
+              [disabled]="lookupLoading()"
+              class="mt-3 rounded-lg bg-purple-600 px-4 py-2 text-sm font-medium text-white hover:bg-purple-700 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {{ lookupLoading() ? 'Searching...' : 'Find location' }}
+            </button>
+            <p class="mt-2 text-xs text-gray-500">
+              Search when ready; RentHub uses OpenStreetMap data. Choose a result to enable
+              approximate distance sorting. OSM contributors
+              (<a
+                href="https://www.openstreetmap.org/copyright"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="underline"
+                >attribution</a
+              >).
+            </p>
+            @if (selectedManualLocation()) {
+            <p class="mt-2 text-sm text-green-700">
+              Location selected. Coordinates are rounded to about 100 m, so distances are
+              approximate straight-line estimates.
+              <a
+                [href]="
+                  'https://www.openstreetmap.org/?mlat=' +
+                  selectedManualLocation()!.lat +
+                  '&mlon=' +
+                  selectedManualLocation()!.lon +
+                  '#map=16/' +
+                  selectedManualLocation()!.lat +
+                  '/' +
+                  selectedManualLocation()!.lon
+                "
+                target="_blank"
+                rel="noopener noreferrer"
+                class="underline"
+                >View on map</a
+              >
+            </p>
+            }
+            @if (lookupLoading()) {
+            <p class="mt-2 text-sm text-gray-600">Looking for matching places in South Africa...</p>
+            }
+            @if (lookupError()) {
+            <p class="mt-2 text-sm text-amber-700">{{ lookupError() }}</p>
+            }
+            @if (locationResults().length > 0) {
+            <div class="mt-3 space-y-2" aria-label="Location search results">
+              @for (result of locationResults(); track result.latitude + ',' + result.longitude) {
+              <div class="flex items-center justify-between gap-3 rounded-lg border border-gray-200 p-3">
+                <button
+                  type="button"
+                  (click)="selectManualLocation(result)"
+                  class="min-w-0 flex-1 text-left"
+                >
+                  <span class="block font-medium text-gray-900">{{ result.label }}</span>
+                  <span class="block truncate text-xs text-gray-500">{{ result.displayName }}</span>
+                </button>
+                <a
+                  [href]="
+                    'https://www.openstreetmap.org/?mlat=' +
+                    result.latitude +
+                    '&mlon=' +
+                    result.longitude +
+                    '#map=16/' +
+                    result.latitude +
+                    '/' +
+                    result.longitude
+                  "
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="shrink-0 text-xs text-purple-700 underline"
+                  (click)="$event.stopPropagation()"
+                  >View map</a
+                >
+              </div>
+              }
+            </div>
+            }
             @if (isFieldInvalid('manualLocation')) {
             <p class="error-message text-red-500 text-sm mt-1">
               {{ getFieldError('manualLocation') }}
-            </p>
-            } @if (!currentUser()?.isVerified) {
-            <p class="text-xs text-gray-500 mt-1">
-              <svg
-                class="inline w-4 h-4 mr-1"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-              Verify your account to enter custom addresses
             </p>
             }
           </div>

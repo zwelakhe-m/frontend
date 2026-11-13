@@ -2,7 +2,12 @@ import { Component, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import { ItemsService, CreateItemRequest, RentalItem } from '../../services/items.service';
+import {
+  ItemsService,
+  CreateItemRequest,
+  GeocodedLocation,
+  RentalItem,
+} from '../../services/items.service';
 import { AuthService, User } from '../../services/auth.service';
 import { ToastService } from '../../services/shared/toast.service';
 import { CurrencyService } from '../../services/currency.service';
@@ -37,6 +42,10 @@ export class ItemCreateComponent implements OnInit {
   currentLocation = signal<{ lat: number; lon: number } | null>(null);
   locationLoading = signal(false);
   locationError = signal<string | null>(null);
+  lookupLoading = signal(false);
+  lookupError = signal<string | null>(null);
+  locationResults = signal<GeocodedLocation[]>([]);
+  selectedManualLocation = signal<{ lat: number; lon: number } | null>(null);
 
   categories = [
     'Electronics',
@@ -186,6 +195,48 @@ export class ItemCreateComponent implements OnInit {
     this.itemForm.get('manualLocation')?.updateValueAndValidity();
   }
 
+  onManualLocationChange() {
+    this.selectedManualLocation.set(null);
+    this.locationResults.set([]);
+    this.lookupError.set(null);
+  }
+
+  lookupManualLocation() {
+    const query = this.itemForm.get('manualLocation')?.value?.trim();
+    if (!query || query.length < 3) {
+      this.lookupError.set('Enter at least 3 characters to search.');
+      return;
+    }
+
+    this.lookupLoading.set(true);
+    this.lookupError.set(null);
+    this.locationResults.set([]);
+    this.selectedManualLocation.set(null);
+    this.itemsService.lookupLocation(query).subscribe({
+      next: (results) => {
+        this.locationResults.set(results);
+        this.lookupLoading.set(false);
+        if (results.length === 0) {
+          this.lookupError.set('No matching South African locations found. Try a nearby suburb or city.');
+        }
+      },
+      error: () => {
+        this.lookupLoading.set(false);
+        this.lookupError.set('Location lookup is unavailable right now. Please try again.');
+      },
+    });
+  }
+
+  selectManualLocation(location: GeocodedLocation) {
+    this.selectedManualLocation.set({
+      lat: location.latitude,
+      lon: location.longitude,
+    });
+    this.itemForm.get('manualLocation')?.setValue(location.label);
+    this.locationResults.set([]);
+    this.lookupError.set(null);
+  }
+
   onImageSelect(event: Event) {
     const input = event.target as HTMLInputElement;
     if (input.files) {
@@ -280,6 +331,10 @@ export class ItemCreateComponent implements OnInit {
         }),
       ...(this.locationMethod() === 'manual' && {
         manualAddress: formValues.manualLocation,
+        ...(this.selectedManualLocation() && {
+          locationLat: this.selectedManualLocation()!.lat,
+          locationLon: this.selectedManualLocation()!.lon,
+        }),
       }),
       images: this.selectedImages(),
     };

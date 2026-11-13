@@ -65,6 +65,13 @@ export interface CreateItemRequest {
   isAvailable?: boolean; // Sent on update so backend never stores NULL
 }
 
+export interface GeocodedLocation {
+  latitude: number;
+  longitude: number;
+  label: string;
+  displayName: string;
+}
+
 export interface SearchFilters {
   query?: string;
   category?: string;
@@ -112,6 +119,7 @@ interface ApiPaginatedItem {
   };
   location_lat?: number | string | null;
   location_lon?: number | string | null;
+  distance_km?: number | string | null;
   address?: {
     formatted_address?: string;
   };
@@ -263,6 +271,15 @@ export class ItemsService {
         return this.handleError(error);
       })
     );
+  }
+
+  lookupLocation(query: string): Observable<GeocodedLocation[]> {
+    const params = new HttpParams().set('query', query);
+    return this.http.get<GeocodedLocation[]>(`${this.baseUrl}/geocode`, {
+      headers: this.authService.getAuthHeaders(),
+      params,
+      withCredentials: true,
+    });
   }
 
   /**
@@ -593,6 +610,10 @@ export class ItemsService {
       createdAt: backendItem.created_at || backendItem.createdAt,
       updatedAt:
         backendItem.updated_at || backendItem.created_at || backendItem.createdAt,
+      distance:
+        backendItem.distance_km !== undefined && backendItem.distance_km !== null
+          ? Number.parseFloat(backendItem.distance_km)
+          : undefined,
     };
   }
 

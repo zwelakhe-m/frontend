@@ -228,6 +228,11 @@
               {{ item.location }}
             </div>
             }
+            @if (item.distance !== undefined) {
+            <p class="text-xs text-gray-500">
+              {{ item.distance | number: '1.1-1' }} km away (straight-line, approx.)
+            </p>
+            }
           </div>
         </div>
       </div>
