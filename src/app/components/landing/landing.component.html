@@ -1,7 +1,7 @@
 <!-- Premium Rental Marketplace Landing Page -->
 <div class="min-h-screen bg-gradient-to-br from-purple-50 via-white to-emerald-50">
   <!-- Navigation -->
-  <nav class="glass fixed top-0 left-0 right-0 z-50 px-4 py-4 sm:px-6">
+  <nav class="glass fixed top-0 left-0 right-0 z-50 px-3 py-4 sm:px-6">
     <div class="max-w-7xl mx-auto flex items-center justify-between">
       <!-- Logo -->
       <div class="flex items-center space-x-2 group">
@@ -36,11 +36,29 @@
         <a href="#footer" class="nav-link">Support</a>
       </div>
 
-      <!-- Auth Buttons -->
+      <!-- Mobile Menu and Auth Actions -->
       <div class="flex flex-row items-center gap-2">
         <button
+          type="button"
+          (click)="toggleMobileMenu()"
+          class="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-gray-300 text-gray-700 md:hidden"
+          [attr.aria-expanded]="mobileMenuOpen"
+          aria-controls="landing-mobile-menu"
+          [attr.aria-label]="mobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'"
+        >
+          @if (mobileMenuOpen) {
+            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="M6 6l12 12M18 6L6 18" stroke-width="2" stroke-linecap="round" />
+            </svg>
+          } @else {
+            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="M4 6h16M4 12h16M4 18h16" stroke-width="2" stroke-linecap="round" />
+            </svg>
+          }
+        </button>
+        <button
           (click)="navigateToLogin()"
-          class="btn-ghost whitespace-nowrap border border-primary-500 px-3 py-2 text-xs sm:px-4 sm:text-sm"
+          class="btn-ghost hidden whitespace-nowrap border border-primary-500 px-3 py-2 text-xs sm:inline-flex sm:px-4 sm:text-sm"
         >
           Sign In
         </button>
@@ -52,6 +70,45 @@
         </button>
       </div>
     </div>
+
+    @if (mobileMenuOpen) {
+      <div id="landing-mobile-menu" class="mx-auto mt-3 max-w-7xl border-t border-gray-200 py-3 md:hidden">
+        <div class="flex flex-col gap-1">
+          <button
+            (click)="navigateToBrowse(); closeMobileMenu()"
+            class="rounded-lg px-3 py-3 text-left text-sm font-medium text-gray-800 hover:bg-purple-50"
+          >
+            Browse Items
+          </button>
+          <button
+            (click)="navigateToCreateItem(); closeMobileMenu()"
+            class="rounded-lg px-3 py-3 text-left text-sm font-medium text-gray-800 hover:bg-purple-50"
+          >
+            List Your Item
+          </button>
+          <a
+            href="#features"
+            (click)="closeMobileMenu()"
+            class="rounded-lg px-3 py-3 text-sm font-medium text-gray-800 hover:bg-purple-50"
+          >
+            How It Works
+          </a>
+          <a
+            href="#footer"
+            (click)="closeMobileMenu()"
+            class="rounded-lg px-3 py-3 text-sm font-medium text-gray-800 hover:bg-purple-50"
+          >
+            Support
+          </a>
+          <button
+            (click)="navigateToLogin(); closeMobileMenu()"
+            class="rounded-lg px-3 py-3 text-left text-sm font-medium text-gray-800 hover:bg-purple-50 sm:hidden"
+          >
+            Sign In
+          </button>
+        </div>
+      </div>
+    }
   </nav>
 
   <!-- Hero Section -->
