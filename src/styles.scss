@@ -247,6 +247,25 @@
   box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.45);
 }
 
+.app-modal-backdrop {
+  background: rgba(15, 23, 42, 0.68);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+}
+
+.app-modal-panel {
+  background: #ffffff;
+  color: #111827;
+  border: 1px solid rgba(148, 163, 184, 0.45);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.35);
+}
+
+.app-modal-panel input,
+.app-modal-panel textarea {
+  background: #ffffff;
+  color: #111827;
+}
+
 /* Dark Mode Support */
 @media (prefers-color-scheme: dark) {
   .glass-card {
@@ -348,6 +367,43 @@
     color: #f3f4f6 !important;
     border: 1px solid rgba(148, 163, 184, 0.3) !important;
     box-shadow: 0 24px 64px rgba(0, 0, 0, 0.65) !important;
+  }
+
+  .app-modal-backdrop {
+    background: rgba(2, 6, 23, 0.82) !important;
+  }
+
+  .app-modal-panel,
+  .app-modal-panel.bg-white {
+    background: #111827 !important;
+    color: #f3f4f6 !important;
+    border-color: rgba(148, 163, 184, 0.32) !important;
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.72) !important;
+  }
+
+  .app-modal-panel form {
+    background: transparent !important;
+    color: #f3f4f6 !important;
+    border: 0 !important;
+  }
+
+  .app-modal-panel input,
+  .app-modal-panel textarea {
+    background: #0b1220 !important;
+    color: #f3f4f6 !important;
+    border-color: rgba(148, 163, 184, 0.42) !important;
+  }
+
+  .app-modal-panel input::placeholder,
+  .app-modal-panel textarea::placeholder {
+    color: #9ca3af !important;
+  }
+
+  .app-modal-panel .glass-card,
+  .app-modal-panel .bg-gray-50 {
+    background: #1f2937 !important;
+    color: #f3f4f6 !important;
+    border-color: rgba(148, 163, 184, 0.32) !important;
   }
 }
 /* Global dark mode system: dark surfaces with light text everywhere,

@@ -253,10 +253,15 @@
 
   <!-- Booking Modal -->
   @if (showBookingModal()) {
-  <div class="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-    <div class="bg-white rounded-2xl p-6 w-full max-w-md">
+  <div class="app-modal-backdrop fixed inset-0 flex items-center justify-center p-4 z-50">
+    <div
+      class="app-modal-panel rounded-2xl p-6 w-full max-w-md max-h-[90vh] overflow-y-auto"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="booking-modal-title"
+    >
       <div class="flex items-center justify-between mb-6">
-        <h3 class="text-xl font-semibold text-gray-900">Request to Rent</h3>
+        <h3 id="booking-modal-title" class="text-xl font-semibold text-gray-900">Request to Rent</h3>
         <button (click)="closeBookingModal()" class="text-gray-400 hover:text-gray-600">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
@@ -281,6 +286,7 @@
               type="date"
               [(ngModel)]="bookingStartDate"
               [min]="getMinDate()"
+              (ngModelChange)="onBookingDatesChange()"
               name="startDate"
               required
               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
@@ -294,7 +300,8 @@
               id="endDate"
               type="date"
               [(ngModel)]="bookingEndDate"
-              [min]="bookingStartDate() || getMinDate()"
+              [min]="getMinEndDate()"
+              (ngModelChange)="onBookingDatesChange()"
               name="endDate"
               required
               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
@@ -318,22 +325,31 @@
         </div>
 
         <!-- Booking Summary -->
-        @if (bookingStartDate() && bookingEndDate()) {
+        @if (getBookingDateError()) {
+        <p class="text-sm text-red-600" role="alert">{{ getBookingDateError() }}</p>
+        }
+
+        @if (bookingError()) {
+        <p class="text-sm text-red-600" role="alert">{{ bookingError() }}</p>
+        }
+
+        @if (bookingStartDate() && bookingEndDate() && isBookingDateRangeValid()) {
         <div class="glass-card rounded-xl p-4 bg-gray-50">
           <div class="space-y-2">
             <div class="flex justify-between">
               <span class="text-gray-600">Duration:</span>
-              <span class="font-medium">{{ calculateDays() }} days</span>
+              <span class="font-medium">{{ calculateDays() }} rental days</span>
             </div>
             <div class="flex justify-between">
-              <span class="text-gray-600">Price per day:</span>
+              <span class="text-gray-600">Daily price:</span>
               <span class="font-medium">{{ formatPrice(item()!.pricePerDay) }}</span>
             </div>
             <hr class="my-2" />
             <div class="flex justify-between text-lg font-semibold">
-              <span>Total:</span>
+              <span>Rental total:</span>
               <span class="text-purple-600">{{ formatPrice(calculateTotal()) }}</span>
             </div>
+            <p class="text-xs text-gray-500">No additional platform fees are added to this total.</p>
           </div>
         </div>
         }
@@ -341,7 +357,7 @@
         <!-- Submit Button -->
         <button
           type="submit"
-          [disabled]="bookingLoading() || !bookingStartDate() || !bookingEndDate()"
+          [disabled]="bookingLoading() || !isBookingDateRangeValid()"
           class="w-full btn-primary py-3 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed"
         >
           @if (bookingLoading()) {

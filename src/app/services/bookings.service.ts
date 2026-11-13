@@ -424,7 +424,7 @@ export class BookingsService {
     } else if (error.status === 404) {
       errorMessage = 'Booking not found';
     } else if (error.status === 409) {
-      errorMessage = 'Booking conflict - item not available for selected dates';
+      errorMessage = 'Those dates are no longer available. Choose different dates and try again.';
     } else if (error.status === 0) {
       errorMessage = 'Unable to connect to server';
     }

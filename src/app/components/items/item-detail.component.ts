@@ -39,6 +39,7 @@ export class ItemDetailComponent implements OnInit {
   bookingEndDate = signal('');
   bookingMessage = signal('');
   bookingLoading = signal(false);
+  bookingError = signal('');
 
   ngOnInit() {
     const itemIdParam = this.route.snapshot.paramMap.get('id');
@@ -139,14 +140,41 @@ export class ItemDetailComponent implements OnInit {
     this.bookingStartDate.set('');
     this.bookingEndDate.set('');
     this.bookingMessage.set('');
+    this.bookingError.set('');
+  }
+
+  onBookingDatesChange() {
+    this.bookingError.set('');
+  }
+
+  getBookingDateError(): string {
+    const startDate = this.bookingStartDate();
+    const endDate = this.bookingEndDate();
+    if (!startDate || !endDate) return '';
+    if (startDate < this.getMinDate()) return 'The start date cannot be in the past.';
+    if (endDate <= startDate) return 'Choose an end date at least one day after the start date.';
+    return '';
+  }
+
+  isBookingDateRangeValid(): boolean {
+    return !!(
+      this.item()?.isAvailable &&
+      this.bookingStartDate() &&
+      this.bookingEndDate() &&
+      !this.getBookingDateError()
+    );
   }
 
   async submitBooking() {
     const item = this.item();
-    if (!item || !this.bookingStartDate() || !this.bookingEndDate()) {
+    if (!item || !this.isBookingDateRangeValid()) {
+      this.bookingError.set(
+        this.getBookingDateError() || 'Choose a start and end date to continue.',
+      );
       return;
     }
 
+    this.bookingError.set('');
     this.bookingLoading.set(true);
 
     try {
@@ -168,9 +196,11 @@ export class ItemDetailComponent implements OnInit {
         },
         error: (error: any) => {
           console.error('Error creating booking:', error);
+          const message = error.message || 'Failed to send booking request. Please try again.';
+          this.bookingError.set(message);
           this.toastService.error(
             'Booking Failed',
-            'Failed to send booking request. Please try again.'
+            message,
           );
           this.bookingLoading.set(false);
         },
@@ -213,12 +243,11 @@ export class ItemDetailComponent implements OnInit {
   }
 
   calculateDays(): number {
-    if (!this.bookingStartDate() || !this.bookingEndDate()) return 0;
+    if (!this.isBookingDateRangeValid()) return 0;
 
-    const start = new Date(this.bookingStartDate());
-    const end = new Date(this.bookingEndDate());
-    const diffTime = Math.abs(end.getTime() - start.getTime());
-    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    const start = new Date(`${this.bookingStartDate()}T00:00:00Z`);
+    const end = new Date(`${this.bookingEndDate()}T00:00:00Z`);
+    return (end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24);
   }
 
   calculateTotal(): number {
@@ -228,7 +257,19 @@ export class ItemDetailComponent implements OnInit {
   }
 
   getMinDate(): string {
-    return new Date().toISOString().split('T')[0];
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+
+  getMinEndDate(): string {
+    const startDate = this.bookingStartDate() || this.getMinDate();
+    const nextDay = new Date(`${startDate}T00:00:00Z`);
+    nextDay.setUTCDate(nextDay.getUTCDate() + 1);
+    const minEndDate = nextDay.toISOString().slice(0, 10);
+    return minEndDate < this.getMinDate() ? this.getMinDate() : minEndDate;
   }
 
   hasRating(): boolean {
