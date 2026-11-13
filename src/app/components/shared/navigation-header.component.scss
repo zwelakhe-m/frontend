@@ -46,6 +46,13 @@
 
 .mobile-menu-container {
   animation: slideDown 0.3s ease;
+  background-color: #fff !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  .mobile-menu-container {
+    background-color: #0f1526 !important;
+  }
 }
 
 @keyframes slideDown {
