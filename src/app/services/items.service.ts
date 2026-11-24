@@ -83,6 +83,7 @@ export interface SearchFilters {
   latitude?: number;
   longitude?: number;
   radius?: number; // in km
+  includeAll?: boolean;
   isAvailable?: boolean;
   sortBy?: 'price' | 'distance' | 'rating' | 'newest';
   sortOrder?: 'asc' | 'desc';
@@ -99,6 +100,7 @@ export interface SearchResponse {
 // API Search Response (matches backend structure)
 export interface ApiSearchResponse {
   success: boolean;
+  total_count?: number;
   search_params: {
     center: { lat: number; lon: number };
     radius_km: number;
@@ -332,7 +334,7 @@ export class ItemsService {
         withCredentials: true,
       })
       .pipe(
-        map((apiItems) => apiItems.map((item) => this.transformApiItem(item))),
+        map((apiItems) => apiItems.map((item) => this.transformBackendItem(item))),
         tap((items) => {
           this.myItemsSubject.next(items);
           this.isLoading.set(false);
@@ -484,7 +486,7 @@ export class ItemsService {
    */
   toggleItemAvailability(id: number): Observable<RentalItem> {
     return this.http
-      .put<{ message: string; item: RentalItem }>(
+      .put<{ message: string; item: ApiPaginatedItem }>(
         `${this.baseUrl}/${id}/toggle-availability`,
         {},
         {
@@ -492,7 +494,7 @@ export class ItemsService {
         }
       )
       .pipe(
-        map((response) => response.item),
+        map((response) => this.transformBackendItem(response.item)),
         tap((updatedItem) => {
           // Update in my items
           const currentItems = this.myItemsSubject.value;
@@ -551,10 +553,13 @@ export class ItemsService {
   // Private helper methods
 
   private transformSearchResponse(apiResponse: ApiSearchResponse): SearchResponse {
+    const offset = this.currentFilters().offset ?? 0;
     return {
       items: apiResponse.items.map((item) => this.transformApiItem(item)),
-      total: apiResponse.results_count,
-      hasMore: false, // We can implement pagination later
+      total: apiResponse.total_count ?? apiResponse.results_count,
+      hasMore:
+        offset + apiResponse.results_count <
+        (apiResponse.total_count ?? apiResponse.results_count),
     };
   }
 

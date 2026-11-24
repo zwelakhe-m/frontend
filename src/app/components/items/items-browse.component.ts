@@ -198,16 +198,17 @@ export class ItemsBrowseComponent implements OnInit, OnDestroy {
             latitude: this.userLocation.latitude,
             longitude: this.userLocation.longitude,
             radius: filterState.radius,
+            includeAll: true,
             location: filterState.location.trim() || undefined,
             isAvailable: filterState.availability === 'available',
             sortBy: selectedSort === 'created' ? 'newest' : selectedSort,
             sortOrder: this.getSortOrder(),
+            limit: this.itemsPerPage,
+            offset: (this.currentPage() - 1) * this.itemsPerPage,
           })
           .subscribe({
             next: (response) => {
-              const startIndex = (this.currentPage() - 1) * this.itemsPerPage;
-              const pageItems = response.items.slice(startIndex, startIndex + this.itemsPerPage);
-              this.items.set(pageItems);
+              this.items.set(response.items);
               this.totalItems.set(response.total);
               this.loading.set(false);
             },
